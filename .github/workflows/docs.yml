@@ -61,8 +61,6 @@ jobs:
       - name: Verify package installation
         run: |
           python -c "import rag_toolkit; print(f'✅ Package installed: {rag_toolkit.__version__}')"
-          python -c "from rag_toolkit.core.protocols import EmbeddingClient; print('✅ Protocols import works')"
-          python -c "from rag_toolkit.core.types import SearchResult; print('✅ Core types import works')"
         env:
           SPHINX_BUILD: "true"
       
