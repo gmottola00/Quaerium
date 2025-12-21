@@ -3,6 +3,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://gmottola00.github.io/rag-toolkit/)
 
 > **Advanced RAG library with multi-vectorstore support and production-ready components**
 
@@ -271,6 +272,31 @@ Full documentation available at: [rag-toolkit.readthedocs.io](https://rag-toolki
 - [ ] Cost tracking
 - [ ] Performance metrics
 - [ ] OpenTelemetry integration
+
+---
+
+## 📚 Documentation
+
+Comprehensive documentation is available at **[gmottola00.github.io/rag-toolkit](https://gmottola00.github.io/rag-toolkit/)**
+
+### Quick Links
+
+- **[Getting Started](https://gmottola00.github.io/rag-toolkit/getting_started/installation.html)** - Installation and quickstart
+- **[User Guide](https://gmottola00.github.io/rag-toolkit/user_guide/core_concepts.html)** - Core concepts and protocols
+- **[Examples](https://gmottola00.github.io/rag-toolkit/examples/basic_rag.html)** - Complete working examples
+- **[API Reference](https://gmottola00.github.io/rag-toolkit/autoapi/index.html)** - Full API documentation
+
+### Build Docs Locally
+
+```bash
+# Install documentation dependencies
+pip install -e ".[docs]"
+
+# Build and serve
+cd docs
+make html
+make serve  # Visit http://localhost:8000
+```
 
 ---
 
