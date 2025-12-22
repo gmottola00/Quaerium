@@ -1,6 +1,6 @@
 # Chunking Strategies
 
-Chunking is the process of splitting documents into smaller pieces for embedding and retrieval. Good chunking is critical for RAG quality. This guide covers everything you need to know about chunking in rag-toolkit.
+Chunking is the process of splitting documents into smaller pieces for embedding and retrieval. Good chunking is critical for RAG quality. This guide covers the chunking capabilities available in rag-toolkit.
 
 ## Why Chunking Matters
 
@@ -15,9 +15,428 @@ Chunking is the process of splitting documents into smaller pieces for embedding
 - ✅ Better LLM context utilization
 - ✅ Efficient processing
 
-## Chunking Strategies
+## Available Chunking Strategies
 
-### 1. Fixed-Size Chunking
+rag-toolkit currently provides two complementary chunking strategies that work together:
+
+### 1. DynamicChunker - Structural Chunking
+
+Creates chunks based on document structure, using heading hierarchy.
+
+**Best for**: Structured documents with clear sections (PDFs, documentation, reports)
+
+```python
+from rag_toolkit.core.chunking import DynamicChunker
+
+# Create dynamic chunker
+chunker = DynamicChunker(
+    include_tables=True,        # Include table blocks
+    max_heading_level=6,        # Maximum heading depth
+    allow_preamble=False        # Handle content before first heading
+)
+
+# Build chunks from parsed pages
+# Input: pages from document parser with blocks
+chunks = chunker.build_chunks(pages)
+
+for chunk in chunks:
+    print(f"Title: {chunk.title}")
+    print(f"Level: {chunk.heading_level}")
+    print(f"Pages: {chunk.page_numbers}")
+    print(f"Text length: {len(chunk.text)}")
+```
+
+**How it works:**
+- Splits document at level-1 headings (h1)
+- Each chunk includes:
+  - The level-1 heading as title
+  - All sub-headings (h2-h6) under that section
+  - Paragraphs, lists, and optionally tables
+  - Continues until the next level-1 heading
+
+**Configuration options:**
+
+```python
+# Include tables in chunks
+chunker = DynamicChunker(include_tables=True)
+
+# Limit heading depth
+chunker = DynamicChunker(max_heading_level=3)  # Only h1-h3
+
+# Handle preamble content
+chunker = DynamicChunker(allow_preamble=True)  # Creates "Preamble" chunk
+```
+
+### 2. TokenChunker - Token-Based Chunking
+
+Splits larger chunks into smaller token-based pieces with overlap.
+
+**Best for**: Controlling token budget, optimal embedding sizes
+
+```python
+from rag_toolkit.core.chunking import TokenChunker
+
+# Create token chunker
+chunker = TokenChunker(
+    max_tokens=800,         # Maximum tokens per chunk
+    min_tokens=400,         # Minimum tokens per chunk
+    overlap_tokens=120,     # Overlap between chunks
+)
+
+# Chunk structured chunks into token chunks
+# Input: Chunk objects from DynamicChunker
+token_chunks = chunker.chunk(structured_chunks)
+
+for chunk in token_chunks:
+    print(f"ID: {chunk.id}")
+    print(f"Section: {chunk.section_path}")
+    print(f"Text: {chunk.text[:100]}...")
+    print(f"Metadata: {chunk.metadata}")
+```
+
+**How it works:**
+- Takes chunks from DynamicChunker
+- Splits them by token count (using whitespace tokenizer)
+- Applies overlap to preserve context at boundaries
+- Maintains section hierarchy and metadata
+
+**Token overlap example:**
+```
+Chunk 1: tokens[0:800]
+Chunk 2: tokens[680:1480]  # 120 token overlap
+Chunk 3: tokens[1360:2160] # 120 token overlap
+```
+
+**Configuration:**
+
+```python
+# Small chunks for precise retrieval
+chunker = TokenChunker(
+    max_tokens=512,
+    min_tokens=200,
+    overlap_tokens=50
+)
+
+# Large chunks for more context
+chunker = TokenChunker(
+    max_tokens=1500,
+    min_tokens=800,
+    overlap_tokens=200
+)
+
+# Custom tokenizer
+def my_tokenizer(text: str) -> list[str]:
+    # Your tokenization logic
+    return text.split()
+
+chunker = TokenChunker(
+    max_tokens=800,
+    tokenizer=my_tokenizer
+)
+```
+
+## Two-Stage Chunking Pipeline
+
+The recommended approach is to use both chunkers together:
+
+```python
+from rag_toolkit.core.chunking import DynamicChunker, TokenChunker
+
+# Stage 1: Structural chunking
+dynamic_chunker = DynamicChunker(
+    include_tables=True,
+    max_heading_level=6,
+    allow_preamble=False
+)
+
+# Stage 2: Token-based chunking
+token_chunker = TokenChunker(
+    max_tokens=800,
+    min_tokens=400,
+    overlap_tokens=120
+)
+
+# Process document
+# 1. Parse document (PDF, DOCX, etc.)
+pages = parser.parse("document.pdf")
+
+# 2. Create structural chunks
+structural_chunks = dynamic_chunker.build_chunks(pages)
+
+# 3. Split into token chunks
+final_chunks = token_chunker.chunk(structural_chunks)
+
+# Now ready for embedding and indexing
+for chunk in final_chunks:
+    embedding = await embed(chunk.text)
+    await vector_store.insert(embedding, chunk.text, chunk.metadata)
+```
+
+## Chunk Types
+
+### Chunk (from DynamicChunker)
+
+Basic structural chunk with heading information:
+
+```python
+@dataclass
+class Chunk:
+    id: str                           # Unique identifier
+    title: str                        # Section heading
+    heading_level: int                # Heading depth (1-6)
+    text: str                         # Full text content
+    blocks: List[Dict[str, Any]]     # Structured blocks
+    page_numbers: List[int]          # Source pages
+```
+
+### TokenChunk (from TokenChunker)
+
+Token-based chunk with metadata:
+
+```python
+@dataclass
+class TokenChunk:
+    id: str                           # Unique ID (parent:start-end)
+    text: str                         # Chunk text
+    section_path: str                 # Full section hierarchy
+    metadata: Dict[str, str]         # Extracted metadata
+    page_numbers: List[int]          # Source pages
+    source_chunk_id: str             # Parent chunk ID
+```
+
+## Metadata Extraction
+
+TokenChunker automatically extracts metadata from text:
+
+```python
+# Metadata patterns (configurable in source)
+TENDER_CODE_PATTERN = r"\b\d{6}-\d{4}\b"
+LOT_ID_PATTERN = r"\bLOT[-_\s]?\w+\b"
+
+# Document type keywords
+DOC_TYPE_KEYWORDS = {
+    "bando": "tender_notice",
+    "avviso": "notice",
+    "rettifica": "corrigendum",
+    "capitolato": "specs",
+    "disciplinare": "disciplinare",
+}
+
+# Example extracted metadata
+{
+    "tender_code": "123456-2024",
+    "lot_id": "lot_1",
+    "document_type": "tender_notice",
+    "clause_type": "article"
+}
+```
+
+## Section Path Hierarchy
+
+TokenChunker builds a hierarchical section path:
+
+```python
+# Example document structure:
+# H1: Chapter 1
+#   H2: Section 1.1
+#     H3: Subsection 1.1.1
+
+# Resulting section_path:
+"Chapter 1 > Section 1.1 > Subsection 1.1.1"
+```
+
+This helps maintain context when chunks are retrieved.
+
+## Chunk Size Guidelines
+
+| Document Type | max_tokens | min_tokens | overlap | Reasoning |
+|---------------|------------|------------|---------|-----------|
+| Technical docs | 800 | 400 | 120 | Balanced context |
+| Short Q&A | 512 | 200 | 50 | Precise answers |
+| Long reports | 1500 | 800 | 200 | More context |
+| Code files | 600 | 300 | 60 | Function-level |
+
+## Best Practices
+
+### 1. Use Two-Stage Pipeline
+
+Always use DynamicChunker → TokenChunker for best results:
+
+```python
+# ✅ Good: Two-stage chunking
+structural = dynamic_chunker.build_chunks(pages)
+final = token_chunker.chunk(structural)
+
+# ❌ Bad: Only one chunker
+final = token_chunker.chunk(raw_text)  # Loses structure
+```
+
+### 2. Configure Overlap
+
+Always use overlap (15-20% of max_tokens):
+
+```python
+# ✅ Good: 15% overlap
+TokenChunker(max_tokens=800, overlap_tokens=120)
+
+# ❌ Bad: No overlap
+TokenChunker(max_tokens=800, overlap_tokens=0)
+```
+
+### 3. Preserve Tables
+
+Include tables for complete information:
+
+```python
+# ✅ Good: Include tables
+DynamicChunker(include_tables=True)
+
+# ⚠️  Careful: May lose important data
+DynamicChunker(include_tables=False)
+```
+
+### 4. Use Metadata for Filtering
+
+Leverage extracted metadata:
+
+```python
+# Search with metadata filters
+results = await vector_store.search(
+    query_embedding,
+    filter={
+        "document_type": "tender_notice",
+        "lot_id": "lot_1"
+    }
+)
+```
+
+## Integration with RAG Pipeline
+
+Complete example with rag-toolkit:
+
+```python
+from rag_toolkit.core.chunking import DynamicChunker, TokenChunker
+from rag_toolkit.infra.embedding import OpenAIEmbedding
+from rag_toolkit.core.vectorstore import MilvusVectorStore
+
+# Initialize components
+dynamic_chunker = DynamicChunker()
+token_chunker = TokenChunker(max_tokens=800)
+embedding = OpenAIEmbedding(model="text-embedding-3-small")
+vector_store = MilvusVectorStore(collection_name="documents")
+
+# Process and index document
+async def index_document(document_path: str):
+    # 1. Parse
+    pages = parser.parse(document_path)
+    
+    # 2. Structural chunking
+    structural_chunks = dynamic_chunker.build_chunks(pages)
+    
+    # 3. Token chunking
+    token_chunks = token_chunker.chunk(structural_chunks)
+    
+    # 4. Embed and index
+    for chunk in token_chunks:
+        embedding_vector = await embedding.embed(chunk.text)
+        
+        await vector_store.insert(
+            id=chunk.id,
+            vector=embedding_vector,
+            text=chunk.text,
+            metadata={
+                **chunk.metadata,
+                "section_path": chunk.section_path,
+                "pages": chunk.page_numbers
+            }
+        )
+    
+    print(f"Indexed {len(token_chunks)} chunks")
+
+# Index
+await index_document("report.pdf")
+```
+
+## Customization
+
+### Custom Tokenizer
+
+```python
+import tiktoken
+
+# Use OpenAI tokenizer
+def openai_tokenizer(text: str) -> list[str]:
+    enc = tiktoken.get_encoding("cl100k_base")
+    tokens = enc.encode(text)
+    return [enc.decode([t]) for t in tokens]
+
+chunker = TokenChunker(
+    max_tokens=800,
+    tokenizer=openai_tokenizer
+)
+```
+
+### Domain-Specific Metadata
+
+Extend metadata extraction by modifying patterns:
+
+```python
+# In chunking.py, add your patterns:
+CUSTOM_PATTERN = re.compile(r"YOUR_REGEX")
+
+def _extract_metadata(text: str, title: str | None = None) -> Dict[str, str]:
+    metadata = {}
+    
+    # Add your extraction logic
+    if CUSTOM_PATTERN.search(text):
+        metadata["custom_field"] = ...
+    
+    return metadata
+```
+
+## Troubleshooting
+
+### Chunks Too Large
+
+```python
+# Reduce max_tokens
+TokenChunker(max_tokens=512, min_tokens=200)
+```
+
+### Chunks Too Small
+
+```python
+# Increase min_tokens
+TokenChunker(max_tokens=1200, min_tokens=600)
+```
+
+### Missing Context at Boundaries
+
+```python
+# Increase overlap
+TokenChunker(overlap_tokens=200)  # 25% overlap
+```
+
+### Lost Document Structure
+
+```python
+# Ensure DynamicChunker is used first
+structural = dynamic_chunker.build_chunks(pages)
+final = token_chunker.chunk(structural)
+```
+
+## Next Steps
+
+- [Embeddings Guide](embeddings.md) - Embed your chunks
+- [Vector Stores](vector_stores.md) - Store and retrieve chunks
+- [RAG Pipeline](rag_pipeline.md) - Complete RAG setup
+- [Production Setup](../examples/production_setup.md) - Deploy to production
+
+## See Also
+
+- [Core Concepts](core_concepts.md) - Chunking fundamentals
+- [Architecture](../architecture.md) - System design
+- [API Reference](../autoapi/rag_toolkit/core/chunking/index.html) - Complete API docs
 
 Split text into fixed-size chunks with optional overlap.
 
