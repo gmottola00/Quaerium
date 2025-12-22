@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from typing import Any, Dict, List, Optional, Sequence
 
-from rag_toolkit.core.chunking.types import Chunk
+from rag_toolkit.core.chunking.models import Chunk
 
 
 class DynamicChunker:

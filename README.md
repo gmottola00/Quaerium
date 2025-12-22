@@ -2,6 +2,8 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://img.shields.io/badge/tests-28%20passed-success.svg)](https://github.com/gmottola00/rag-toolkit)
+[![Coverage](https://img.shields.io/badge/coverage-19%25-yellow.svg)](https://github.com/gmottola00/rag-toolkit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://gmottola00.github.io/rag-toolkit/)
 
@@ -47,9 +49,21 @@ Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean
 ### Installation
 
 ```bash
-# Base installation (core + Milvus)
+# From PyPI (coming soon)
 pip install rag-toolkit
 
+# From GitHub (current release)
+pip install git+https://github.com/gmottola00/rag-toolkit.git@v0.1.0
+
+# For development (editable install)
+git clone https://github.com/gmottola00/rag-toolkit.git
+cd rag-toolkit
+pip install -e ".[dev]"
+```
+
+#### Optional Dependencies
+
+```bash
 # With Ollama support
 pip install rag-toolkit[ollama]
 
