@@ -35,6 +35,10 @@ class MilvusService:
         """Drop a collection if present."""
         self.collections.drop_collection(name)
 
+    def list_collections(self) -> list[str]:
+        """List all collections."""
+        return self.connection.client.list_collections()
+
     def insert(
         self,
         collection_name: str,
@@ -62,6 +66,23 @@ class MilvusService:
             limit=limit,
             **kwargs,
         )
+
+    def upsert(
+        self,
+        collection_name: str,
+        data: Sequence[Sequence[Any]] | Dict[str, Sequence[Any]] | Dict[str, List[Any]],
+        **kwargs: Any,
+    ) -> Any:
+        """Upsert rows into a collection."""
+        return self.data.upsert(collection_name, data, **kwargs)
+
+    def count(self, collection_name: str) -> int:
+        """Count entities in a collection."""
+        result = self.connection.client.query(
+            collection_name=collection_name,
+            output_fields=["count(*)"],
+        )
+        return result[0]["count(*)"] if result else 0
 
 
 __all__ = ["MilvusService"]

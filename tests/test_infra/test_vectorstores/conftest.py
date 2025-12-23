@@ -36,11 +36,9 @@ def milvus_service() -> Generator[MilvusService, None, None]:
     try:
         yield service
     finally:
-        # Milvus service doesn't have close method currently
-        if hasattr(service, 'close'):
-            service.close()
-        elif hasattr(service.connection, 'close'):
-            service.connection.close()
+        # Cleanup: disconnect if possible
+        if hasattr(service.connection, 'disconnect'):
+            service.connection.disconnect()
 
 
 @pytest.fixture(scope="session")

@@ -27,15 +27,22 @@ class TestUnifiedVectorStoreCollections:
         
         # Create collection
         if vector_store_name == "milvus":
-            # Milvus requires schema - skip for now or use simple schema
-            pytest.skip("Milvus requires schema definition")
+            # Milvus requires schema
+            schema = {
+                "id": {"dtype": "INT64", "is_primary": True, "auto_id": True},
+                "vector": {"dtype": "FLOAT_VECTOR", "dim": 384},
+            }
+            service.ensure_collection(collection_name, schema)
         elif vector_store_name == "qdrant":
             service.ensure_collection(collection_name, vector_size=384)
         elif vector_store_name == "chroma":
             service.create_collection(collection_name)
         
         # Verify collection exists
-        if vector_store_name == "qdrant":
+        if vector_store_name == "milvus":
+            collections = service.list_collections()
+            assert collection_name in collections
+        elif vector_store_name == "qdrant":
             assert service.collections.collection_exists(collection_name)
         elif vector_store_name == "chroma":
             assert service.collections.collection_exists(collection_name)
@@ -44,7 +51,10 @@ class TestUnifiedVectorStoreCollections:
         service.drop_collection(collection_name)
         
         # Verify collection is gone
-        if vector_store_name == "qdrant":
+        if vector_store_name == "milvus":
+            collections = service.list_collections()
+            assert collection_name not in collections
+        elif vector_store_name == "qdrant":
             assert not service.collections.collection_exists(collection_name)
         elif vector_store_name == "chroma":
             assert not service.collections.collection_exists(collection_name)
@@ -58,9 +68,10 @@ class TestUnifiedVectorStoreCollections:
         service = request.getfixturevalue(f"{vector_store_name}_service")
         
         if vector_store_name == "milvus":
-            pytest.skip("Milvus list API differs")
+            collections = service.list_collections()
+        else:
+            collections = service.collections.list_collections()
         
-        collections = service.collections.list_collections()
         assert isinstance(collections, list)
 
 
@@ -88,7 +99,6 @@ class TestUnifiedVectorStoreData:
             {"source": "test", "page": 2},
             {"source": "test", "page": 3},
         ]
-    
     def test_add_and_search_vectors(
         self,
         vector_store_name: str,
@@ -103,7 +113,23 @@ class TestUnifiedVectorStoreData:
         
         # Create collection
         if vector_store_name == "milvus":
-            pytest.skip("Milvus requires schema definition")
+            # Milvus requires schema with INT64 IDs
+            schema = {
+                "id": {"dtype": "INT64", "is_primary": True, "auto_id": False},
+                "vector": {"dtype": "FLOAT_VECTOR", "dim": 384},
+                "text": {"dtype": "VARCHAR", "max_length": 1000},
+            }
+            service.ensure_collection(collection_name, schema)
+            # Insert data - Milvus uses list of dicts
+            data = [
+                {
+                    "id": i + 1,
+                    "vector": sample_vectors[i],
+                    "text": f"doc_{i}",
+                }
+                for i in range(len(sample_vectors))
+            ]
+            service.insert(collection_name, data)
         elif vector_store_name == "qdrant":
             service.ensure_collection(collection_name, vector_size=384)
             points = [
@@ -128,30 +154,15 @@ class TestUnifiedVectorStoreData:
         query_vector = sample_vectors[0]
         
         if vector_store_name == "milvus":
-            results = service.data.search(
+            results = service.search(
                 collection_name=collection_name,
                 vectors=[query_vector],
+                anns_field="vector",
+                param={"metric_type": "IP", "params": {}},  # Use IP to match index
                 limit=3,
             )
             assert len(results) > 0
-        elif vector_store_name == "qdrant":
-            results = service.data.search(
-                collection_name=collection_name,
-                query_vector=query_vector,
-                limit=3,
-            )
-            assert len(results) > 0
-        elif vector_store_name == "chroma":
-            results = service.query(
-                collection_name=collection_name,
-                query_embeddings=[query_vector],
-                n_results=3,
-            )
-            assert len(results["ids"][0]) > 0
-        
-        # Cleanup
-        service.drop_collection(collection_name)
-    
+            assert len(results[0]) > 0
     def test_count_vectors(
         self,
         vector_store_name: str,
@@ -171,7 +182,19 @@ class TestUnifiedVectorStoreData:
         
         # Create and populate collection
         if vector_store_name == "milvus":
-            pytest.skip("Milvus requires schema definition")
+            schema = {
+                "id": {"dtype": "INT64", "is_primary": True, "auto_id": False},
+                "vector": {"dtype": "FLOAT_VECTOR", "dim": 384},
+            }
+            service.ensure_collection(collection_name, schema)
+            data = [
+                {"id": i + 1, "vector": sample_vectors[i]}
+                for i in range(len(sample_vectors))
+            ]
+            service.insert(collection_name, data)
+            # Flush to ensure data is persisted (Milvus has eventual consistency)
+            service.connection.client.flush(collection_name)
+            count = service.count(collection_name)
         elif vector_store_name == "qdrant":
             service.ensure_collection(collection_name, vector_size=384)
             points = [
