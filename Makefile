@@ -58,37 +58,61 @@ fix-imports: ## Fix src. imports to rag_toolkit.
 	python scripts/fix_imports.py --root=src/rag-toolkit
 
 # Docker targets
-docker-milvus: ## Start Milvus in Docker
-	docker run -d --name milvus-standalone \
-		-p 19530:19530 -p 9091:9091 \
-		-v $${PWD}/volumes/milvus:/var/lib/milvus \
-		milvusdb/milvus:latest
+docker-up: ## Start all services (Milvus, Qdrant, Ollama)
+	./docker/docker.sh up all
 
-docker-milvus-stop: ## Stop Milvus container
-	docker stop milvus-standalone
-	docker rm milvus-standalone
+docker-up-milvus: ## Start Milvus only
+	./docker/docker.sh up milvus
 
-docker-ollama: ## Start Ollama in Docker
-	docker run -d --name ollama \
-		-p 11434:11434 \
-		-v $${PWD}/volumes/ollama:/root/.ollama \
-		ollama/ollama:latest
+docker-up-qdrant: ## Start Qdrant only
+	./docker/docker.sh up qdrant
 
-docker-ollama-stop: ## Stop Ollama container
-	docker stop ollama
-	docker rm ollama
+docker-down: ## Stop all services
+	./docker/docker.sh down all
+
+docker-down-milvus: ## Stop Milvus
+	./docker/docker.sh down milvus
+
+docker-down-qdrant: ## Stop Qdrant
+	./docker/docker.sh down qdrant
+
+docker-restart: ## Restart all services
+	./docker/docker.sh restart all
+
+docker-logs: ## View logs from all services
+	./docker/docker.sh logs all
+
+docker-ps: ## Show running services
+	./docker/docker.sh ps
+
+docker-health: ## Check health of all services
+	./docker/docker.sh health
+
+docker-clean: ## Stop and remove all data (dangerous!)
+	./docker/docker.sh clean all
+
+docker-pull-models: ## Pull Ollama models
+	./docker/docker.sh pull-models
 
 # Development workflows
-dev-setup: dev docker-milvus docker-ollama ## Complete development setup
+dev-setup: dev docker-up docker-pull-models ## Complete development setup
+	@echo ""
 	@echo "✅ Development environment ready!"
-	@echo "   - Milvus running on http://localhost:19530"
-	@echo "   - Ollama running on http://localhost:11434"
+	@echo "   - Milvus:  http://localhost:19530 (UI: http://localhost:9091)"
+	@echo "   - Qdrant:  http://localhost:6333 (Dashboard: http://localhost:6333/dashboard)"
+	@echo "   - Ollama:  http://localhost:11434"
 	@echo ""
 	@echo "Next steps:"
-	@echo "   1. Pull models: docker exec ollama ollama pull nomic-embed-text"
-	@echo "   2. Pull LLM: docker exec ollama ollama pull llama3.2"
-	@echo "   3. Run tests: make test"
-	@echo "   4. Try example: python examples/quickstart.py"
+	@echo "   1. Run tests: make test"
+	@echo "   2. Try examples: python examples/quickstart.py"
+	@echo "   3. Check docs: make docs-serve"
 
-dev-teardown: docker-milvus-stop docker-ollama-stop ## Stop all development services
+dev-teardown: docker-down ## Stop all development services
 	@echo "✅ Development services stopped"
+
+# Integration tests with Docker
+test-integration: docker-up ## Run integration tests
+	@echo "Waiting for services to be ready..."
+	@sleep 10
+	pytest tests/integration -v -m integration || true
+	$(MAKE) docker-down

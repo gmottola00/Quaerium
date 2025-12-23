@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  qdrant:
+    container_name: qdrant
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"  # HTTP API
+      - "6334:6334"  # gRPC API
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/qdrant:/qdrant/storage
+    environment:
+      - QDRANT__LOG_LEVEL=INFO
+      # Optional: Enable authentication
+      # - QDRANT__SERVICE__API_KEY=${QDRANT_API_KEY:-}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+networks:
+  default:
+    name: qdrant
