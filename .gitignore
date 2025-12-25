@@ -44,6 +44,11 @@ htmlcov/
 .tox/
 .nox/
 
+# Benchmarking
+.benchmarks/
+benchmark_report.html
+chroma_benchmark_data/
+
 # Type checking
 .mypy_cache/
 .dmypy.json

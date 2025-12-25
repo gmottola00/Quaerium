@@ -259,6 +259,18 @@ ruff check src/rag_toolkit
 black src/rag_toolkit --check
 ```
 
+### Performance Benchmarks
+
+```bash
+# Run vector store benchmarks
+make benchmark
+
+# Generate HTML report
+make benchmark-report
+```
+
+See [tests/benchmarks/README.md](tests/benchmarks/README.md) for detailed benchmark documentation.
+
 ---
 
 ## 📖 Documentation

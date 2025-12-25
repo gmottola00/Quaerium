@@ -46,6 +46,12 @@ rag-toolkit Documentation
 
         Real-world examples showing how to build RAG applications with rag-toolkit.
 
+    .. grid-item-card:: ⚡ Benchmarks
+        :link: benchmarks
+        :link-type: doc
+
+        Performance benchmarks comparing Milvus, Qdrant, and ChromaDB implementations.
+
 Features
 --------
 
@@ -160,6 +166,8 @@ Table of Contents
    :caption: Development
 
    contributing
+   benchmarks
+   benchmark_results
    changelog
    roadmap
 

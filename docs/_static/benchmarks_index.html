@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark Results - RAG Toolkit</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2.5em;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        .button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .note {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 RAG Toolkit Benchmarks</h1>
+        <p>
+            Performance comparison of Milvus, Qdrant, and ChromaDB across 30 benchmark tests.
+        </p>
+        
+        <a href="benchmark_report.html" class="button" target="_blank">📊 View Benchmark Results</a>
+        
+        <div class="note">
+            <h3>📝 How to View Results</h3>
+            <p>
+                The benchmark report is an interactive HTML file. If clicking the button above doesn't work:
+            </p>
+            <ol style="line-height: 1.8;">
+                <li>Navigate to: <code>docs/_build/html/_static/</code></li>
+                <li>Open <code>benchmark_report.html</code> directly in your browser</li>
+            </ol>
+            <p style="margin-top: 20px;">
+                <strong>Or generate fresh data:</strong>
+            </p>
+            <ol style="line-height: 1.8;">
+                <li>Run benchmarks: <code>make benchmark</code></li>
+                <li>Generate report: <code>make benchmark-report</code></li>
+                <li>Update docs: <code>make benchmark-docs</code></li>
+            </ol>
+            <p style="margin-top: 20px;">
+                <strong>Documentation:</strong> See <a href="../benchmarks.html" style="color: white;">Benchmark Guide</a> for details.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

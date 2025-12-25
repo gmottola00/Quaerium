@@ -38,6 +38,21 @@ test-qdrant: ## Run Qdrant tests only
 test-chroma: ## Run ChromaDB tests only
 	uv run pytest tests/test_infra/test_vectorstores/ -k chroma -v
 
+benchmark: ## Run performance benchmarks
+	uv run pytest tests/benchmarks/ --benchmark-only --benchmark-autosave
+
+benchmark-compare: ## Compare current benchmarks with last run
+	uv run pytest tests/benchmarks/ --benchmark-only --benchmark-compare
+
+benchmark-report: ## Generate HTML report from benchmarks
+	@uv run python scripts/generate_benchmark_report.py
+
+benchmark-docs: ## Update benchmark report in documentation
+	@bash scripts/update_benchmark_docs.sh
+
+benchmark-clean: ## Remove benchmark results
+	rm -rf .benchmarks/ benchmark_report.html
+
 lint: ## Run linting (ruff)
 	uv run ruff check src/rag_toolkit tests
 
