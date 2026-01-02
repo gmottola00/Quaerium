@@ -24,7 +24,7 @@ The future development plan for rag-toolkit.
 
 **Improvements**
 - [X] Unified vector store testing suite
-- [ ] Performance benchmarks across stores
+- [X] Performance benchmarks across stores
 - [ ] Migration tools between vector stores
 - [ ] Vector store selection guide
 

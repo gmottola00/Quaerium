@@ -52,6 +52,12 @@ rag-toolkit Documentation
 
         Performance benchmarks comparing Milvus, Qdrant, and ChromaDB implementations.
 
+    .. grid-item-card:: 🔄 Migration Tools
+        :link: migration
+        :link-type: doc
+
+        Tools to migrate vector data between different vector stores with validation.
+
 Features
 --------
 
@@ -153,6 +159,7 @@ Table of Contents
    :caption: Development
 
    contributing
+   migration
    benchmarks
    benchmark_results
    changelog
