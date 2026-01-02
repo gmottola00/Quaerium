@@ -5,8 +5,8 @@ The RAG Toolkit includes a comprehensive benchmark suite to measure and compare 
 ```{note}
 **View Latest Results**: 
 
-- [Interactive Benchmark Report](_static/benchmark_report.html) - Full benchmark data with charts
-- [Benchmark Landing Page](_static/benchmarks_index.html) - Introduction and instructions
+- [Interactive Benchmark Report](../_static/benchmark_report.html) - Full benchmark data with charts
+- [Benchmark Landing Page](../_static/benchmarks_index.html) - Introduction and instructions
 
 *Note: For local viewing, you may need to open the HTML files directly from `docs/_build/html/_static/`*
 ```
@@ -93,7 +93,7 @@ The report will be saved to `benchmark_report.html` at the project root with:
 Alternatively, add a link in your documentation:
 
 ```markdown
-View the latest [benchmark results](_static/benchmark_report.html).
+View the latest [benchmark results](../_static/benchmark_report.html).
 ```
 
 ### Compare Results

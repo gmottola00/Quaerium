@@ -106,14 +106,50 @@ Not applicable - initial release.
 
 ## [Unreleased]
 
-### Planned Features
-- Additional vector store implementations (Pinecone, Qdrant, Weaviate)
+### Added
+
+#### Vector Store Integrations (2025-12-23 to 2025-12-26)
+- **Qdrant Integration**: Full implementation with connection management, collection operations, and hybrid search
+- **ChromaDB Integration**: Complete support for local and client-server deployments
+- **Unified Testing Framework**: Comprehensive test suite for all vector store implementations
+- **Docker Compose Setup**: Development environment with Milvus and Qdrant containers
+- **Benchmark Framework**: Performance comparison tool across vector stores (Milvus, Qdrant, ChromaDB)
+  - Query latency measurement
+  - Indexing throughput analysis
+  - Memory usage profiling
+  - HTML report generation
+
+#### Migration Tools (2026-01-02)
+- **VectorStoreMigrator**: Production-ready migration engine for vector data transfers across stores (Milvus, Qdrant, ChromaDB)
+- **Advanced Features**: Filtered migration, dry-run mode, retry logic with exponential backoff
+- **Models & Exceptions**: Complete migration lifecycle support with validation and error handling
+- **Documentation**: Comprehensive guide with production examples and roadmap
+- **Test Coverage**: 60 tests (100% pass rate)
+
+### Changed
+- **Documentation**: Updated roadmap reflecting completed vector store integrations
+- **Infrastructure**: Enhanced Docker setup for local development and testing
+
+### Planned Features (Next Releases)
+
+#### Phase 2 Priority 2
+- **Incremental Migration**: Checkpoint-based resume capability for large datasets
+- **Schema Mapping**: Field transformation and mapping between different vector stores
+
+#### Phase 3
+- **CLI Tool**: Command-line interface with YAML configuration support
+- **Parallel Migration**: Multi-threaded/multi-process batch processing
+- **Metrics & Observability**: Prometheus metrics and OpenTelemetry tracing
+
+#### Future Enhancements
 - Enhanced document parsing with better table extraction
 - Query expansion strategies
 - Caching layer for embeddings and LLM responses
 - Async support for all I/O operations
 - Evaluation framework for RAG quality metrics
-- Examples for production deployments (Docker, Kubernetes)
+- Examples for production deployments (Kubernetes, cloud platforms)
+- Zero-downtime migration with dual-write pattern
+- Data quality validation (embedding drift detection)
 
 ---
 

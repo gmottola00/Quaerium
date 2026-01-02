@@ -132,15 +132,15 @@ Table of Contents
    :maxdepth: 2
    :caption: Getting Started
 
-   installation
-   quickstart
-   architecture
+   getting_started/installation
+   getting_started/quickstart
+   getting_started/architecture
 
 .. toctree::
    :maxdepth: 2
    :caption: User Guide
 
-   user_guide/index
+   guides/index
 
 .. toctree::
    :maxdepth: 2
@@ -156,14 +156,19 @@ Table of Contents
 
 .. toctree::
    :maxdepth: 1
+   :caption: Tools
+
+   tools/migration
+   tools/benchmarks
+   tools/benchmark_results
+
+.. toctree::
+   :maxdepth: 1
    :caption: Development
 
-   contributing
-   migration
-   benchmarks
-   benchmark_results
-   changelog
-   roadmap
+   development/contributing
+   development/changelog
+   development/roadmap
 
 Indices and tables
 ==================
