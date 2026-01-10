@@ -1,20 +1,51 @@
-# Custom Vector Store Implementation
+# :material-database-cog: Custom Vector Store Implementation
 
-Learn how to implement your own vector store by following the `VectorStoreClient` protocol. This example shows a complete implementation using ChromaDB.
+!!! info "Build Your Own Storage Backend"
+    Learn how to implement your own vector store by following the `VectorStoreClient` protocol. This example shows a complete implementation using ChromaDB.
 
-## Why Custom Vector Stores?
+---
 
-While rag-toolkit includes Milvus by default, you might want to:
-- Use a different vector database (Pinecone, Qdrant, ChromaDB, Weaviate)
-- Integrate with existing infrastructure
-- Implement custom search logic
-- Add specialized features
+## :material-help-circle: Why Custom Vector Stores?
 
-## The VectorStoreClient Protocol
+!!! question "When to Build Custom Stores"
+    While rag-toolkit includes Milvus by default, you might want to:
 
-All vector stores must implement this protocol:
+<div class="grid cards" markdown>
 
-```python
+-   :material-database: **Different Database**
+
+    ---
+
+    Use Pinecone, Qdrant, ChromaDB, Weaviate
+
+-   :material-server-network: **Existing Infrastructure**
+
+    ---
+
+    Integrate with your current systems
+
+-   :material-magnify-plus: **Custom Logic**
+
+    ---
+
+    Implement specialized search features
+
+-   :material-feature-search: **Specialized Features**
+
+    ---
+
+    Add domain-specific capabilities
+
+</div>
+
+---
+
+## :material-api: The VectorStoreClient Protocol
+
+!!! info "Protocol Definition"
+    All vector stores must implement this protocol for compatibility.
+
+```python title="protocol.py" linenums="1" hl_lines="1-3 6 12-17 19-24 26-31 33-38"
 from typing import Protocol, runtime_checkable
 from rag_toolkit.core.types import SearchResult
 
@@ -58,11 +89,14 @@ class VectorStoreClient(Protocol):
         ...
 ```
 
-## Complete ChromaDB Implementation
+---
 
-Here's a full-featured implementation using ChromaDB:
+## :material-code-braces: Complete ChromaDB Implementation
 
-```python
+!!! example "Full-Featured Example"
+    Here's a complete implementation using ChromaDB.
+
+```python title="chromadb_store.py" linenums="1" hl_lines="1-3 7-11 14-23"
 import uuid
 from typing import Optional
 import chromadb

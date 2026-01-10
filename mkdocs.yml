@@ -1,0 +1,265 @@
+site_name: RAG Toolkit
+site_description: Production-ready RAG library with multi-vectorstore support and Protocol-based architecture
+site_author: Gianmarco Mottola
+site_url: https://gmottola00.github.io/rag-toolkit/
+
+repo_name: gmottola00/rag-toolkit
+repo_url: https://github.com/gmottola00/rag-toolkit
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2025-2026 Gianmarco Mottola
+
+theme:
+  name: material
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  font:
+    text: Inter
+    code: Fira Code
+  
+  features:
+    # Navigation
+    - navigation.instant        # Fast page loading
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking       # Update URL with active anchor
+    - navigation.tabs           # Top-level sections as tabs
+    - navigation.tabs.sticky    # Tabs always visible
+    - navigation.sections       # Section headers in sidebar
+    - navigation.expand         # Expand all sections by default
+    - navigation.path           # Breadcrumbs
+    - navigation.indexes        # Section index pages
+    - navigation.top            # Back-to-top button
+    - navigation.footer         # Previous/Next footer
+    
+    # Search
+    - search.suggest            # Search suggestions
+    - search.highlight          # Highlight search terms
+    - search.share              # Share search results
+    
+    # Table of contents
+    - toc.follow                # TOC follows scroll
+    - toc.integrate             # TOC in navigation
+    
+    # Content
+    - content.code.copy         # Copy code button
+    - content.code.annotate     # Code annotations
+    - content.tabs.link         # Link content tabs
+    - content.tooltips          # Improved tooltips
+    
+    # Header
+    - header.autohide           # Hide header on scroll
+  
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+    annotation: material/plus-circle
+  
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/gmottola00/rag-toolkit
+      name: GitHub Repository
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/rag-toolkit/
+      name: PyPI Package
+  
+  analytics:
+    provider: google
+    property: !ENV [GOOGLE_ANALYTICS_KEY, ""]
+  
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+  - https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js
+
+plugins:
+  - search:
+      lang: en
+      separator: '[\s\-,:!=\[\]()"/]+|(?!\b)(?=[A-Z][a-z])|\.(?!\d)|&[lg]t;'
+  
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+  
+  - glightbox:
+      touchNavigation: true
+      loop: false
+      effect: zoom
+      slide_effect: slide
+      width: 100%
+      height: auto
+      zoomable: true
+      draggable: true
+      skip_classes:
+        - custom-skip-class-name
+      auto_caption: false
+      caption_position: bottom
+  
+  - minify:
+      minify_html: true
+      minify_js: true
+      minify_css: true
+      htmlmin_opts:
+        remove_comments: true
+      cache_safe: true
+  
+  - mkdocstrings:
+      enabled: true
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            separate_signature: true
+            show_signature_annotations: true
+            annotations_path: brief
+            line_length: 80
+            members_order: source
+            group_by_category: true
+            show_category_heading: true
+            show_if_no_docstring: false
+            inherited_members: false
+            filters:
+              - "!^_"  # Exclude private members
+            heading_level: 2
+
+markdown_extensions:
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: Anchor link to this section
+      toc_depth: 3
+  
+  # PyMdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      auto_title: true
+      linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.critic
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: gmottola00
+      repo: rag-toolkit
+
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+    - getting_started/index.md
+    - Installation: getting_started/installation.md
+    - Quick Start: getting_started/quickstart.md
+    - Architecture: getting_started/architecture.md
+  
+  - User Guide:
+    - guides/index.md
+    - Core Concepts: guides/core_concepts.md
+    - Protocols: guides/protocols.md
+    - Components:
+      - Chunking: guides/chunking.md
+      - Embeddings: guides/embeddings.md
+      - LLMs: guides/llms.md
+      - Vector Stores: guides/vector_stores.md
+      - Reranking: guides/reranking.md
+    - RAG Pipeline: guides/rag_pipeline.md
+  
+  - Examples:
+    - examples/index.md
+    - Basic RAG: examples/basic_rag.md
+    - Advanced Pipeline: examples/advanced_pipeline.md
+    - Custom Vector Store: examples/custom_vectorstore.md
+    - Hybrid Search: examples/hybrid_search.md
+    - Production Setup: examples/production_setup.md
+  
+  - Tools:
+    - Migration: tools/migration.md
+    - Benchmarks: tools/benchmarks.md
+    - Benchmark Results: tools/benchmark_results.md
+  
+  - API Reference:
+    - api/index.md
+    - Core:
+      - Protocols: api/core/protocols.md
+      - Types: api/core/types.md
+    - RAG Pipeline: api/rag/pipeline.md
+    - Migration: api/migration/migrator.md
+  
+  - Development:
+    - Contributing: development/contributing.md
+    - Changelog: development/changelog.md
+    - Roadmap: development/roadmap.md
+
+watch:
+  - src/rag_toolkit
+  - docs

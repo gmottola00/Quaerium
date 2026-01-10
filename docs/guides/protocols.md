@@ -1,48 +1,78 @@
-# Protocols Guide
+# :material-protocol: Protocols Guide
 
-rag-toolkit uses Python Protocols for its core abstractions. This guide explains what protocols are and how to use them effectively.
+RAG Toolkit uses Python Protocols for maximum flexibility and type safety. This guide explains protocols and how to leverage them effectively.
 
-## What Are Protocols?
+---
 
-Protocols define interfaces using structural typing (duck typing) rather than inheritance.
+## :material-help-circle: What Are Protocols?
 
-### Traditional Approach
+!!! abstract "Structural Typing (Duck Typing)"
+    Protocols define interfaces using **structural typing** rather than inheritance—if it walks like a duck and quacks like a duck, it's a duck!
 
-```python
-from abc import ABC, abstractmethod
+### :material-close-circle: Traditional Approach
 
-class VectorStore(ABC):
-    @abstractmethod
-    def search(self, query: list[float]) -> list:
-        pass
+!!! failure "Inheritance-Based"
+    ```python
+    from abc import ABC, abstractmethod
+    
+    class VectorStore(ABC):
+        @abstractmethod
+        def search(self, query: list[float]) -> list:
+            pass
+    
+    class MyStore(VectorStore):  # Must inherit ❌
+        def search(self, query: list[float]) -> list:
+            return []
+    ```
+    
+    **Problems:**
+    - Requires inheritance
+    - Tight coupling
+    - Difficult to mock
+    - Limited flexibility
 
-class MyStore(VectorStore):  # Must inherit
-    def search(self, query: list[float]) -> list:
-        return []
-```
+### :material-check-circle: Protocol Approach
 
-### Protocol Approach
+!!! success "Structural Typing"
+    ```python
+    from typing import Protocol, runtime_checkable
+    
+    @runtime_checkable
+    class VectorStoreClient(Protocol):
+        def search(self, query: list[float]) -> list: ...
+    
+    class MyStore:  # No inheritance! ✓
+        def search(self, query: list[float]) -> list:
+            return []
+    
+    # Works! MyStore matches the protocol structure
+    store: VectorStoreClient = MyStore()
+    ```
+    
+    **Benefits:**
+    - :material-puzzle-outline: No inheritance required
+    - :material-duck: Duck typing with type safety
+    - :material-test-tube: Easy mocking for tests
+    - :material-swap-horizontal: Flexible implementations
 
-```python
-from typing import Protocol, runtime_checkable
+!!! tip "Runtime Checking"
+    The `@runtime_checkable` decorator enables `isinstance()` checks:
+    ```python
+    assert isinstance(MyStore(), VectorStoreClient)  # ✓ True
+    ```
 
-@runtime_checkable
-class VectorStoreClient(Protocol):
-    def search(self, query: list[float]) -> list: ...
+---
 
-class MyStore:  # No inheritance!
-    def search(self, query: list[float]) -> list:
-        return []
+## :material-puzzle: Core Protocols
 
-# Works! MyStore matches the protocol
-store: VectorStoreClient = MyStore()
-```
+!!! info "The Three Pillars"
+    RAG Toolkit defines three core protocols that form the foundation of the system.
 
-## Core Protocols
+### :material-vector-polyline: EmbeddingClient
 
-### EmbeddingClient
+!!! abstract "Text-to-Vector Transformation"
 
-```python
+```python title="core/embedding/base.py" linenums="1" hl_lines="2 5 21"
 @runtime_checkable
 class EmbeddingClient(Protocol):
     """Protocol for text embedding models."""
@@ -83,6 +113,25 @@ class EmbeddingClient(Protocol):
         """
         ...
 ```
+
+!!! example "Implementation Example"
+    ```python
+    class MyEmbedding:
+        def embed(self, text: str) -> list[float]:
+            # Your embedding logic
+            return [0.1, 0.2, 0.3, ...]
+        
+        def embed_batch(self, texts: list[str]) -> list[list[float]]:
+            # Batch processing
+            return [self.embed(t) for t in texts]
+    
+    # Works with RAG Pipeline! ✨
+    pipeline = RagPipeline(
+        embedding_client=MyEmbedding(),
+        llm_client=llm,
+        vector_store=store,
+    )
+    ```
 
 ### LLMClient
 

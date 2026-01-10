@@ -1,51 +1,113 @@
-# Quick Start
+# :material-rocket-launch: Quick Start
 
-Get up and running with rag-toolkit in less than 5 minutes!
+Build your first RAG application with RAG Toolkit in less than 5 minutes!
 
-## Prerequisites
+---
 
-Before starting, ensure you have:
+## :material-checkbox-marked-circle-outline: Prerequisites
 
-- Python 3.11+ installed
-- pip package manager
-- Docker (for running Milvus)
+!!! info "Before You Begin"
+    Ensure you have the following installed:
 
-## Step 1: Installation
+<div class="grid cards" markdown>
 
-Install rag-toolkit with Ollama support:
+- :material-language-python: **Python 3.11+**
 
-```bash
-pip install rag-toolkit[ollama]
-```
+    ---
 
-## Step 2: Start Services
+    Download from [python.org](https://www.python.org/downloads/)
 
-### Start Milvus (Vector Store)
+- :material-package-variant: **pip**
 
-```bash
-# Using docker-compose
-docker-compose up -d milvus
+    ---
 
-# Or using the Makefile
-make docker-milvus
-```
+    Python package manager (included with Python)
 
-### Start Ollama (Optional)
+- :material-docker: **Docker**
 
-```bash
-# Install Ollama
-curl -fsSL https://ollama.ai/install.sh | sh
+    ---
 
-# Pull required models
-ollama pull llama2
-ollama pull nomic-embed-text
-```
+    For running Milvus vector store
+    
+    [Get Docker](https://www.docker.com/get-started)
 
-## Step 3: Your First RAG Pipeline
+</div>
 
-Create a file `my_first_rag.py`:
+---
 
-```python
+## :material-numeric-1-box: Step 1: Installation
+
+!!! success "Install with Ollama Support"
+    ```bash
+    pip install rag-toolkit[ollama]
+    ```
+
+!!! tip "Alternative: OpenAI"
+    If you prefer using OpenAI models:
+    ```bash
+    pip install rag-toolkit[openai]
+    ```
+
+---
+
+## :material-numeric-2-box: Step 2: Start Services
+
+### :material-database: Start Milvus (Vector Store)
+
+!!! abstract "Vector Database Setup"
+    Milvus provides high-performance vector similarity search.
+
+=== "Docker Compose"
+    ```bash
+    docker-compose up -d milvus
+    ```
+
+=== "Makefile"
+    ```bash
+    make docker-milvus
+    ```
+
+!!! success "Verify Milvus is Running"
+    ```bash
+    docker ps | grep milvus
+    ```
+    
+    You should see the Milvus container running on port `19530`.
+
+### :material-robot-outline: Start Ollama (Optional)
+
+!!! info "Local LLM Server"
+    Ollama allows you to run large language models locally.
+
+=== "Install Ollama"
+    ```bash
+    curl -fsSL https://ollama.ai/install.sh | sh
+    ```
+
+=== "Pull Models"
+    ```bash
+    # Language model for text generation
+    ollama pull llama2
+    
+    # Embedding model for vector representation
+    ollama pull nomic-embed-text
+    ```
+
+!!! tip "Verify Ollama"
+    ```bash
+    ollama list
+    ```
+    
+    You should see `llama2` and `nomic-embed-text` in the list.
+
+---
+
+## :material-numeric-3-box: Step 3: Your First RAG Pipeline
+
+!!! example "Create Your First Application"
+    Create a file `my_first_rag.py`:
+
+```python title="my_first_rag.py" linenums="1" hl_lines="7-9 13-15 19-21 26 36"
 from rag_toolkit import RagPipeline
 from rag_toolkit.infra.embedding.ollama import OllamaEmbedding
 from rag_toolkit.infra.llm.ollama import OllamaLLMClient
@@ -95,28 +157,46 @@ for i, source in enumerate(response.sources, 1):
     print(f"  {i}. {source[:100]}...")
 ```
 
-Run it:
+!!! success "Run Your Application"
+    ```bash
+    python my_first_rag.py
+    ```
 
-```bash
-python my_first_rag.py
-```
+!!! quote "Expected Output"
+    ```
+    📚 Indexing documents...
+    🔍 Querying the system...
+    
+    Answer: RAG stands for Retrieval-Augmented Generation, which is a 
+    technique that combines information retrieval with text generation...
+    
+    Sources used: 2
+      1. RAG stands for Retrieval-Augmented Generation. It's a technique...
+      2. rag-toolkit is a Python library that makes it easy to build...
+    ```
+---
 
-## Step 4: Understanding the Code
+## :material-numeric-4-box: Step 4: Understanding the Code
 
-Let's break down what's happening:
+!!! info "Code Breakdown"
+    Let's understand what each part does:
 
 ### 1. Component Initialization
 
-```python
+```python hl_lines="2-4"
+# Initialize embedding model
 embedding = OllamaEmbedding(model="nomic-embed-text")
 llm = OllamaLLMClient(model="llama2")
 vector_store = MilvusVectorStore(collection_name="quickstart_docs")
 ```
 
-We create three components:
-- **Embedding**: Converts text to vectors
-- **LLM**: Generates responses
-- **Vector Store**: Stores and retrieves embeddings
+We create three core components:
+
+| Component | Purpose | Provider |
+|-----------|---------|----------|
+| **Embedding** | Converts text to vectors | Ollama (nomic-embed-text) |
+| **LLM** | Generates natural language responses | Ollama (llama2) |
+| **Vector Store** | Stores and retrieves embeddings | Milvus |
 
 ### 2. Pipeline Creation
 
@@ -128,7 +208,10 @@ pipeline = RagPipeline(
 )
 ```
 
-The pipeline orchestrates all components.
+The `RagPipeline` orchestrates all components through **dependency injection**.
+
+!!! tip "Protocol-Based Design"
+    Any class implementing the protocol can be used—no inheritance required!
 
 ### 3. Document Indexing
 
@@ -136,10 +219,14 @@ The pipeline orchestrates all components.
 pipeline.index_documents(documents)
 ```
 
-Documents are:
-1. Split into chunks
-2. Converted to embeddings
-3. Stored in the vector store
+```mermaid
+graph LR
+    A[Documents] --> B[Split into Chunks]
+    B --> C[Convert to Embeddings]
+    C --> D[Store in Vector DB]
+    style A fill:#e3f2fd
+    style D fill:#c8e6c9
+```
 
 ### 4. Querying
 
@@ -147,177 +234,295 @@ Documents are:
 response = pipeline.query("What is RAG?")
 ```
 
-When you query:
-1. Query is embedded
-2. Similar documents are retrieved
-3. LLM generates answer using context
-
-## Next Steps
-
-### Customize Your Pipeline
-
-```python
-# Use different models
-embedding = OllamaEmbedding(model="mxbai-embed-large")
-llm = OllamaLLMClient(model="mistral")
-
-# Configure retrieval
-response = pipeline.query(
-    "What is RAG?",
-    top_k=5,  # Retrieve top 5 documents
-    rerank=True,  # Use reranking
-)
-
-# Access metadata
-for source in response.sources:
-    print(f"Score: {source.score}")
-    print(f"Content: {source.text}")
+```mermaid
+graph LR
+    A[User Query] --> B[Embed Query]
+    B --> C[Search Similar Docs]
+    C --> D[Retrieve Context]
+    D --> E[Generate Response]
+    style A fill:#e3f2fd
+    style E fill:#c8e6c9
 ```
 
-### Add Document Parsing
+---
 
-```python
-from rag_toolkit.infra.parsers.pdf import PDFParser
+## :material-tune: Next Steps
 
-# Parse PDF files
-parser = PDFParser()
-documents = parser.parse("path/to/document.pdf")
+### :material-cog: Customize Your Pipeline
 
-# Index parsed content
-pipeline.index_documents(documents)
-```
+!!! example "Advanced Configuration"
+    ```python
+    # Use different models
+    embedding = OllamaEmbedding(model="mxbai-embed-large")
+    llm = OllamaLLMClient(model="mistral")
+    
+    # Configure retrieval parameters
+    response = pipeline.query(
+        "What is RAG?",
+        top_k=5,        # Retrieve top 5 documents
+        rerank=True,    # Use reranking for better results
+    )
+    
+    # Access metadata and scores
+    for source in response.sources:
+        print(f"Relevance Score: {source.score:.4f}")
+        print(f"Content: {source.text}")
+    ```
 
-### Use OpenAI Instead
+### :material-file-document-multiple: Add Document Parsing
 
-```python
-from rag_toolkit.infra.embedding.openai_embedding import OpenAIEmbedding
-from rag_toolkit.infra.llm.openai_llm import OpenAILLMClient
+!!! example "Parse PDF Files"
+    ```python
+    from rag_toolkit.infra.parsers.pdf import PDFParser
+    
+    # Parse PDF files
+    parser = PDFParser()
+    documents = parser.parse("path/to/document.pdf")
+    
+    # Index parsed content
+    pipeline.index_documents(documents)
+    ```
 
-embedding = OpenAIEmbedding(
-    api_key="your-api-key",
-    model="text-embedding-3-small"
-)
+### :material-openai: Use OpenAI Instead
 
-llm = OpenAILLMClient(
-    api_key="your-api-key",
-    model="gpt-4"
-)
-```
+!!! example "Cloud-Based Models"
+    ```python
+    from rag_toolkit.infra.embedding.openai_embedding import OpenAIEmbedding
+    from rag_toolkit.infra.llm.openai_llm import OpenAILLMClient
+    
+    embedding = OpenAIEmbedding(
+        api_key="your-api-key",
+        model="text-embedding-3-small"
+    )
+    
+    llm = OpenAILLMClient(
+        api_key="your-api-key",
+        model="gpt-4"
+    )
+    ```
 
-### Implement Custom Components
+### :material-puzzle: Implement Custom Components
 
-```python
-# Your own vector store
-class MyVectorStore:
-    def create_collection(self, name, dimension, **kwargs): ...
-    def insert(self, collection, vectors, texts, metadata): ...
-    def search(self, collection, query_vector, top_k): ...
+!!! success "Protocol-Based Flexibility"
+    ```python
+    # Your own vector store - no inheritance needed!
+    class MyVectorStore:
+        def create_collection(self, name, dimension, **kwargs): ...
+        def insert(self, collection, vectors, texts, metadata): ...
+        def search(self, collection, query_vector, top_k): ...
+    
+    # It just works! ✨
+    pipeline = RagPipeline(
+        embedding_client=embedding,
+        llm_client=llm,
+        vector_store=MyVectorStore(),  # Protocol-based design
+    )
+    ```
 
-# It just works! (Protocol-based design)
-pipeline = RagPipeline(
-    embedding_client=embedding,
-    llm_client=llm,
-    vector_store=MyVectorStore(),  # ✅ No inheritance needed
-)
-```
+---
 
-## Common Patterns
+## :material-school: Common Patterns
 
 ### Pattern 1: Multi-Document RAG
 
-```python
-# Index multiple sources
-pipeline.index_documents(
-    documents=pdf_docs,
-    metadata=[{"source": "manual.pdf"}]
-)
-
-pipeline.index_documents(
-    documents=web_docs,
-    metadata=[{"source": "website"}]
-)
-
-# Query with filtering
-response = pipeline.query(
-    "How to install?",
-    filters={"source": "manual.pdf"}
-)
-```
+!!! example "Multiple Data Sources"
+    ```python
+    # Index PDF documents
+    pipeline.index_documents(
+        documents=pdf_docs,
+        metadata=[{"source": "manual.pdf", "type": "documentation"}]
+    )
+    
+    # Index website content
+    pipeline.index_documents(
+        documents=web_docs,
+        metadata=[{"source": "website", "type": "web"}]
+    )
+    
+    # Query with filtering
+    response = pipeline.query(
+        "How to install?",
+        filters={"source": "manual.pdf"}  # Only search in PDF
+    )
+    ```
 
 ### Pattern 2: Conversation Memory
 
-```python
-# Maintain conversation history
-conversation = []
-
-while True:
-    query = input("You: ")
+!!! example "Contextual Conversations"
+    ```python
+    conversation = []
     
-    # Include conversation context
-    context = "\n".join(conversation[-5:])  # Last 5 turns
-    full_query = f"{context}\nUser: {query}"
-    
-    response = pipeline.query(full_query)
-    print(f"Assistant: {response.answer}")
-    
-    # Update history
-    conversation.append(f"User: {query}")
-    conversation.append(f"Assistant: {response.answer}")
-```
+    while True:
+        query = input("You: ")
+        if query.lower() in ['exit', 'quit']:
+            break
+        
+        # Include conversation history
+        context = "\n".join(conversation[-5:])  # Last 5 turns
+        full_query = f"{context}\nUser: {query}"
+        
+        response = pipeline.query(full_query)
+        print(f"Assistant: {response.answer}")
+        
+        # Update history
+        conversation.append(f"User: {query}")
+        conversation.append(f"Assistant: {response.answer}")
+    ```
 
 ### Pattern 3: Batch Processing
 
-```python
-queries = [
-    "What is RAG?",
-    "How do vector stores work?",
-    "What are embeddings?",
-]
+!!! example "Process Multiple Queries"
+    ```python
+    queries = [
+        "What is RAG?",
+        "How do vector stores work?",
+        "What are embeddings?",
+    ]
+    
+    # Process all queries
+    responses = [pipeline.query(q) for q in queries]
+    
+    # Display results
+    for q, r in zip(queries, responses):
+        print(f"Q: {q}")
+        print(f"A: {r.answer}\n")
+    ```
 
-responses = [pipeline.query(q) for q in queries]
+---
 
-for q, r in zip(queries, responses):
-    print(f"Q: {q}")
-    print(f"A: {r.answer}\n")
-```
+## :material-wrench: Troubleshooting
 
-## Troubleshooting
+!!! bug "Common Issues & Solutions"
 
-### "Connection refused" Error
+### :material-lan-disconnect: "Connection refused" Error
 
-Ensure Milvus is running:
-```bash
-docker ps | grep milvus
-```
+!!! failure "Problem"
+    ```
+    ConnectionRefusedError: [Errno 61] Connection refused
+    ```
 
-### "Model not found" Error
+!!! success "Solution"
+    Ensure Milvus is running:
+    ```bash
+    docker ps | grep milvus
+    ```
+    
+    If not running, start it:
+    ```bash
+    docker-compose up -d milvus
+    ```
 
-Pull the Ollama model:
-```bash
-ollama pull llama2
-```
+### :material-file-question: "Model not found" Error
 
-### Slow Performance
+!!! failure "Problem"
+    ```
+    Error: model 'llama2' not found
+    ```
 
-Use smaller models or batch processing:
-```python
-# Smaller embedding model
-embedding = OllamaEmbedding(model="all-minilm")
+!!! success "Solution"
+    Pull the Ollama model:
+    ```bash
+    ollama pull llama2
+    ollama pull nomic-embed-text
+    ```
+    
+    Verify installation:
+    ```bash
+    ollama list
+    ```
 
-# Smaller LLM
-llm = OllamaLLMClient(model="tinyllama")
-```
+### :material-speedometer-slow: Slow Performance
 
-## Learn More
+!!! failure "Problem"
+    Queries are taking too long to process.
 
-- [Core Concepts](user_guide/core_concepts.md) - Understand the architecture
-- [Protocols Guide](user_guide/protocols.md) - Learn about Protocol-based design
-- [Examples](examples/index.md) - See real-world applications
-- [API Reference](autoapi/index.html) - Complete API documentation
+!!! success "Solutions"
+    
+    === "Use Smaller Models"
+        ```python
+        # Smaller embedding model
+        embedding = OllamaEmbedding(model="all-minilm")
+        
+        # Smaller LLM
+        llm = OllamaLLMClient(model="tinyllama")
+        ```
+    
+    === "Reduce top_k"
+        ```python
+        # Retrieve fewer documents
+        response = pipeline.query("query", top_k=3)
+        ```
+    
+    === "Enable Batch Processing"
+        ```python
+        # Process documents in batches
+        vectors = embedding.embed_batch(texts)
+        ```
 
-## Getting Help
+---
 
-- 📖 [Documentation](https://gmottola00.github.io/rag-toolkit/)
-- 💬 [GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discussions)
-- 🐛 [Issue Tracker](https://github.com/gmottola00/rag-toolkit/issues)
-- 📧 Email: gianmarcomottola00@gmail.com
+## :material-book-open: Learn More
+
+<div class="grid cards" markdown>
+
+- :material-library: **Core Concepts**
+
+    ---
+
+    Understand the architecture and design principles
+
+    [:material-arrow-right: Learn](../guides/core_concepts.md)
+
+- :material-protocol: **Protocols Guide**
+
+    ---
+
+    Deep dive into protocol-based design
+
+    [:material-arrow-right: Read](../guides/protocols.md)
+
+- :material-application-brackets: **Examples**
+
+    ---
+
+    Explore real-world RAG applications
+
+    [:material-arrow-right: Browse](../examples/index.md)
+
+- :material-api: **API Reference**
+
+    ---
+
+    Complete API documentation
+
+    [:material-arrow-right: Explore](../api/index.md)
+
+</div>
+
+---
+
+## :material-lifebuoy: Getting Help
+
+!!! question "Need Assistance?"
+
+<div class="grid" markdown>
+
+- :material-book-open-page-variant: **[Documentation](https://gmottola00.github.io/rag-toolkit/)**  
+  Comprehensive guides and tutorials
+
+- :material-forum: **[GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discussions)**  
+  Ask questions and share ideas
+
+- :material-bug: **[Issue Tracker](https://github.com/gmottola00/rag-toolkit/issues)**  
+  Report bugs and request features
+
+- :material-email: **[Email Support](mailto:gianmarcomottola00@gmail.com)**  
+  Direct contact for enterprise inquiries
+
+</div>
+
+!!! tip "Quick Tips"
+    - Start with the [installation guide](installation.md) if you haven't already
+    - Check out [architecture overview](architecture.md) to understand the design
+    - Browse [examples](../examples/index.md) for inspiration
+    - Join our [community discussions](https://github.com/gmottola00/rag-toolkit/discussions)

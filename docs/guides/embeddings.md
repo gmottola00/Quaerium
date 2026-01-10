@@ -1,94 +1,176 @@
-# Embeddings
+# :material-vector-polyline: Embeddings
 
-Embeddings are the cornerstone of semantic search and RAG systems. This guide covers everything you need to know about working with embeddings in rag-toolkit.
+Embeddings are the cornerstone of semantic search and RAG systems. Master embeddings to build powerful, accurate retrieval systems.
 
-## What are Embeddings?
+---
 
-Embeddings are dense vector representations of text that capture semantic meaning. Similar texts have similar embeddings, enabling semantic search:
+## :material-help-circle: What are Embeddings?
+
+!!! abstract "Semantic Vector Representations"
+    Embeddings are **dense vector representations** of text that capture semantic meaning. Similar texts produce similar embeddings, enabling semantic search beyond keyword matching.
 
 ```python
-embed("dog") ≈ embed("puppy")      # High similarity
-embed("dog") ≠ embed("computer")    # Low similarity
+embed("dog") ≈ embed("puppy")       # High similarity score: 0.92
+embed("dog") ≠ embed("computer")    # Low similarity score: 0.15
 ```
 
-**Key Properties:**
-- **Dense vectors**: Typically 384-4096 dimensions
-- **Semantic similarity**: Similar meaning → similar vectors
-- **Language understanding**: Capture context, synonyms, relationships
-- **Efficient search**: Fast vector similarity operations
+### :material-star: Key Properties
 
-## Supported Embedding Providers
+<div class="grid cards" markdown>
 
-### OpenAI (Recommended)
+- :material-ruler: **Dense Vectors**
 
-OpenAI provides state-of-the-art embedding models with excellent quality and speed.
+    ---
 
-**Models:**
-- `text-embedding-3-small`: 1536 dimensions, fast, cost-effective
-- `text-embedding-3-large`: 3072 dimensions, highest quality
-- `text-embedding-ada-002`: 1536 dimensions, previous generation (still good)
+    Typically 384-4096 dimensions
+    
+    ```python
+    vector = embed("Hello")
+    len(vector)  # 768 dimensions
+    ```
+
+- :material-semantic-web: **Semantic Similarity**
+
+    ---
+
+    Similar meaning → similar vectors
+    
+    ```python
+    cosine_similarity(
+        embed("car"),
+        embed("automobile")
+    )  # 0.89
+    ```
+
+- :material-language: **Language Understanding**
+
+    ---
+
+    Captures context, synonyms, relationships
+    
+    - "bank" (financial) ≠ "bank" (river)
+    - Context-aware representations
+
+- :material-speedometer: **Efficient Search**
+
+    ---
+
+    Fast vector similarity operations
+    
+    - Millions of vectors in milliseconds
+    - Approximate nearest neighbor (ANN)
+
+</div>
+
+---
+
+## :material-server: Supported Embedding Providers
+
+!!! info "Choose Your Provider"
+
+### :material-openai: OpenAI (Recommended)
+
+!!! success "State-of-the-Art Quality"
+    OpenAI provides industry-leading embedding models with excellent quality and speed.
+
+**Available Models:**
+
+| Model | Dimensions | Cost (per 1M tokens) | Use Case |
+|-------|-----------|----------------------|----------|
+| `text-embedding-3-small` | 1536 | $0.02 | :material-speedometer: Fast, cost-effective |
+| `text-embedding-3-large` | 3072 | $0.13 | :material-star: Highest quality |
+| `text-embedding-ada-002` | 1536 | $0.10 | :material-check: Previous gen (still good) |
 
 **Installation:**
 
-```bash
+```bash title="Install OpenAI Support"
 pip install rag-toolkit[openai]
 export OPENAI_API_KEY="your-api-key"
 ```
 
 **Usage:**
 
-```python
-from rag_toolkit.infra.embedding import OpenAIEmbedding
+=== "Basic"
+    ```python
+    from rag_toolkit.infra.embedding import OpenAIEmbedding
+    
+    # Initialize
+    embedding = OpenAIEmbedding(
+        model="text-embedding-3-small",
+        api_key="your-api-key",  # Or use OPENAI_API_KEY env var
+    )
+    
+    # Embed single text
+    vector = await embedding.embed("Hello world")
+    print(f"Dimension: {len(vector)}")  # 1536
+    ```
 
-# Initialize
-embedding = OpenAIEmbedding(
-    model="text-embedding-3-small",  # or "text-embedding-3-large"
-    api_key="your-api-key",  # Or set OPENAI_API_KEY env var
-)
+=== "Batch Processing"
+    ```python
+    # Embed multiple texts (batched for efficiency)
+    vectors = await embedding.embed_batch([
+        "First document",
+        "Second document",
+        "Third document"
+    ])
+    print(f"Embedded {len(vectors)} documents")
+    ```
 
-# Embed single text
-vector = await embedding.embed("Hello world")
-print(f"Dimension: {len(vector)}")  # 1536
+=== "Advanced"
+    ```python
+    embedding = OpenAIEmbedding(
+        model="text-embedding-3-large",
+        api_key="your-api-key",
+        batch_size=100,      # Process 100 at a time
+        timeout=30.0,        # 30 second timeout
+        max_retries=3,       # Retry failed requests
+    )
+    ```
 
-# Embed multiple texts (batched)
-vectors = await embedding.embed_batch([
-    "First document",
-    "Second document",
-    "Third document"
-])
-print(f"Embedded {len(vectors)} documents")
-```
+!!! tip "Pricing (as of January 2026)"
+    - `text-embedding-3-small`: **$0.02 / 1M tokens** — Best value
+    - `text-embedding-3-large`: **$0.13 / 1M tokens** — Best quality
+    - `text-embedding-ada-002`: **$0.10 / 1M tokens** — Legacy
 
-**Pricing** (as of Dec 2024):
-- `text-embedding-3-small`: $0.02 / 1M tokens
-- `text-embedding-3-large`: $0.13 / 1M tokens
-- `text-embedding-ada-002`: $0.10 / 1M tokens
+### :material-server-security: Ollama (Local, Free)
 
-### Ollama (Local, Free)
-
-Run embedding models locally with Ollama for privacy and zero API costs.
+!!! success "Privacy & Cost-Free"
+    Run powerful embedding models locally with Ollama — perfect for privacy-focused deployments and zero API costs.
 
 **Popular Models:**
-- `nomic-embed-text`: 768 dimensions, excellent quality
-- `mxbai-embed-large`: 1024 dimensions, strong performance
-- `all-minilm`: 384 dimensions, fast and lightweight
+
+| Model | Dimensions | Speed | Quality | Size |
+|-------|-----------|-------|---------|------|
+| `nomic-embed-text` | 768 | :material-speedometer: Fast | :material-star::material-star::material-star::material-star: | 274MB |
+| `mxbai-embed-large` | 1024 | :material-speedometer-medium: Medium | :material-star::material-star::material-star::material-star::material-star-half: | 669MB |
+| `all-minilm` | 384 | :material-speedometer: Very fast | :material-star::material-star::material-star: | 46MB |
 
 **Installation:**
 
-```bash
-# Install Ollama
-curl -fsSL https://ollama.com/install.sh | sh
+=== "macOS/Linux"
+    ```bash
+    # Install Ollama
+    curl -fsSL https://ollama.com/install.sh | sh
+    
+    # Pull embedding model
+    ollama pull nomic-embed-text
+    
+    # Install RAG Toolkit with Ollama support
+    pip install rag-toolkit[ollama]
+    ```
 
-# Pull embedding model
-ollama pull nomic-embed-text
-
-# Install rag-toolkit with Ollama support
-pip install rag-toolkit[ollama]
-```
+=== "Docker"
+    ```bash
+    # Run Ollama in Docker
+    docker run -d -p 11434:11434 ollama/ollama
+    
+    # Pull model
+    docker exec ollama ollama pull nomic-embed-text
+    ```
 
 **Usage:**
 
-```python
+```python title="ollama_embedding.py" linenums="1" hl_lines="4-7"
 from rag_toolkit.infra.embedding import OllamaEmbedding
 
 # Initialize
@@ -111,11 +193,50 @@ vectors = await embedding.embed_batch([
 
 **Model Comparison:**
 
-| Model | Dimensions | Speed | Quality | Use Case |
-|-------|-----------|-------|---------|----------|
-| `nomic-embed-text` | 768 | Fast | Excellent | General purpose |
-| `mxbai-embed-large` | 1024 | Medium | Very good | High quality needs |
-| `all-minilm` | 384 | Very fast | Good | Speed critical |
+<div class="grid cards" markdown>
+
+- :material-star: **nomic-embed-text**
+
+    ---
+
+    768 dimensions | 274MB
+    
+    ```bash
+    ollama pull nomic-embed-text
+    ```
+    
+    **Best for**: General purpose, balanced quality/speed
+
+- :material-star-plus: **mxbai-embed-large**
+
+    ---
+
+    1024 dimensions | 669MB
+    
+    ```bash
+    ollama pull mxbai-embed-large
+    ```
+    
+    **Best for**: High quality requirements
+
+- :material-speedometer: **all-minilm**
+
+    ---
+
+    384 dimensions | 46MB
+    
+    ```bash
+    ollama pull all-minilm
+    ```
+    
+    **Best for**: Speed-critical applications, low memory
+
+</div>
+
+!!! tip "Choosing an Ollama Model"
+    - **General use**: `nomic-embed-text` — excellent balance
+    - **High quality**: `mxbai-embed-large` — best results
+    - **Fast & lightweight**: `all-minilm` — minimal resources
 
 ## Configuration
 

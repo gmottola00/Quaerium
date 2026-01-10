@@ -1,33 +1,72 @@
-# RAG Pipeline
+# :material-pipeline: RAG Pipeline
 
-The RAG (Retrieval-Augmented Generation) pipeline is the heart of rag-toolkit, orchestrating the entire process from document indexing to answering queries. This guide covers everything you need to build production-ready RAG systems.
+The RAG Pipeline is the **orchestration engine** of RAG Toolkit, coordinating the entire flow from document indexing to query answering.
 
-## Overview
+---
 
-A RAG pipeline combines three core components:
+## :material-information: Overview
 
-```{mermaid}
+!!! abstract "The Heart of RAG Toolkit"
+    A RAG pipeline combines three core components to deliver contextual, accurate answers.
+
+```mermaid
 graph LR
-    A[Documents] --> B[Embedding Client]
-    B --> C[Vector Store]
-    D[Query] --> B
+    A[📄 Documents] --> B[🔢 Embedding<br/>Client]
+    B --> C[💾 Vector<br/>Store]
+    D[💬 Query] --> B
     B --> C
-    C --> E[Retrieved Context]
-    E --> F[LLM Client]
+    C --> E[📚 Retrieved<br/>Context]
+    E --> F[🤖 LLM<br/>Client]
     D --> F
-    F --> G[Answer]
+    F --> G[✨ Answer]
+    
+    style A fill:#e3f2fd
+    style G fill:#c8e6c9
 ```
 
-**Components:**
-1. **Embedding Client**: Converts text to vectors
-2. **Vector Store**: Stores and searches embeddings
-3. **LLM Client**: Generates answers from context
+**The Three Pillars:**
 
-## Quick Start
+<div class="grid cards" markdown>
 
-### Basic Pipeline
+- :material-vector-polyline: **Embedding Client**
 
-```python
+    ---
+
+    Converts text to semantic vectors
+    
+    ```python
+    embedding.embed("text")
+    ```
+
+- :material-database: **Vector Store**
+
+    ---
+
+    Stores and searches embeddings
+    
+    ```python
+    store.search(vector, top_k=5)
+    ```
+
+- :material-robot: **LLM Client**
+
+    ---
+
+    Generates natural language answers
+    
+    ```python
+    llm.generate(prompt)
+    ```
+
+</div>
+
+---
+
+## :material-rocket-launch: Quick Start
+
+### :material-numeric-1-box: Basic Pipeline
+
+```python title="basic_pipeline.py" linenums="1" hl_lines="6-16"
 from rag_toolkit import RagPipeline
 from rag_toolkit.infra.embedding import OpenAIEmbedding
 from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
@@ -35,7 +74,9 @@ from rag_toolkit.infra.llm import OpenAILLM
 
 # Create pipeline
 pipeline = RagPipeline(
-    embedding_client=OpenAIEmbedding(model="text-embedding-3-small"),
+    embedding_client=OpenAIEmbedding(
+        model="text-embedding-3-small"
+    ),
     vector_store=MilvusVectorStore(
         collection_name="my_docs",
         embedding_client=OpenAIEmbedding(),

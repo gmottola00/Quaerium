@@ -1,102 +1,222 @@
-# Examples
+# :material-code-braces: Examples
 
-Real-world examples showing how to use rag-toolkit for various use cases.
+!!! quote "Real-World Applications"
+    Practical examples showing how to build production-ready RAG applications with rag-toolkit.
 
-## Available Examples
+---
 
-::::{grid} 2
-:gutter: 3
+## :material-star: Featured Examples
 
-:::{grid-item-card} Basic RAG
-:link: basic_rag
-:link-type: doc
+<div class="grid cards" markdown>
 
-Build your first RAG application with document indexing and querying.
-:::
+-   :material-book-open: **[Basic RAG](basic_rag.md)**
 
-:::{grid-item-card} Custom Vector Store
-:link: custom_vectorstore
-:link-type: doc
+    ---
 
-Implement a custom vector store using ChromaDB or other databases.
-:::
+    Build your first RAG application with document indexing and querying.
 
-:::{grid-item-card} Hybrid Search
-:link: hybrid_search
-:link-type: doc
+    [:octicons-arrow-right-24: Get Started](basic_rag.md)
 
-Combine vector search with keyword search for better results.
-:::
+-   :material-database-cog: **[Custom Vector Store](custom_vectorstore.md)**
 
-:::{grid-item-card} Advanced Pipeline
-:link: advanced_pipeline
-:link-type: doc
+    ---
 
-Build production-ready pipelines with reranking, query rewriting, and more.
-:::
+    Implement a custom vector store using ChromaDB or other databases.
 
-:::{grid-item-card} Production Setup
-:link: production_setup
-:link-type: doc
+    [:octicons-arrow-right-24: Learn More](custom_vectorstore.md)
 
-Deploy rag-toolkit in production with monitoring, scaling, and best practices.
-:::
+-   :material-magnify-expand: **[Hybrid Search](hybrid_search.md)**
 
-::::
+    ---
 
-## Example Categories
+    Combine vector search with keyword search for better results.
 
-### Getting Started
-- [Basic RAG](basic_rag.md) - Simple document Q&A
-- [PDF Processing](basic_rag.md#pdf-documents) - Parse and index PDF files
-- [Multiple Collections](basic_rag.md#multiple-collections) - Organize documents
+    [:octicons-arrow-right-24: Explore](hybrid_search.md)
 
-### Customization
-- [Custom Vector Store](custom_vectorstore.md) - Implement your own store
-- [Custom Embeddings](custom_vectorstore.md#custom-embeddings) - Use different models
-- [Custom LLMs](custom_vectorstore.md#custom-llms) - Integrate new providers
+-   :material-tune-vertical: **[Advanced Pipeline](advanced_pipeline.md)**
 
-### Advanced Features
-- [Hybrid Search](hybrid_search.md) - Vector + keyword search
-- [Query Rewriting](advanced_pipeline.md#query-rewriting) - Improve retrieval
-- [Reranking](advanced_pipeline.md#reranking) - Better result ordering
+    ---
 
-### Production
-- [Monitoring](production_setup.md#monitoring) - Track performance
-- [Scaling](production_setup.md#scaling) - Handle high traffic
-- [Caching](production_setup.md#caching) - Optimize performance
+    Build production-ready pipelines with reranking, query rewriting, and more.
 
-## Quick Links
+    [:octicons-arrow-right-24: Deep Dive](advanced_pipeline.md)
 
-```{toctree}
-:maxdepth: 2
+-   :material-server-network: **[Production Setup](production_setup.md)**
 
-basic_rag
-custom_vectorstore
-hybrid_search
-advanced_pipeline
-production_setup
-```
+    ---
 
-## Running Examples
+    Deploy rag-toolkit in production with monitoring, scaling, and best practices.
 
-All examples are available in the `examples/` directory:
+    [:octicons-arrow-right-24: Deploy](production_setup.md)
 
-```bash
-# Clone the repository
-git clone https://github.com/gmottola00/rag-toolkit.git
-cd rag-toolkit
+</div>
 
-# Install with examples dependencies
-pip install -e ".[all]"
+---
 
-# Run an example
-python examples/basic_rag.py
-```
+## :material-folder-open: Example Categories
 
-## Need Help?
+=== "🎯 Getting Started"
 
-- 📖 Check the [User Guide](../user_guide/index.md)
-- 🔍 See [API Reference](../autoapi/index.html)
-- 💬 Ask in [Discussions](https://github.com/gmottola00/rag-toolkit/discussions)
-- 🐛 Report issues on [GitHub](https://github.com/gmottola00/rag-toolkit/issues)
+    <div class="grid cards" markdown>
+
+    -   :material-rocket-launch: **[Basic RAG](basic_rag.md)**
+
+        ---
+
+        Simple document Q&A to get started
+
+    -   :material-file-pdf-box: **[PDF Processing](basic_rag.md#pdf-documents)**
+
+        ---
+
+        Parse and index PDF files
+
+    -   :material-folder-multiple: **[Multiple Collections](basic_rag.md#multiple-collections)**
+
+        ---
+
+        Organize documents efficiently
+
+    </div>
+
+=== "🎨 Customization"
+
+    <div class="grid cards" markdown>
+
+    -   :material-database: **[Custom Vector Store](custom_vectorstore.md)**
+
+        ---
+
+        Implement your own storage backend
+
+    -   :material-vector-polyline: **[Custom Embeddings](custom_vectorstore.md#custom-embeddings)**
+
+        ---
+
+        Use different embedding models
+
+    -   :material-robot: **[Custom LLMs](custom_vectorstore.md#custom-llms)**
+
+        ---
+
+        Integrate new LLM providers
+
+    </div>
+
+=== "⚡ Advanced Features"
+
+    <div class="grid cards" markdown>
+
+    -   :material-magnify-plus-outline: **[Hybrid Search](hybrid_search.md)**
+
+        ---
+
+        Vector + keyword search combination
+
+    -   :material-refresh: **[Query Rewriting](advanced_pipeline.md#query-rewriting)**
+
+        ---
+
+        Improve retrieval accuracy
+
+    -   :material-sort-ascending: **[Reranking](advanced_pipeline.md#reranking)**
+
+        ---
+
+        Better result ordering
+
+    </div>
+
+=== "🚀 Production"
+
+    <div class="grid cards" markdown>
+
+    -   :material-monitor-dashboard: **[Monitoring](production_setup.md#monitoring)**
+
+        ---
+
+        Track performance metrics
+
+    -   :material-chart-line: **[Scaling](production_setup.md#scaling)**
+
+        ---
+
+        Handle high traffic loads
+
+    -   :material-cached: **[Caching](production_setup.md#caching)**
+
+        ---
+
+        Optimize response times
+
+    </div>
+
+---
+
+## :material-run-fast: Running Examples
+
+!!! tip "Quick Start"
+    All examples are ready to run from the `examples/` directory.
+
+=== "Clone & Install"
+
+    ```bash title="setup.sh" linenums="1"
+    # Clone the repository
+    git clone https://github.com/gmottola00/rag-toolkit.git
+    cd rag-toolkit
+
+    # Install with all dependencies
+    pip install -e ".[all]"
+    ```
+
+=== "Run Example"
+
+    ```bash title="run_example.sh" linenums="1"
+    # Run basic RAG example
+    python examples/basic_rag.py
+
+    # Run with custom configuration
+    python examples/basic_rag.py --config my_config.yaml
+    ```
+
+=== "Jupyter Notebook"
+
+    ```bash title="jupyter_setup.sh" linenums="1"
+    # Install Jupyter
+    pip install jupyter
+
+    # Start notebook
+    jupyter notebook examples/
+    ```
+
+---
+
+## :material-help-circle: Need Help?
+
+<div class="grid cards" markdown>
+
+-   :material-book-open-variant: **[User Guide](../guides/index.md)**
+
+    ---
+
+    Comprehensive documentation and tutorials
+
+-   :material-api: **[API Reference](../api/index.md)**
+
+    ---
+
+    Detailed API documentation
+
+-   :material-forum: **[Discussions](https://github.com/gmottola00/rag-toolkit/discussions)**
+
+    ---
+
+    Ask questions and share ideas
+
+-   :material-bug: **[Report Issues](https://github.com/gmottola00/rag-toolkit/issues)**
+
+    ---
+
+    Found a bug? Let us know!
+
+</div>

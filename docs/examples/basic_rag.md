@@ -1,10 +1,16 @@
-# Basic RAG Example
+# :material-book-open: Basic RAG Example
 
-This example shows how to build a simple RAG application for document question-answering.
+!!! success "Your First RAG Application"
+    Learn how to build a simple RAG application for document question-answering in minutes.
 
-## Complete Example
+---
 
-```python
+## :material-rocket-launch: Complete Example
+
+!!! example "Full Working Code"
+    Copy and run this complete example to see RAG in action.
+
+```python title="basic_rag.py" linenums="1" hl_lines="19-22 28-33 38-43 48-62 65-70 75-82"
 """
 Basic RAG Pipeline Example
 ===========================
@@ -112,34 +118,54 @@ if __name__ == "__main__":
     main()
 ```
 
-## Step-by-Step Breakdown
+---
 
-### 1. Component Setup
+## :material-stairs: Step-by-Step Breakdown
 
-```python
-# Embedding: Converts text to vectors
-embedding = OllamaEmbedding(
-    model="nomic-embed-text",  # 768-dimensional embeddings
-    base_url="http://localhost:11434"
-)
+### :material-numeric-1-box: Component Setup
 
-# LLM: Generates responses
-llm = OllamaLLMClient(
-    model="llama2",  # or "mistral", "mixtral", etc.
-    base_url="http://localhost:11434"
-)
+!!! info "Initialize Core Components"
+    Set up the embedding model, LLM, and vector store.
 
-# Vector Store: Stores and searches embeddings
-vector_store = MilvusVectorStore(
-    collection_name="my_documents",
-    host="localhost",
-    port="19530"
-)
-```
+=== "Embedding"
 
-### 2. Pipeline Creation
+    ```python title="setup_embedding.py" linenums="1" hl_lines="2-5"
+    # Embedding: Converts text to vectors
+    embedding = OllamaEmbedding(
+        model="nomic-embed-text",  # 768-dimensional embeddings
+        base_url="http://localhost:11434"
+    )
+    ```
 
-```python
+=== "LLM"
+
+    ```python title="setup_llm.py" linenums="1" hl_lines="2-5"
+    # LLM: Generates responses
+    llm = OllamaLLMClient(
+        model="llama2",  # or "mistral", "mixtral", etc.
+        base_url="http://localhost:11434"
+    )
+    ```
+
+=== "Vector Store"
+
+    ```python title="setup_vectorstore.py" linenums="1" hl_lines="2-6"
+    # Vector Store: Stores and searches embeddings
+    vector_store = MilvusVectorStore(
+        collection_name="my_documents",
+        host="localhost",
+        port="19530"
+    )
+    ```
+
+---
+
+### :material-numeric-2-box: Pipeline Creation
+
+!!! tip "Configure Your Pipeline"
+    Combine components into a unified RAG pipeline.
+
+```python title="create_pipeline.py" linenums="1" hl_lines="2-7"
 pipeline = RagPipeline(
     embedding_client=embedding,
     llm_client=llm,
@@ -149,9 +175,14 @@ pipeline = RagPipeline(
 )
 ```
 
-### 3. Document Indexing
+---
 
-```python
+### :material-numeric-3-box: Document Indexing
+
+!!! example "Add Your Documents"
+    Index documents with optional metadata for better organization.
+
+```python title="index_documents.py" linenums="1" hl_lines="1-4 6-9 11-14"
 documents = [
     "Your document text here...",
     "Another document...",
@@ -168,9 +199,14 @@ pipeline.index_documents(
 )
 ```
 
-### 4. Querying
+---
 
-```python
+### :material-numeric-4-box: Querying
+
+!!! success "Ask Questions"
+    Query your indexed documents and get contextual answers.
+
+```python title="query.py" linenums="1" hl_lines="2-4 7-9"
 response = pipeline.query(
     "What is RAG?",
     top_k=5,  # Retrieve top 5 most relevant chunks
@@ -181,11 +217,14 @@ print(response.sources)     # Retrieved chunks used
 print(response.metadata)    # Additional info
 ```
 
-## PDF Documents
+---
 
-Process PDF files:
+## :material-file-pdf-box: PDF Documents
 
-```python
+!!! tip "Process PDF Files"
+    Extract text from PDFs and index them directly.
+
+```python title="pdf_processing.py" linenums="1" hl_lines="1 4 5 8 9 12"
 from rag_toolkit.infra.parsers.pdf import PDFParser
 
 # Parse PDF
@@ -199,11 +238,14 @@ pipeline.index_documents([text])
 response = pipeline.query("What does the document say about...?")
 ```
 
-## Multiple Collections
+---
 
-Organize documents in separate collections:
+## :material-folder-multiple: Multiple Collections
 
-```python
+!!! info "Organize Documents"
+    Separate documents into different collections for better organization.
+
+```python title="multiple_collections.py" linenums="1" hl_lines="2-7 10-15 18-19 22-23"
 # Technical docs collection
 tech_store = MilvusVectorStore(collection_name="tech_docs")
 tech_pipeline = RagPipeline(
@@ -229,9 +271,14 @@ tech_response = tech_pipeline.query("How does the API work?")
 marketing_response = marketing_pipeline.query("What's our value proposition?")
 ```
 
-## Filtering by Metadata
+---
 
-```python
+## :material-filter: Filtering by Metadata
+
+!!! tip "Smart Filtering"
+    Use metadata to filter search results and improve relevance.
+
+```python title="metadata_filtering.py" linenums="1" hl_lines="2-8 11-14"
 # Index with metadata
 pipeline.index_documents(
     documents=documents,
@@ -249,38 +296,50 @@ response = pipeline.query(
 )
 ```
 
-## Async Support
+---
 
-For concurrent operations:
+## :material-lightning-bolt: Async Support
 
-```python
-import asyncio
+!!! success "Concurrent Operations"
+    Use async methods for better performance with multiple queries.
 
-async def async_query_example():
-    # Use async LLM methods
-    response = await pipeline.aquery("What is RAG?")
-    return response
+=== "Single Query"
 
-# Run multiple queries concurrently
-async def batch_query():
-    queries = [
-        "What is RAG?",
-        "How do embeddings work?",
-        "Explain vector stores",
-    ]
-    
-    tasks = [pipeline.aquery(q) for q in queries]
-    responses = await asyncio.gather(*tasks)
-    
-    return responses
+    ```python title="async_single.py" linenums="1" hl_lines="3-5"
+    import asyncio
 
-# Run
-responses = asyncio.run(batch_query())
-```
+    async def async_query_example():
+        response = await pipeline.aquery("What is RAG?")
+        return response
+    ```
 
-## Error Handling
+=== "Batch Queries"
 
-```python
+    ```python title="async_batch.py" linenums="1" hl_lines="2-7 9-11"
+    async def batch_query():
+        queries = [
+            "What is RAG?",
+            "How do embeddings work?",
+            "Explain vector stores",
+        ]
+        
+        tasks = [pipeline.aquery(q) for q in queries]
+        responses = await asyncio.gather(*tasks)
+        
+        return responses
+
+    # Run
+    responses = asyncio.run(batch_query())
+    ```
+
+---
+
+## :material-alert-circle: Error Handling
+
+!!! warning "Handle Errors Gracefully"
+    Implement proper error handling for production applications.
+
+```python title="error_handling.py" linenums="1" hl_lines="2-10"
 try:
     response = pipeline.query("What is RAG?")
 except ConnectionError as e:
@@ -291,11 +350,14 @@ except Exception as e:
     print(f"Unexpected error: {e}")
 ```
 
-## Complete Working Example
+---
 
-Save this as `my_rag_app.py`:
+## :material-application: Complete Working Example
 
-```python
+!!! example "Production-Ready Application"
+    Save this as `my_rag_app.py` for a complete interactive RAG application.
+
+```python title="my_rag_app.py" linenums="1" hl_lines="8-16 18-22 24-40 42-56"
 #!/usr/bin/env python3
 """Complete RAG application."""
 
@@ -365,14 +427,39 @@ if __name__ == "__main__":
     main()
 ```
 
-Run it:
-```bash
-python my_rag_app.py
-```
+!!! tip "Run the Application"
+    ```bash
+    python my_rag_app.py
+    ```
 
-## Next Steps
+---
 
-- Try [Custom Vector Store](custom_vectorstore.md) for different databases
-- Learn [Hybrid Search](hybrid_search.md) for better retrieval
-- See [Advanced Pipeline](advanced_pipeline.md) for production features
-- Read [Production Setup](production_setup.md) for deployment
+## :material-arrow-right: Next Steps
+
+<div class="grid cards" markdown>
+
+-   :material-database-cog: **[Custom Vector Store](custom_vectorstore.md)**
+
+    ---
+
+    Use different databases for storage
+
+-   :material-magnify-plus: **[Hybrid Search](hybrid_search.md)**
+
+    ---
+
+    Improve retrieval with hybrid search
+
+-   :material-tune-vertical: **[Advanced Pipeline](advanced_pipeline.md)**
+
+    ---
+
+    Add production features
+
+-   :material-server-network: **[Production Setup](production_setup.md)**
+
+    ---
+
+    Deploy to production
+
+</div>

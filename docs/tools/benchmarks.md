@@ -1,135 +1,276 @@
-# Performance Benchmarks
+# :material-speedometer: Performance Benchmarks
 
-The RAG Toolkit includes a comprehensive benchmark suite to measure and compare performance across different vector store implementations.
+Comprehensive benchmark suite to measure and compare RAG Toolkit performance across different vector store implementations.
 
-```{note}
-**View Latest Results**: 
+---
 
-- [Interactive Benchmark Report](../_static/benchmark_report.html) - Full benchmark data with charts
-- [Benchmark Landing Page](../_static/benchmarks_index.html) - Introduction and instructions
+## :material-chart-line: Overview
 
-*Note: For local viewing, you may need to open the HTML files directly from `docs/_build/html/_static/`*
-```
+!!! success "Benchmark Suite Features"
+    
+    <div class="grid cards" markdown>
+    
+    - :material-test-tube: **30 Benchmark Tests**
+    
+        ---
+        
+        Across 4 categories for comprehensive evaluation
+    
+    - :material-api: **Unified API**
+    
+        ---
+        
+        Through `VectorStoreWrapper` for consistent testing
+    
+    - :material-package-variant: **Automatic Batching**
+    
+        ---
+        
+        For large datasets without manual chunking
+    
+    - :material-chart-bar: **HTML Reports**
+    
+        ---
+        
+        With Chart.js visualizations and metrics
+    
+    - :material-compare: **Comparative Analysis**
+    
+        ---
+        
+        Across Milvus, Qdrant, and ChromaDB
+    
+    </div>
 
-## Overview
+!!! info "View Latest Results"
+    
+    === "Interactive Report"
+        [:material-chart-line: Full Benchmark Report](../_static/benchmark_report.html){ .md-button .md-button--primary }
+        
+        Complete benchmark data with interactive charts
+    
+    === "Landing Page"
+        [:material-home: Benchmarks Home](../_static/benchmarks_index.html){ .md-button }
+        
+        Introduction and detailed instructions
+    
+    !!! tip "Local Viewing"
+        For local viewing, open HTML files directly from `docs/_build/html/_static/`
 
-The benchmark suite provides:
+---
 
-- **30 benchmark tests** across 4 categories
-- **Unified API** through `VectorStoreWrapper`
-- **Automatic batching** for large datasets
-- **HTML reports** with Chart.js visualizations
-- **Comparative analysis** across Milvus, Qdrant, and ChromaDB
+## :material-folder-multiple: Benchmark Categories
 
-## Benchmark Categories
+!!! abstract "Four Test Categories"
 
-### 1. Insert Benchmarks (9 tests)
-Measure vector insertion performance:
-- Single insert (1 vector)
-- Batch insert (100 vectors)
-- Large batch insert (1,000 vectors)
+### 1. :material-upload: Insert Benchmarks (9 tests)
 
-**Tested for**: Milvus, Qdrant, ChromaDB
+!!! example "Vector Insertion Performance"
+    Measure how fast each store can insert vectors.
 
-### 2. Search Benchmarks (9 tests)
-Measure similarity search performance:
-- Top-1 search
-- Top-10 search
-- Top-100 search
+**Test Scenarios:**
 
-**Tested for**: Milvus, Qdrant, ChromaDB
+- :material-numeric-1-circle: Single insert (1 vector)
+- :material-package: Batch insert (100 vectors)
+- :material-database-arrow-up: Large batch insert (1,000 vectors)
 
-### 3. Batch Operations (6 tests)
-Measure complex operation performance:
-- Bulk insert + delete cycles
-- Insert + search cycles
+**Tested on**: Milvus, Qdrant, ChromaDB
 
-**Tested for**: Milvus, Qdrant, ChromaDB
+### 2. :material-magnify: Search Benchmarks (9 tests)
 
-### 4. Scale Benchmarks (6 tests)
-Measure performance at scale:
-- 10K vector insertion
-- Search in large databases (10K vectors)
+!!! example "Similarity Search Performance"
+    Measure vector similarity search speed and accuracy.
 
-**Tested for**: Milvus, Qdrant, ChromaDB
+**Test Scenarios:**
 
-## Running Benchmarks
+- :material-numeric-1-circle: Top-1 search (find closest match)
+- :material-format-list-numbered: Top-10 search
+- :material-format-list-bulleted: Top-100 search
 
-### Quick Start
+**Tested on**: Milvus, Qdrant, ChromaDB
 
-```bash
-# Run all benchmarks
-make benchmark
+### 3. :material-sync: Batch Operations (6 tests)
 
-# Run specific category
-pytest tests/benchmarks/test_insert_benchmark.py -v
+!!! example "Complex Operation Performance"
+    Measure performance of compound operations.
 
-# Run with custom iterations
-pytest tests/benchmarks/ --benchmark-min-rounds=10
-```
+**Test Scenarios:**
 
-### Generate HTML Report
+- :material-delete-sweep: Bulk insert + delete cycles
+- :material-sync-circle: Insert + search cycles
 
-```bash
-# Generate report from benchmark results
+**Tested on**: Milvus, Qdrant, ChromaDB
+
+### 4. :material-trending-up: Scale Benchmarks (6 tests)
+
+!!! example "Performance at Scale"
+    Measure how stores handle large-scale operations.
+
+**Test Scenarios:**
+
+- :material-database-plus: 10K vector insertion
+- :material-magnify-expand: Search in large databases (10K+ vectors)
+
+**Tested on**: Milvus, Qdrant, ChromaDB
+
+---
+
+## :material-play: Running Benchmarks
+
+### :material-rocket-launch: Quick Start
+
+=== "All Benchmarks"
+    ```bash
+    # Run complete benchmark suite
+    make benchmark
+    ```
+
+=== "Specific Category"
+    ```bash
+    # Run only insert benchmarks
+    pytest tests/benchmarks/test_insert_benchmark.py -v
+    
+    # Run only search benchmarks
+    pytest tests/benchmarks/test_search_benchmark.py -v
+    ```
+
+=== "Custom Iterations"
+    ```bash
+    # Run with 10 iterations per test
+    pytest tests/benchmarks/ --benchmark-min-rounds=10
+    
+    # Run with custom warmup
+    pytest tests/benchmarks/ --benchmark-warmup=on
+    ```
+
+### :material-chart-box: Generate HTML Report
+
+!!! success "Visual Reports"
+    Generate beautiful HTML reports with interactive charts.
+
+```bash title="Generate Report"
 make benchmark-report
 ```
 
-The report will be saved to `benchmark_report.html` at the project root with:
-- Summary statistics
-- Comparative bar charts
-- Detailed timing tables
-- Color-coded store identification
+**Report Contents:**
 
-**Viewing the Report**: The report opens automatically in your browser, or you can manually open `benchmark_report.html`.
+<div class="grid cards" markdown>
 
-**Integration with Documentation**: To include the report in the Sphinx documentation:
+- :material-chart-bar: **Summary Statistics**
 
-1. Generate the report: `make benchmark-report`
-2. Copy to docs: `cp benchmark_report.html docs/_static/`
-3. Rebuild docs: `cd docs && make html`
-4. The report will be available at: `<your-docs-url>/_static/benchmark_report.html`
+    ---
 
-Alternatively, add a link in your documentation:
+    Min, max, mean, median for all tests
 
-```markdown
-View the latest [benchmark results](../_static/benchmark_report.html).
-```
+- :material-chart-line: **Comparative Charts**
 
-### Compare Results
+    ---
+
+    Bar charts comparing all vector stores
+
+- :material-table: **Detailed Tables**
+
+    ---
+
+    Timing breakdowns with color coding
+
+- :material-palette: **Color-Coded Stores**
+
+    ---
+
+    Easy visual identification
+
+</div>
+
+!!! tip "Viewing the Report"
+    The report opens automatically in your browser, or manually open `benchmark_report.html`.
+
+**Integration with Documentation:**
+
+=== "Step 1: Generate"
+    ```bash
+    make benchmark-report
+    ```
+
+=== "Step 2: Copy to Docs"
+    ```bash
+    cp benchmark_report.html docs/_static/
+    ```
+
+=== "Step 3: Rebuild Docs"
+    ```bash
+    cd docs && make html
+    ```
+
+=== "Step 4: Access"
+    Report available at: `<your-docs-url>/_static/benchmark_report.html`
+
+!!! example "Add Link to Documentation"
+    ```markdown
+    View the latest [benchmark results](../_static/benchmark_report.html).
+    ```
+
+### :material-compare: Compare Results
 
 ```bash
 # Compare current vs previous results
 make benchmark-compare
 ```
 
-### Clean Results
+### :material-delete: Clean Results
 
 ```bash
 # Remove all benchmark data
 make benchmark-clean
 ```
 
-## Benchmark Configuration
+---
 
-### Environment Setup
+## :material-cog: Benchmark Configuration
 
-Ensure all vector stores are running:
+### :material-docker: Environment Setup
 
-```bash
-# Milvus (port 19530)
-docker run -d --name milvus -p 19530:19530 milvusdb/milvus:latest
+!!! warning "Prerequisites"
+    Ensure all vector stores are running before benchmarking.
 
-# Qdrant (port 6333)
-docker run -d --name qdrant -p 6333:6333 qdrant/qdrant:latest
+=== "Milvus"
+    ```bash
+    # Start Milvus (port 19530)
+    docker run -d --name milvus \
+      -p 19530:19530 \
+      milvusdb/milvus:latest standalone
+    ```
+    
+    Check status:
+    ```bash
+    curl http://localhost:19530/healthz
+    ```
 
-# ChromaDB (runs in-process)
-# No setup required
-```
+=== "Qdrant"
+    ```bash
+    # Start Qdrant (port 6333)
+    docker run -d --name qdrant \
+      -p 6333:6333 \
+      qdrant/qdrant:latest
+    ```
+    
+    Check status:
+    ```bash
+    curl http://localhost:6333/health
+    ```
 
-### Python Environment
+=== "ChromaDB"
+    ```bash
+    # ChromaDB runs in-process
+    # No Docker setup required
+    pip install chromadb
+    ```
+    
+    Runs automatically with sufficient RAM
 
-```bash
+### :material-language-python: Python Environment
+
+```bash title="Install Dependencies"
 # Install benchmark dependencies
 pip install pytest-benchmark>=4.0.0
 
@@ -137,13 +278,16 @@ pip install pytest-benchmark>=4.0.0
 pytest --version
 ```
 
-## Architecture
+---
 
-### VectorStoreWrapper
+## :material-cogs: Architecture
 
-The benchmark suite uses a unified wrapper to abstract API differences:
+### :material-package: VectorStoreWrapper
 
-```python
+!!! info "Unified API"
+    Abstract API differences across vector stores.
+
+```python title="wrapper_usage.py" linenums="1" hl_lines="1 4-7 10-13"
 from tests.benchmarks.utils.wrapper import VectorStoreWrapper
 
 # Initialize wrapper
@@ -153,28 +297,34 @@ wrapper = VectorStoreWrapper(
     store_type="milvus"
 )
 
-# Unified API
-wrapper.add_vectors(data)  # Works for all stores
+# Unified API (works for all stores)
+wrapper.add_vectors(data)
 wrapper.search(query_vector, top_k=10)
 wrapper.delete_vectors(ids)
 wrapper.count()
 ```
 
-### Automatic Batching
+---
 
-Large operations are automatically batched to avoid payload size limits:
+### :material-layers: Automatic Batching
 
-```python
+!!! tip "Smart Batching"
+    Large operations are automatically batched to avoid payload limits.
+
+```python title="auto_batching.py" linenums="1" hl_lines="2 3"
 # 10K vectors automatically batched in chunks of 500
 data = generator.generate_data(10000)
 wrapper.add_vectors(data)  # Internally: 20 batches of 500
 ```
 
-### Data Generation
+---
 
-Reproducible test data with configurable dimensions:
+### :material-database: Data Generation
 
-```python
+!!! example "Reproducible Test Data"
+    Generate test data with configurable dimensions.
+
+```python title="data_generation.py" linenums="1" hl_lines="1 3 6-8"
 from tests.benchmarks.utils.data_generator import VectorDataGenerator
 
 generator = VectorDataGenerator(dimension=384, seed=42)
@@ -185,74 +335,137 @@ qdrant_data = generator.generate_qdrant_points(100)
 chroma_data = generator.generate_chroma_data(100)
 ```
 
-## Interpreting Results
+---
 
-### Performance Metrics
+## :material-chart-box: Interpreting Results
 
-Each benchmark reports:
-- **Min/Max/Mean**: Timing statistics
-- **StdDev**: Consistency measure
-- **Median**: Typical performance
-- **IQR**: Variability indicator
-- **OPS**: Operations per second
-- **Rounds/Iterations**: Test repetitions
+### :material-speedometer: Performance Metrics
 
-### Example Output
+!!! info "Benchmark Statistics"
+    Each benchmark reports comprehensive timing statistics.
 
-```
--------------------------- benchmark 'insert': 6 tests --------------------------
+| Metric | Description |
+|--------|-------------|
+| **Min/Max/Mean** | Timing statistics |
+| **StdDev** | Consistency measure |
+| **Median** | Typical performance |
+| **IQR** | Variability indicator |
+| **OPS** | Operations per second |
+| **Rounds/Iterations** | Test repetitions |
+
+---
+
+### :material-chart-line: Example Output
+
+```bash title="Benchmark Results"
+------------------------ benchmark 'insert': 6 tests -------------------------
 Name (time in ms)                     Min       Max      Mean    StdDev    Median
----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
 test_qdrant_single_insert          1.0323    4.4449    1.2977    0.4554    1.1683
 test_qdrant_batch_insert_100      23.9068   68.0399   28.0110    8.4520   25.6845
 test_milvus_single_insert      11067.0126 11151.9131 11094.9597   33.1737 11083.0722
 ```
 
-### Performance Comparison
+---
 
-Expected relative performance:
-1. **Insert**: Qdrant > ChromaDB > Milvus
-2. **Search**: Milvus ≈ Qdrant > ChromaDB
-3. **Scale**: Qdrant > Milvus > ChromaDB
+### :material-compare: Performance Comparison
 
-*Note: Actual performance depends on hardware, configuration, and data characteristics.*
+!!! success "Expected Relative Performance"
 
-## Known Limitations
+<div class="grid cards" markdown>
 
-### Payload Size Limits
+-   :material-upload: **Insert**
 
-- **Qdrant**: 33MB per request → Automatic batching at 500 vectors
-- **Milvus**: No practical limit for benchmarks
-- **ChromaDB**: In-memory, scales with RAM
+    ---
 
-### Flush Requirements
+    Qdrant > ChromaDB > Milvus
 
-- **Milvus**: Requires explicit flush for immediate availability
-- **Qdrant**: Automatic background indexing
-- **ChromaDB**: Immediate consistency
+-   :material-magnify: **Search**
 
-## Troubleshooting
+    ---
 
-### Tests Hanging
+    Milvus ≈ Qdrant > ChromaDB
 
-If tests hang, check vector store connectivity:
+-   :material-chart-areaspline: **Scale**
 
-```bash
-# Test Milvus
-curl http://localhost:19530/healthz
+    ---
 
-# Test Qdrant
-curl http://localhost:6333/health
+    Qdrant > Milvus > ChromaDB
 
-# ChromaDB (check process memory)
-ps aux | grep python
-```
+</div>
 
-### Import Errors
+!!! warning "Hardware Dependent"
+    Actual performance depends on hardware, configuration, and data characteristics.
 
-Ensure correct Python environment:
+---
 
-```bash
+## :material-alert-octagon: Known Limitations
+
+### :material-file-alert: Payload Size Limits
+
+| Store | Limit | Benchmark Strategy |
+|-------|-------|--------------------|
+| **Qdrant** | 33MB per request | Automatic batching at 500 vectors |
+| **Milvus** | No practical limit | Direct batch operations |
+| **ChromaDB** | In-memory | Scales with available RAM |
+
+---
+
+### :material-sync: Flush Requirements
+
+=== "Milvus"
+    ```python
+    # Requires explicit flush for immediate availability
+    service.flush(collection_name)
+    ```
+
+=== "Qdrant"
+    ```python
+    # Automatic background indexing
+    # No manual flush needed
+    ```
+
+=== "ChromaDB"
+    ```python
+    # Immediate consistency
+    # Data available instantly
+    ```
+
+---
+
+## :material-wrench: Troubleshooting
+
+### :material-timer-sand: Tests Hanging
+
+!!! failure "Connectivity Issues"
+    Check vector store connectivity if tests hang.
+
+=== "Milvus"
+    ```bash
+    # Test Milvus health
+    curl http://localhost:19530/healthz
+    ```
+
+=== "Qdrant"
+    ```bash
+    # Test Qdrant health
+    curl http://localhost:6333/health
+    ```
+
+=== "ChromaDB"
+    ```bash
+    # Check process memory
+    ps aux | grep python
+    ```
+
+---
+
+### :material-import: Import Errors
+
+!!! warning "Environment Check"
+    Ensure correct Python environment.
+
+```bash title="verify_environment.sh"
 # Check Python version (3.11-3.13)
 python --version
 
@@ -260,39 +473,106 @@ python --version
 pip list | grep -E "pytest-benchmark|milvus|qdrant|chromadb"
 ```
 
-### Performance Issues
+---
 
-For slow benchmarks:
-1. Reduce dataset sizes in test files
-2. Use faster storage (SSD)
-3. Increase Docker resource limits
-4. Close unnecessary applications
+### :material-speedometer-slow: Performance Issues
 
-## Future Enhancements
+!!! tip "Optimization Steps"
+    For slow benchmarks, try these solutions:
 
-Planned benchmark additions:
-- [ ] Hybrid search benchmarks
-- [ ] Concurrent operation tests
-- [ ] Memory usage profiling
-- [ ] Network latency simulation
-- [ ] Multi-node scaling tests
-- [ ] Cost analysis per operation
+1. **Reduce Dataset Sizes** - Modify test parameters
+2. **Use Faster Storage** - Switch to SSD
+3. **Increase Docker Resources** - Allocate more CPU/memory
+4. **Close Applications** - Free up system resources
 
-## Contributing
+---
 
-To add new benchmarks:
+## :material-road-variant: Future Enhancements
 
-1. Create test file in `tests/benchmarks/`
-2. Use `@pytest.mark.benchmark(group="category")` decorator
-3. Follow existing test patterns
-4. Update this documentation
-5. Submit pull request
+!!! info "Planned Features"
+    Upcoming benchmark additions:
 
-See [Contributing Guide](contributing.md) for details.
+<div class="grid cards" markdown>
 
-## References
+-   :material-magnify-plus: **Hybrid Search**
 
-- [pytest-benchmark documentation](https://pytest-benchmark.readthedocs.io/)
-- [Milvus benchmarks](https://milvus.io/docs/benchmark.md)
-- [Qdrant benchmarks](https://qdrant.tech/benchmarks/)
-- [ChromaDB performance](https://docs.trychroma.com/guides)
+    ---
+
+    Benchmark hybrid search performance
+
+-   :material-account-group: **Concurrent Operations**
+
+    ---
+
+    Multi-threaded operation tests
+
+-   :material-memory: **Memory Profiling**
+
+    ---
+
+    Track memory usage patterns
+
+-   :material-wifi: **Network Simulation**
+
+    ---
+
+    Test with latency/packet loss
+
+-   :material-server-network: **Scaling Tests**
+
+    ---
+
+    Multi-node performance
+
+-   :material-currency-usd: **Cost Analysis**
+
+    ---
+
+    Per-operation cost tracking
+
+</div>
+
+---
+
+## :material-hands-pray: Contributing
+
+!!! success "Add New Benchmarks"
+    Follow these steps to contribute:
+
+1. **Create Test File** - Add to `tests/benchmarks/`
+2. **Use Decorator** - `@pytest.mark.benchmark(group="category")`
+3. **Follow Patterns** - Match existing test structure
+4. **Update Documentation** - Add to this guide
+5. **Submit PR** - Follow [Contributing Guide](contributing.md)
+
+---
+
+## :material-book-open: References
+
+<div class="grid cards" markdown>
+
+-   :material-flask: **pytest-benchmark**
+
+    ---
+
+    [Documentation](https://pytest-benchmark.readthedocs.io/)
+
+-   :material-database-arrow-up: **Milvus**
+
+    ---
+
+    [Benchmark Guide](https://milvus.io/docs/benchmark.md)
+
+-   :material-lightning-bolt: **Qdrant**
+
+    ---
+
+    [Performance Benchmarks](https://qdrant.tech/benchmarks/)
+
+-   :material-palette: **ChromaDB**
+
+    ---
+
+    [Performance Guide](https://docs.trychroma.com/guides)
+
+</div>

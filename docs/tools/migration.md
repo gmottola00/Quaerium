@@ -1,22 +1,57 @@
-# Vector Store Migration
+# :material-swap-horizontal: Vector Store Migration
 
-The migration module provides tools to transfer vector data between different vector store implementations with validation, progress tracking, and error handling.
+Transfer vector data seamlessly between different vector store implementations with validation, progress tracking, and intelligent error handling.
 
-## Overview
+---
 
-Migration tools enable you to:
+## :material-information: Overview
 
-- **Migrate data** between Milvus, Qdrant, and ChromaDB
-- **Validate** data integrity after migration
-- **Track progress** with real-time callbacks
-- **Handle errors** gracefully with retry logic
-- **Estimate** migration time and resources
+!!! abstract "Migration Capabilities"
+    Professional-grade tools for moving data between vector stores.
 
-## Quick Start
+**What You Can Do:**
 
-### Basic Migration
+<div class="grid cards" markdown>
 
-```python
+- :material-database-sync: **Migrate Data**
+
+    ---
+
+    Transfer between Milvus, Qdrant, and ChromaDB
+
+- :material-check-circle: **Validate Integrity**
+
+    ---
+
+    Automatic data integrity verification
+
+- :material-progress-check: **Track Progress**
+
+    ---
+
+    Real-time progress with ETA calculation
+
+- :material-alert-decagram: **Handle Errors**
+
+    ---
+
+    Retry logic with exponential backoff
+
+- :material-clock-outline: **Estimate Resources**
+
+    ---
+
+    Predict migration time and requirements
+
+</div>
+
+---
+
+## :material-rocket-launch: Quick Start
+
+### :material-numeric-1-box: Basic Migration
+
+```python title="simple_migration.py" linenums="1" hl_lines="6-14 17-21 24"
 from rag_toolkit.migration import VectorStoreMigrator
 from rag_toolkit.infra.vectorstores import (
     get_chromadb_service,
@@ -38,7 +73,7 @@ target = get_qdrant_service(
 migrator = VectorStoreMigrator(
     source=source,
     target=target,
-    validate=True,
+    validate=True,  # Enable validation
 )
 
 # Run migration
@@ -56,9 +91,22 @@ print(f"Duration: {result.duration_seconds}s")
 print(f"Success Rate: {result.success_rate}%")
 ```
 
-### Migration with Progress Tracking
+!!! success "Migration Complete"
+    ```
+    Success: True
+    Migrated: 125,430 vectors
+    Failed: 0
+    Duration: 127.5s
+    Success Rate: 100.0%
+    ```
 
-```python
+### :material-numeric-2-box: Migration with Progress Tracking
+
+!!! example "Real-Time Progress Monitoring"
+    Track migration progress with live updates and ETA.
+
+```python title="progress_tracking.py" linenums="1" hl_lines="2-7 10-12"
+# Define progress callback
 def on_progress(progress):
     print(
         f"Progress: {progress.percentage:.1f}% "
@@ -69,7 +117,7 @@ def on_progress(progress):
 migrator = VectorStoreMigrator(
     source=source,
     target=target,
-    on_progress=on_progress,
+    on_progress=on_progress,  # Add callback
 )
 
 result = migrator.migrate(
@@ -78,69 +126,121 @@ result = migrator.migrate(
 )
 ```
 
-## Features
+!!! quote "Progress Output"
+    ```
+    Progress: 12.5% (12,500/100,000) - ETA: 245s
+    Progress: 25.0% (25,000/100,000) - ETA: 210s
+    Progress: 37.5% (37,500/100,000) - ETA: 175s
+    Progress: 50.0% (50,000/100,000) - ETA: 140s
+    ...
+    Progress: 100.0% (100,000/100,000) - ETA: 0s
+    ```
 
-### Estimation
+---
 
-Estimate migration time and resources before starting:
+## :material-star: Features
 
-```python
+### :material-calculator: Estimation
+
+!!! tip "Plan Before You Migrate"
+    Estimate time and resources before starting a large migration.
+
+```python title="estimate_migration.py" hl_lines="2-5"
+# Get migration estimate
 estimate = migrator.estimate(
     collection_name="large_collection",
     batch_size=1000,
 )
 
-print(f"Total vectors: {estimate.total_vectors}")
-print(f"Estimated duration: {estimate.estimated_duration_seconds}s")
+print(f"Total vectors: {estimate.total_vectors:,}")
+print(f"Estimated duration: {estimate.estimated_duration_seconds:.1f}s")
 print(f"Estimated batches: {estimate.estimated_batches}")
-print(f"Throughput: {estimate.vectors_per_second} vectors/sec")
+print(f"Throughput: {estimate.vectors_per_second:.0f} vectors/sec")
 ```
 
-### Filtered Migration
+!!! example "Estimate Output"
+    ```
+    Total vectors: 1,250,000
+    Estimated duration: 625.0s (~10.4 minutes)
+    Estimated batches: 1,250
+    Throughput: 2,000 vectors/sec
+    ```
 
-Migrate only vectors matching specific metadata criteria:
+### :material-filter: Filtered Migration
 
-```python
-# Migrate only published articles from 2025
-result = migrator.migrate(
-    source_collection="articles",
-    target_collection="articles_published_2025",
-    filter={
-        "status": "published",
-        "year": 2025,
-    },
-)
+!!! info "Selective Migration"
+    Migrate only vectors matching specific metadata criteria.
 
-print(f"Migrated {result.vectors_migrated} filtered vectors")
-```
+=== "By Status & Year"
 
-**Multiple filter criteria:**
+    ```python title="filter_by_status.py" linenums="1" hl_lines="4-7"
+    # Migrate only published articles from 2025
+    result = migrator.migrate(
+        source_collection="articles",
+        target_collection="articles_published_2025",
+        filter={
+            "status": "published",
+            "year": 2025,
+        },
+    )
 
-```python
-# Complex filtering
-result = migrator.migrate(
-    source_collection="documents",
-    target_collection="filtered_docs",
-    filter={
-        "document_type": "report",
-        "department": "engineering",
-        "confidential": False,
-        "version": "2.0",
-    },
-)
-```
+    print(f"Migrated {result.vectors_migrated} filtered vectors")
+    ```
 
-**Use cases:**
-- Migrate subsets of data (e.g., only production-ready documents)
-- Create filtered backups (e.g., only non-sensitive data)
-- Split collections by criteria (e.g., by customer, region, or date)
-- Test migrations with representative samples
+=== "Complex Criteria"
 
-### Dry-Run Mode
+    ```python title="complex_filter.py" linenums="1" hl_lines="4-9"
+    # Multiple filter criteria
+    result = migrator.migrate(
+        source_collection="documents",
+        target_collection="filtered_docs",
+        filter={
+            "document_type": "report",
+            "department": "engineering",
+            "confidential": False,
+            "version": "2.0",
+        },
+    )
+    ```
 
-Simulate migrations without writing to the target store:
+=== "Use Cases"
 
-```python
+    <div class="grid cards" markdown>
+
+    -   :material-filter-check: **Migrate Subsets**
+
+        ---
+
+        Migrate only production-ready documents
+
+    -   :material-backup-restore: **Filtered Backups**
+
+        ---
+
+        Create backups of non-sensitive data only
+
+    -   :material-format-list-group: **Split Collections**
+
+        ---
+
+        Organize by customer, region, or date
+
+    -   :material-test-tube: **Test Samples**
+
+        ---
+
+        Test migrations with representative data
+
+    </div>
+
+---
+
+### :material-test-tube: Dry-Run Mode
+
+!!! warning "Test Before Executing"
+    Simulate migrations without writing to target store.
+
+```python title="dry_run.py" linenums="1" hl_lines="5"
 # Test migration before executing
 result = migrator.migrate(
     source_collection="production_data",
@@ -153,47 +253,75 @@ print(f"Estimated duration: {result.duration_seconds}s")
 print(f"No data written to target store")
 ```
 
-**Combined with filters:**
+=== "With Filters"
 
-```python
-# Test filtered migration
-result = migrator.migrate(
-    source_collection="documents",
-    filter={"status": "active"},
-    dry_run=True,
-)
-
-if result.vectors_migrated > 1000000:
-    print("⚠ Warning: Large migration, consider splitting into batches")
-else:
-    print("✓ Safe to proceed with real migration")
-    
-    # Execute real migration
-    real_result = migrator.migrate(
+    ```python title="dry_run_with_filter.py" linenums="1" hl_lines="3 4"
+    # Test filtered migration
+    result = migrator.migrate(
         source_collection="documents",
         filter={"status": "active"},
-        dry_run=False,
+        dry_run=True,
     )
-```
 
-**Benefits:**
-- **Zero risk**: Test migrations without modifying target
-- **Validation**: Verify filter logic and vector counts
-- **Performance estimation**: Measure actual throughput before committing
-- **Planning**: Calculate storage requirements and migration windows
+    if result.vectors_migrated > 1000000:
+        print("⚠ Warning: Large migration, consider splitting")
+    else:
+        print("✓ Safe to proceed")
+        
+        # Execute real migration
+        real_result = migrator.migrate(
+            source_collection="documents",
+            filter={"status": "active"},
+            dry_run=False,
+        )
+    ```
 
-**Note:** Dry-run mode skips target writes and validation, but still reads from source to provide accurate counts.
+=== "Benefits"
 
-### Retry Logic with Exponential Backoff
+    <div class="grid cards" markdown>
 
-Automatic retry mechanism for transient failures:
+    -   :material-shield-check: **Zero Risk**
 
-```python
+        ---
+
+        Test without modifying target
+
+    -   :material-check-decagram: **Validation**
+
+        ---
+
+        Verify filters and counts
+
+    -   :material-speedometer: **Performance**
+
+        ---
+
+        Measure actual throughput
+
+    -   :material-calculator-variant: **Planning**
+
+        ---
+
+        Calculate storage & windows
+
+    </div>
+
+!!! note "Dry-Run Behavior"
+    Dry-run mode skips target writes and validation but still reads from source to provide accurate counts.
+
+---
+
+### :material-restart: Retry Logic
+
+!!! success "Automatic Error Recovery"
+    Built-in exponential backoff for transient failures.
+
+```python title="retry_config.py" linenums="1" hl_lines="4-6"
 # Configure retry behavior
 migrator = VectorStoreMigrator(
     source=source,
     target=target,
-    max_retries=5,         # Retry up to 5 times (default: 3)
+    max_retries=5,         # Up to 5 retries (default: 3)
     retry_delay=2.0,       # Initial delay 2s (default: 1.0s)
     retry_backoff=2.0,     # Double delay each retry (default: 2.0)
 )
@@ -201,67 +329,71 @@ migrator = VectorStoreMigrator(
 result = migrator.migrate(
     source_collection="unreliable_network_migration",
 )
-
-# Automatic retry on:
-# - Network timeouts
-# - Temporary connection failures
-# - Rate limit errors (429)
-# - Transient store unavailability
 ```
 
-**Retry timing example:**
-```
-Attempt 1: Immediate
-Attempt 2: Wait 2.0s
-Attempt 3: Wait 4.0s (2.0 * 2.0)
-Attempt 4: Wait 8.0s (4.0 * 2.0)
-Attempt 5: Wait 16.0s (8.0 * 2.0)
-```
+!!! example "Automatic Retry On"
+    - ⚡ Network timeouts
+    - 🔌 Temporary connection failures
+    - 🚦 Rate limit errors (429)
+    - ⏱️ Transient store unavailability
 
-**Conservative retry (cloud environments):**
+=== "Retry Timing"
 
-```python
-# Longer delays for rate-limited APIs
-migrator = VectorStoreMigrator(
-    source=source,
-    target=target,
-    max_retries=10,
-    retry_delay=5.0,
-    retry_backoff=1.5,  # Slower backoff
-)
-```
+    ```python title="retry_timing.py"
+    # Exponential backoff example
+    Attempt 1: Immediate
+    Attempt 2: Wait 2.0s
+    Attempt 3: Wait 4.0s (2.0 * 2.0)
+    Attempt 4: Wait 8.0s (4.0 * 2.0)
+    Attempt 5: Wait 16.0s (8.0 * 2.0)
+    ```
 
-**Aggressive retry (reliable networks):**
+=== "Conservative (Cloud)"
 
-```python
-# Fast retry for local migrations
-migrator = VectorStoreMigrator(
-    source=source,
-    target=target,
-    max_retries=3,
-    retry_delay=0.5,
-    retry_backoff=2.0,
-)
-```
+    ```python title="conservative_retry.py" linenums="1" hl_lines="4-6"
+    # Longer delays for rate-limited APIs
+    migrator = VectorStoreMigrator(
+        source=source,
+        target=target,
+        max_retries=10,
+        retry_delay=5.0,
+        retry_backoff=1.5,  # Slower backoff
+    )
+    ```
 
-**Error handling:**
+=== "Aggressive (Local)"
 
-```python
-from rag_toolkit.migration import MigrationError
+    ```python title="aggressive_retry.py" linenums="1" hl_lines="4-6"
+    # Fast retry for local migrations
+    migrator = VectorStoreMigrator(
+        source=source,
+        target=target,
+        max_retries=3,
+        retry_delay=0.5,
+        retry_backoff=2.0,
+    )
+    ```
 
-try:
-    result = migrator.migrate(source_collection="docs")
-except MigrationError as e:
-    # All retries exhausted
-    print(f"Migration failed after {migrator.max_retries} retries: {e}")
-    # Check logs for detailed retry attempts
-```
+=== "Error Handling"
 
-### Validation
+    ```python title="error_handling.py" linenums="1" hl_lines="1 4-7"
+    from rag_toolkit.migration import MigrationError
 
-Automatic validation ensures data integrity:
+    try:
+        result = migrator.migrate(source_collection="docs")
+    except MigrationError as e:
+        # All retries exhausted
+        print(f"Failed after {migrator.max_retries} retries: {e}")
+    ```
 
-```python
+---
+
+### :material-check-all: Validation
+
+!!! tip "Data Integrity"
+    Automatic validation ensures successful migration.
+
+```python title="validation.py" linenums="1" hl_lines="4"
 # Validation enabled by default
 migrator = VectorStoreMigrator(
     source=source,
@@ -271,36 +403,42 @@ migrator = VectorStoreMigrator(
 
 result = migrator.migrate(source_collection="docs")
 
-# Check if validation passed
+# Check validation status
 if result.metadata.get("validated"):
     print("✓ Migration validated successfully")
 else:
     print("⚠ Validation warnings:", result.errors)
 ```
 
-### Error Handling
+---
 
-Migration continues even if individual batches fail:
+### :material-alert-circle: Error Handling
 
-```python
+!!! warning "Resilient Migration"
+    Migration continues even if individual batches fail.
+
+```python title="error_handling_batch.py" linenums="1" hl_lines="7-10"
 result = migrator.migrate(
     source_collection="docs",
     batch_size=1000,
 )
 
 if not result.success:
-    print(f"Migration completed with {result.vectors_failed} failures")
+    print(f"Completed with {result.vectors_failed} failures")
     for error in result.errors:
         print(f"  - {error}")
 ```
 
-## Migration Models
+---
 
-### MigrationResult
+## :material-file-document: Migration Models
 
-Complete information about a migration operation:
+### :material-check-circle: MigrationResult
 
-```python
+!!! info "Complete Migration Information"
+    Detailed results from a migration operation.
+
+```python title="migration_result.py" linenums="1"
 @dataclass
 class MigrationResult:
     success: bool                    # Overall success
@@ -323,11 +461,14 @@ class MigrationResult:
         """Percentage successfully migrated"""
 ```
 
-### MigrationProgress
+---
 
-Real-time progress information:
+### :material-progress-clock: MigrationProgress
 
-```python
+!!! example "Real-Time Progress"
+    Live progress information during migration.
+
+```python title="migration_progress.py" linenums="1"
 @dataclass
 class MigrationProgress:
     vectors_processed: int           # Processed so far
@@ -346,11 +487,14 @@ class MigrationProgress:
         """Estimated time remaining"""
 ```
 
-### MigrationEstimate
+---
 
-Pre-migration estimation:
+### :material-calculator: MigrationEstimate
 
-```python
+!!! tip "Pre-Migration Planning"
+    Estimate migration requirements before execution.
+
+```python title="migration_estimate.py" linenums="1"
 @dataclass
 class MigrationEstimate:
     total_vectors: int               # Vectors to migrate
@@ -366,32 +510,66 @@ class MigrationEstimate:
         """Estimated throughput"""
 ```
 
-## Best Practices
+---
 
-### Batch Sizing
+## :material-lightbulb: Best Practices
 
-Choose appropriate batch sizes based on:
+### :material-package-variant: Batch Sizing
 
-- **Memory**: Larger batches use more memory
-- **Network**: Larger batches reduce network overhead
-- **Store limits**: Some stores have payload size limits (e.g., Qdrant: 33MB)
+!!! tip "Optimal Batch Sizes"
+    Choose batch size based on your dataset size and constraints.
 
-```python
-# Small datasets (< 10K vectors)
-batch_size = 500
+<div class="grid cards" markdown>
 
-# Medium datasets (10K - 100K vectors)
-batch_size = 1000
+-   :material-memory: **Memory**
 
-# Large datasets (> 100K vectors)
-batch_size = 2000
-```
+    ---
 
-### Progress Monitoring
+    Larger batches use more memory
 
-For large migrations, implement robust progress tracking:
+-   :material-network: **Network**
 
-```python
+    ---
+
+    Larger batches reduce overhead
+
+-   :material-database: **Store Limits**
+
+    ---
+
+    Some stores have payload limits (Qdrant: 33MB)
+
+</div>
+
+=== "Small Datasets"
+
+    ```python title="small_dataset.py"
+    # < 10K vectors
+    batch_size = 500
+    ```
+
+=== "Medium Datasets"
+
+    ```python title="medium_dataset.py"
+    # 10K - 100K vectors
+    batch_size = 1000
+    ```
+
+=== "Large Datasets"
+
+    ```python title="large_dataset.py"
+    # > 100K vectors
+    batch_size = 2000
+    ```
+
+---
+
+### :material-progress-check: Progress Monitoring
+
+!!! example "Robust Progress Tracking"
+    Implement detailed logging for large migrations.
+
+```python title="progress_monitoring.py" linenums="1" hl_lines="6-14 17-19"
 import logging
 from datetime import datetime
 
@@ -414,11 +592,14 @@ migrator = VectorStoreMigrator(
 )
 ```
 
-### Error Recovery
+---
 
-Handle migration failures gracefully:
+### :material-restart-alert: Error Recovery
 
-```python
+!!! failure "Graceful Failure Handling"
+    Handle migration failures with proper logging and recovery.
+
+```python title="error_recovery.py" linenums="1" hl_lines="7-20"
 result = migrator.migrate(
     source_collection="production_data",
     target_collection="production_data_v2",
@@ -438,13 +619,16 @@ if not result.success:
         # Implement rollback logic
 ```
 
-## Advanced Use Cases
+---
 
-### Pre-Production Validation Pipeline
+## :material-rocket-launch: Advanced Use Cases
 
-Validate migrations before deploying to production:
+### :material-shield-check: Pre-Production Validation
 
-```python
+!!! success "Production-Grade Migration"
+    Full pipeline with dry-run, validation, and verification.
+
+```python title="production_migration.py" linenums="1" hl_lines="7-10 17-21 26-31 37-45"
 import logging
 from datetime import datetime
 
@@ -513,12 +697,17 @@ result = safe_production_migration(
 )
 ```
 
-### Selective Data Migration by Metadata
+---
 
-Migrate different subsets to different targets:
+### :material-file-tree: Selective Migration
 
-```python
-# Migrate high-priority documents to fast store
+!!! info "Multi-Target Strategy"
+    Migrate different data subsets to optimized targets.
+
+=== "Fast Store"
+
+    ```python title="fast_store.py" linenums="1" hl_lines="1-4 6-10"
+    # High-priority to fast store
 fast_migrator = VectorStoreMigrator(
     source=chromadb_source,
     target=qdrant_fast,
@@ -596,13 +785,16 @@ staging_result = deploy_to_environment("staging", staging_store)
 prod_result = deploy_to_environment("production", prod_store)
 ```
 
-## Common Use Cases
+---
 
-### Development to Production
+## :material-application-brackets: Common Use Cases
 
-Migrate from ChromaDB (dev) to Qdrant (prod):
+### :material-cloud-check: Development to Production
 
-```python
+!!! example "ChromaDB to Qdrant"
+    Migrate from local dev to production cloud.
+
+```python title="dev_to_prod.py" linenums="1" hl_lines="2 5-9 11-15 17-22"
 # Development setup
 dev_store = get_chromadb_service(host="localhost")
 

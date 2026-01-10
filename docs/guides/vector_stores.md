@@ -1,32 +1,71 @@
-# Vector Stores
+# :material-database: Vector Stores
 
-Vector stores are the foundation of RAG systems, providing efficient storage and retrieval of high-dimensional embeddings. This guide covers everything you need to know about working with vector stores in rag-toolkit.
+Vector stores are the **foundation** of RAG systems, providing efficient storage and retrieval of high-dimensional embeddings.
 
-## Overview
+---
 
-A vector store (or vector database) stores embeddings along with their metadata and provides fast similarity search capabilities. When you query with a text, it's converted to an embedding and the vector store finds the most similar stored embeddings.
+## :material-information: Overview
 
-```{mermaid}
+!!! abstract "What is a Vector Store?"
+    A vector store (or vector database) stores embeddings along with metadata and provides **lightning-fast similarity search** capabilities.
+
+```mermaid
 graph LR
-    A[Documents] --> B[Embeddings]
-    B --> C[Vector Store]
-    D[Query] --> E[Query Embedding]
+    A[📄 Documents] --> B[🔢 Embeddings]
+    B --> C[💾 Vector Store]
+    D[💬 Query] --> E[🔢 Query Embedding]
     E --> C
-    C --> F[Similar Documents]
+    C --> F[📚 Similar Documents]
+    
+    style A fill:#e3f2fd
+    style F fill:#c8e6c9
 ```
 
-## Supported Vector Stores
+**How it works:**
 
-### Milvus (Primary Implementation)
+1. Documents are converted to embeddings and stored
+2. Query is converted to an embedding
+3. Vector store finds the most similar stored embeddings
+4. Returns the corresponding documents
 
-Milvus is the default vector store in rag-toolkit, offering production-ready features and excellent performance.
+---
+
+## :material-server: Supported Vector Stores
+
+### :material-database-settings: Milvus (Primary Implementation)
+
+!!! success "Production-Ready Performance"
+    Milvus is the default vector store in RAG Toolkit, offering enterprise-grade features.
 
 **Features:**
-- ✅ Distributed architecture for scalability
-- ✅ Multiple index types (HNSW, IVF_FLAT, etc.)
-- ✅ GPU acceleration support
-- ✅ Dynamic schema with metadata filtering
-- ✅ Hybrid search (vector + scalar filtering)
+
+<div class="grid cards" markdown>
+
+- :material-scale-balance: **Distributed Architecture**
+
+    ---
+
+    Horizontal scalability for massive datasets
+
+- :material-speedometer: **Multiple Index Types**
+
+    ---
+
+    HNSW, IVF_FLAT, IVF_PQ for different use cases
+
+- :material-gpu: **GPU Acceleration**
+
+    ---
+
+    Optional GPU support for faster search
+
+- :material-filter: **Hybrid Search**
+
+    ---
+
+    Vector + metadata filtering combined
+
+</div>
 
 **Installation:**
 

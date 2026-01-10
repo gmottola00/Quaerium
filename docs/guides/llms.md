@@ -1,16 +1,49 @@
-# LLM Clients
+# :material-robot: LLM Clients
 
-Large Language Models (LLMs) are the foundation of RAG systems, generating natural language responses based on retrieved context. This guide covers everything you need to know about working with LLMs in rag-toolkit.
+Large Language Models (LLMs) power the generation phase of RAG systems. Master LLM integration for high-quality, contextual responses.
 
-## Overview
+---
 
-LLM clients in rag-toolkit handle:
-- **Text generation**: Generate answers from prompts
-- **Context integration**: Combine retrieved documents with queries
-- **Streaming**: Real-time response generation
-- **Error handling**: Retries, rate limiting, fallbacks
+## :material-information: Overview
 
-## Supported LLM Providers
+!!! abstract "What LLM Clients Do"
+    LLM clients in RAG Toolkit handle the entire text generation pipeline.
+
+**Capabilities:**
+
+<div class="grid cards" markdown>
+
+- :material-text: **Text Generation**
+
+    ---
+
+    Generate natural language answers from prompts
+
+- :material-file-document-multiple: **Context Integration**
+
+    ---
+
+    Combine retrieved documents with user queries
+
+- :material-wave: **Streaming**
+
+    ---
+
+    Real-time response generation
+
+- :material-shield-alert: **Error Handling**
+
+    ---
+
+    Automatic retries, rate limiting, fallbacks
+
+</div>
+
+---
+
+## :material-server: Supported LLM Providers
+
+!!! info "Choose Your Provider"
 
 ### OpenAI (Recommended)
 

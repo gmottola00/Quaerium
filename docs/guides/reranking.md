@@ -1,34 +1,50 @@
-# Reranking
+# :material-sort-ascending: Reranking
 
-Reranking is a two-stage retrieval technique that dramatically improves result quality. This guide covers everything you need to know about reranking in rag-toolkit.
+Reranking is a **game-changing** technique that dramatically improves retrieval quality. Master reranking for production-grade RAG systems.
 
-## Why Reranking?
+---
 
-**Problem with single-stage retrieval:**
-- Embedding-based search is fast but imperfect
-- May retrieve semantically similar but irrelevant documents
-- Limited by embedding quality
+## :material-help-circle: Why Reranking?
 
-**Solution: Two-stage retrieval:**
-1. **Stage 1 (Fast)**: Vector search retrieves many candidates (e.g., 50-100)
-2. **Stage 2 (Accurate)**: Reranker scores candidates and selects best (e.g., top 5)
+!!! warning "The Problem with Single-Stage Retrieval"
+    
+    **Limitations:**
+    
+    - :material-speedometer: Embedding-based search is fast but imperfect
+    - :material-target-off: May retrieve semantically similar but irrelevant documents
+    - :material-alert: Limited by embedding quality
 
-**Benefits:**
-- ✅ 10-30% improvement in retrieval quality
-- ✅ Better context for LLM
-- ✅ More relevant answers
-- ✅ Minimal latency increase
+!!! success "Solution: Two-Stage Retrieval"
+    
+    1. **Stage 1 (Fast)**: Vector search retrieves many candidates (e.g., 50-100)
+    2. **Stage 2 (Accurate)**: Reranker scores candidates and selects best (e.g., top 5)
+    
+    **Results:**
+    
+    - :material-chart-line: 10-30% improvement in retrieval quality
+    - :material-check-bold: Better context for LLM
+    - :material-bullseye-arrow: More relevant answers
+    - :material-timer: Minimal latency increase
 
-```{mermaid}
+```mermaid
 graph LR
-    A[Query] --> B[Vector Search]
-    B --> C[50 Candidates]
-    C --> D[Reranker]
-    D --> E[Top 5 Best]
-    E --> F[LLM]
+    A[💬 Query] --> B[🔍 Vector Search]
+    B --> C[📚 50 Candidates]
+    C --> D[⭐ Reranker]
+    D --> E[🎯 Top 5 Best]
+    E --> F[🤖 LLM]
+    F --> G[✨ Answer]
+    
+    style A fill:#e3f2fd
+    style E fill:#fff3e0
+    style G fill:#c8e6c9
 ```
 
-## Reranker Types
+---
+
+## :material-strategy: Reranker Types
+
+!!! info "Choose Your Reranking Strategy"
 
 ### 1. Cross-Encoder Reranker
 

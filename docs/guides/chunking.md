@@ -1,31 +1,59 @@
-# Chunking Strategies
+# :material-content-cut: Chunking Strategies
 
-Chunking is the process of splitting documents into smaller pieces for embedding and retrieval. Good chunking is critical for RAG quality. This guide covers the chunking capabilities available in rag-toolkit.
+Chunking is **critical** for RAG quality. Learn how to split documents effectively for optimal embedding and retrieval.
 
-## Why Chunking Matters
+---
 
-**Problems with large documents:**
-- Embeddings lose semantic focus
-- Context windows overflow
-- Poor retrieval precision
+## :material-help-circle: Why Chunking Matters
 
-**Benefits of chunking:**
-- ✅ Focused semantic embeddings
-- ✅ Precise retrieval
-- ✅ Better LLM context utilization
-- ✅ Efficient processing
+!!! warning "The Problem with Large Documents"
+    
+    **Issues:**
+    
+    - :material-close-circle: Embeddings lose semantic focus
+    - :material-alert: Context windows overflow
+    - :material-target-off: Poor retrieval precision
+    - :material-speedometer-slow: Slow processing
 
-## Available Chunking Strategies
+!!! success "Benefits of Proper Chunking"
+    
+    - :material-check-circle: Focused semantic embeddings
+    - :material-bullseye-arrow: Precise retrieval
+    - :material-text-box-check: Better LLM context utilization
+    - :material-speedometer: Efficient processing
 
-rag-toolkit currently provides two complementary chunking strategies that work together:
+```mermaid
+graph LR
+    A[📄 Large Document] --> B[✂️ Chunking]
+    B --> C[📝 Chunk 1]
+    B --> D[📝 Chunk 2]
+    B --> E[📝 Chunk 3]
+    
+    C --> F[🔢 Focused Embedding]
+    D --> G[🔢 Focused Embedding]
+    E --> H[🔢 Focused Embedding]
+    
+    style A fill:#ffebee
+    style F fill:#c8e6c9
+    style G fill:#c8e6c9
+    style H fill:#c8e6c9
+```
 
-### 1. DynamicChunker - Structural Chunking
+---
 
-Creates chunks based on document structure, using heading hierarchy.
+## :material-strategy: Available Chunking Strategies
+
+!!! info "Two Complementary Approaches"
+    RAG Toolkit provides two chunking strategies that work together for optimal results.
+
+### 1. :material-file-tree: DynamicChunker - Structural Chunking
+
+!!! abstract "Document Structure-Based"
+    Creates chunks based on document structure using heading hierarchy.
 
 **Best for**: Structured documents with clear sections (PDFs, documentation, reports)
 
-```python
+```python title="dynamic_chunking.py" linenums="1" hl_lines="4-7 11"
 from rag_toolkit.core.chunking import DynamicChunker
 
 # Create dynamic chunker
@@ -47,33 +75,62 @@ for chunk in chunks:
 ```
 
 **How it works:**
-- Splits document at level-1 headings (h1)
-- Each chunk includes:
-  - The level-1 heading as title
-  - All sub-headings (h2-h6) under that section
-  - Paragraphs, lists, and optionally tables
-  - Continues until the next level-1 heading
+
+```mermaid
+graph TB
+    A[📄 Document] --> B{Level-1 Headings}
+    B --> C[📑 Section 1]
+    B --> D[📑 Section 2]
+    B --> E[📑 Section 3]
+    
+    C --> F[h2, h3, paragraphs, tables]
+    D --> G[h2, h3, paragraphs, tables]
+    E --> H[h2, h3, paragraphs, tables]
+    
+    style A fill:#e3f2fd
+    style C fill:#c8e6c9
+    style D fill:#c8e6c9
+    style E fill:#c8e6c9
+```
+
+1. Splits document at level-1 headings (h1)
+2. Each chunk includes:
+    - Level-1 heading as title
+    - All sub-headings (h2-h6) under that section
+    - Paragraphs, lists, and optionally tables
+    - Continues until the next level-1 heading
 
 **Configuration options:**
 
-```python
-# Include tables in chunks
-chunker = DynamicChunker(include_tables=True)
+=== "Include Tables"
+    ```python
+    chunker = DynamicChunker(include_tables=True)
+    ```
+    
+    Tables are included as structured text within chunks.
 
-# Limit heading depth
-chunker = DynamicChunker(max_heading_level=3)  # Only h1-h3
+=== "Limit Heading Depth"
+    ```python
+    chunker = DynamicChunker(max_heading_level=3)  # Only h1-h3
+    ```
+    
+    Ignore deeper heading levels for simpler structure.
 
-# Handle preamble content
-chunker = DynamicChunker(allow_preamble=True)  # Creates "Preamble" chunk
-```
+=== "Handle Preamble"
+    ```python
+    chunker = DynamicChunker(allow_preamble=True)
+    ```
+    
+    Creates a "Preamble" chunk for content before the first heading.
 
-### 2. TokenChunker - Token-Based Chunking
+### 2. :material-code-tags: TokenChunker - Token-Based Chunking
 
-Splits larger chunks into smaller token-based pieces with overlap.
+!!! abstract "Token Budget Control"
+    Splits larger chunks into smaller token-based pieces with intelligent overlap.
 
-**Best for**: Controlling token budget, optimal embedding sizes
+**Best for**: Controlling token budget, optimal embedding sizes, LLM context limits
 
-```python
+```python title="token_chunking.py" linenums="1" hl_lines="4-7 11"
 from rag_toolkit.core.chunking import TokenChunker
 
 # Create token chunker
@@ -95,45 +152,74 @@ for chunk in token_chunks:
 ```
 
 **How it works:**
-- Takes chunks from DynamicChunker
-- Splits them by token count (using whitespace tokenizer)
-- Applies overlap to preserve context at boundaries
-- Maintains section hierarchy and metadata
 
-**Token overlap example:**
+```mermaid
+graph LR
+    A[📝 Large Chunk<br/>2400 tokens] --> B{TokenChunker}
+    B --> C[📄 Chunk 1<br/>tokens 0-800]
+    B --> D[📄 Chunk 2<br/>tokens 680-1480]
+    B --> E[📄 Chunk 3<br/>tokens 1360-2160]
+    
+    C -.120 overlap.-> D
+    D -.120 overlap.-> E
+    
+    style A fill:#ffebee
+    style C fill:#c8e6c9
+    style D fill:#c8e6c9
+    style E fill:#c8e6c9
+```
+
+1. Takes chunks from DynamicChunker
+2. Splits them by token count (whitespace tokenizer)
+3. Applies overlap to preserve context at boundaries
+4. Maintains section hierarchy and metadata
+
+**Token overlap visualization:**
+
 ```
 Chunk 1: tokens[0:800]
-Chunk 2: tokens[680:1480]  # 120 token overlap
-Chunk 3: tokens[1360:2160] # 120 token overlap
+         ████████████████████░░░░
+Chunk 2:           ░░░░████████████████████░░░░  # 120 overlap
+Chunk 3:                      ░░░░████████████████████  # 120 overlap
 ```
 
 **Configuration:**
 
-```python
-# Small chunks for precise retrieval
-chunker = TokenChunker(
-    max_tokens=512,
-    min_tokens=200,
-    overlap_tokens=50
-)
+=== "Small Chunks (Precise)"
+    ```python
+    chunker = TokenChunker(
+        max_tokens=512,
+        min_tokens=200,
+        overlap_tokens=50
+    )
+    ```
+    
+    Best for precise retrieval, shorter contexts.
 
-# Large chunks for more context
-chunker = TokenChunker(
-    max_tokens=1500,
-    min_tokens=800,
-    overlap_tokens=200
-)
+=== "Large Chunks (Context)"
+    ```python
+    chunker = TokenChunker(
+        max_tokens=1500,
+        min_tokens=800,
+        overlap_tokens=200
+    )
+    ```
+    
+    Best for more context, longer documents.
 
-# Custom tokenizer
-def my_tokenizer(text: str) -> list[str]:
-    # Your tokenization logic
-    return text.split()
-
-chunker = TokenChunker(
-    max_tokens=800,
-    tokenizer=my_tokenizer
-)
-```
+=== "Custom Tokenizer"
+    ```python
+    def my_tokenizer(text: str) -> list[str]:
+        # Your tokenization logic
+        return text.split()
+    
+    chunker = TokenChunker(
+        max_tokens=800,
+        tokenizer=my_tokenizer
+    )
+    ```
+    
+    Use your own tokenization strategy.
 
 ## Two-Stage Chunking Pipeline
 

@@ -1,65 +1,117 @@
-# Core Concepts
+# :material-lightbulb: Core Concepts
 
-Understanding these core concepts will help you make the most of rag-toolkit.
+Master these fundamental concepts to unlock the full potential of RAG Toolkit.
 
-## RAG (Retrieval-Augmented Generation)
+---
 
-RAG combines information retrieval with text generation to create more accurate and contextual responses.
+## :material-brain: RAG (Retrieval-Augmented Generation)
 
-### Traditional LLM
+!!! abstract "What is RAG?"
+    RAG combines **information retrieval** with **text generation** to create more accurate, factual, and contextual responses.
 
-```
-User Query ──► LLM ──► Response
-```
+### :material-robot-outline: Traditional LLM
 
-**Limitations**:
-- Limited to training data
-- Can hallucinate facts
-- No access to private data
-
-### RAG-Enhanced LLM
-
-```
-User Query ──► [Retrieval] ──► Context + Query ──► LLM ──► Response
-                    ▲
-                    │
-              [Vector Store]
+```mermaid
+graph LR
+    A[👤 User Query] --> B[🤖 LLM] --> C[📝 Response]
+    style A fill:#e3f2fd
+    style C fill:#ffebee
 ```
 
-**Benefits**:
-- ✅ Access to current information
-- ✅ Reduced hallucinations
-- ✅ Citations and sources
-- ✅ Private data integration
+!!! failure "Limitations"
+    - :material-close-circle: Limited to training data cutoff
+    - :material-alert: Can hallucinate facts
+    - :material-lock-off: No access to private/recent data
+    - :material-source-branch-remove: No source citations
 
-## Key Components
+### :material-brain-circuit: RAG-Enhanced LLM
 
-### 1. Embeddings
+```mermaid
+graph LR
+    A[👤 User Query] --> B[🔍 Retrieval]
+    B --> C[💾 Vector Store]
+    C --> D[📚 Relevant Docs]
+    D --> E[📋 Context + Query]
+    E --> F[🤖 LLM]
+    F --> G[✨ Response]
+    style A fill:#e3f2fd
+    style G fill:#c8e6c9
+```
 
-Embeddings convert text into numerical vectors that capture semantic meaning.
+!!! success "Benefits"
+    - :material-check-circle: Access to current information
+    - :material-shield-check: Reduced hallucinations
+    - :material-source-branch-check: Citations and sources
+    - :material-database-lock: Private data integration
+    - :material-update: Always up-to-date knowledge
 
-```python
+---
+
+## :material-puzzle: Key Components
+
+!!! info "The Building Blocks of RAG"
+
+### 1. :material-vector-polyline: Embeddings
+
+!!! abstract "Semantic Vector Representations"
+    Embeddings convert text into numerical vectors that capture semantic meaning.
+
+```python title="embedding_example.py" hl_lines="2 3"
 text = "Hello world"
 vector = embedding.embed(text)
 # [0.23, -0.45, 0.12, ...]  # 768 dimensions
 ```
 
-**Similar texts have similar vectors**:
+**Semantic Similarity:**
+
 ```python
-embed("dog") ≈ embed("puppy")  # High similarity
-embed("dog") ≠ embed("computer")  # Low similarity
+embed("dog") ≈ embed("puppy")       # High similarity ✓
+embed("dog") ≠ embed("computer")    # Low similarity ✗
 ```
 
-### 2. Vector Stores
+!!! tip "Key Property"
+    **Similar texts produce similar vectors** — enabling semantic search beyond keyword matching!
 
-Vector stores enable efficient similarity search over large collections of embeddings.
+<div class="grid cards" markdown>
 
-```python
+- :material-ruler: **Dense Vectors**
+
+    ---
+
+    Typically 384-4096 dimensions per text
+
+- :material-semantic-web: **Semantic Understanding**
+
+    ---
+
+    Captures context, synonyms, relationships
+
+- :material-speedometer: **Efficient Search**
+
+    ---
+
+    Fast vector similarity operations
+
+- :material-language: **Language Agnostic**
+
+    ---
+
+    Works across multiple languages
+
+</div>
+
+### 2. :material-database: Vector Stores
+
+!!! abstract "Efficient Similarity Search"
+    Vector stores enable lightning-fast similarity search over millions of embeddings.
+
+```python title="vector_store_example.py" hl_lines="3-7 10-14"
 # Store documents as vectors
 store.insert(
     collection="docs",
-    vectors=[vector1, vector2, ...],
-    texts=["text1", "text2", ...],
+    vectors=[vector1, vector2, vector3],
+    texts=["text1", "text2", "text3"],
+    metadata=[{"page": 1}, {"page": 2}, {"page": 3}],
 )
 
 # Find similar documents
@@ -70,17 +122,54 @@ results = store.search(
 )
 ```
 
-**Popular vector stores**:
-- **Milvus**: High-performance, scalable
-- **Pinecone**: Managed service
-- **Qdrant**: Developer-friendly
-- **Weaviate**: GraphQL interface
+**Popular Vector Stores:**
 
-### 3. LLMs (Large Language Models)
+=== "Milvus"
+    ```python
+    # High-performance, scalable
+    store = MilvusVectorStore(
+        host="localhost",
+        port="19530",
+        collection_name="docs"
+    )
+    ```
+    
+    - :material-speedometer: Production-ready performance
+    - :material-scale-balance: Horizontal scalability
+    - :material-gpu: GPU acceleration support
 
-LLMs generate human-like text based on input prompts.
+=== "Pinecone"
+    ```python
+    # Managed cloud service
+    store = PineconeVectorStore(
+        api_key="your-key",
+        environment="us-west1-gcp"
+    )
+    ```
+    
+    - :material-cloud: Fully managed
+    - :material-auto-fix: Auto-scaling
+    - :material-shield-check: Enterprise security
 
-```python
+=== "Qdrant"
+    ```python
+    # Developer-friendly
+    store = QdrantVectorStore(
+        url="http://localhost:6333",
+        collection_name="docs"
+    )
+    ```
+    
+    - :material-api: Rich filtering capabilities
+    - :material-docker: Easy Docker setup
+    - :material-code-json: JSON-based schema
+
+### 3. :material-robot: LLMs (Large Language Models)
+
+!!! abstract "Natural Language Generation"
+    LLMs generate human-like text based on input prompts and retrieved context.
+
+```python title="llm_example.py" hl_lines="2-6"
 prompt = """
 Context: {retrieved_context}
 
@@ -91,38 +180,116 @@ Answer:"""
 response = llm.generate(prompt)
 ```
 
-**Popular LLMs**:
-- **OpenAI GPT-4**: Most capable
-- **Anthropic Claude**: Long context
-- **Ollama/Llama**: Local/private
-- **Mistral**: Efficient
+**Popular LLMs:**
 
-### 4. Chunking
+| Model | Provider | Context | Quality | Cost |
+|-------|----------|---------|---------|------|
+| **GPT-4** | OpenAI | 128K | :material-star::material-star::material-star::material-star::material-star: | $$$ |
+| **Claude 3** | Anthropic | 200K | :material-star::material-star::material-star::material-star::material-star: | $$$ |
+| **Llama 3** | Meta (Ollama) | 8K | :material-star::material-star::material-star::material-star: | Free |
+| **Mistral** | Mistral (Ollama) | 32K | :material-star::material-star::material-star::material-star: | Free |
 
-Splitting documents into manageable pieces for embedding and retrieval.
+!!! tip "Choosing an LLM"
+    - **Production**: GPT-4 or Claude 3 for best quality
+    - **Development**: Ollama models for free local testing
+    - **Cost-sensitive**: GPT-3.5 Turbo for balanced performance
 
-```python
-document = "Very long document..."
+### 4. :material-content-cut: Chunking
+
+!!! abstract "Document Segmentation"
+    Splitting documents into manageable pieces for optimal embedding and retrieval.
+
+```python title="chunking_example.py" hl_lines="3-6"
+document = "Very long document with lots of content..."
 
 chunks = chunker.chunk(
     document,
     chunk_size=512,
     chunk_overlap=50,
 )
-# ["chunk1...", "chunk2...", ...]
+# ["chunk1...", "chunk2...", "chunk3..."]
 ```
 
-**Chunking strategies**:
-- **Fixed size**: Simple, consistent
-- **Sentence-based**: Semantic boundaries
-- **Recursive**: Hierarchical splitting
-- **Token-aware**: LLM token limits
+**Chunking Strategies:**
 
-## The RAG Workflow
+<div class="grid cards" markdown>
 
-### Indexing Phase
+- :material-format-size: **Fixed Size**
 
-```python
+    ---
+
+    ```python
+    chunks = fixed_chunker.chunk(
+        text, chunk_size=512
+    )
+    ```
+    
+    Simple and consistent chunk sizes
+
+- :material-format-text-variant: **Sentence-Based**
+
+    ---
+
+    ```python
+    chunks = sentence_chunker.chunk(
+        text, max_sentences=10
+    )
+    ```
+    
+    Respects semantic boundaries
+
+- :material-file-tree: **Recursive**
+
+    ---
+
+    ```python
+    chunks = recursive_chunker.chunk(
+        text, separators=["\n\n", "\n", ". "]
+    )
+    ```
+    
+    Hierarchical splitting strategy
+
+- :material-code-tags: **Token-Aware**
+
+    ---
+
+    ```python
+    chunks = token_chunker.chunk(
+        text, max_tokens=800
+    )
+    ```
+    
+    Respects LLM token limits
+
+</div>
+
+!!! warning "Chunking Best Practices"
+    - **Chunk size**: 300-800 tokens optimal for most use cases
+    - **Overlap**: 10-20% overlap preserves context at boundaries
+    - **Strategy**: Match chunking to document structure (headings, paragraphs)
+
+---
+
+## :material-workflow: The RAG Workflow
+
+!!! info "End-to-End Process"
+
+### :material-upload: Indexing Phase
+
+```mermaid
+graph TB
+    A[📁 Documents] --> B[✂️ Chunking]
+    B --> C[📝 Text Chunks]
+    C --> D[🔢 Embedding]
+    D --> E[📊 Vectors]
+    E --> F[💾 Vector Store]
+    
+    style A fill:#e3f2fd
+    style F fill:#c8e6c9
+```
+
+```python title="indexing_pipeline.py" linenums="1" hl_lines="2 5 8 11-17"
 # 1. Load documents
 documents = load_documents("./data/")
 
@@ -137,16 +304,54 @@ store.insert(
     collection="knowledge_base",
     vectors=vectors,
     texts=chunks,
-    metadata=[{"source": doc.source} for doc in documents],
+    metadata=[{"source": doc.source, "page": doc.page} 
+              for doc in documents],
 )
 ```
 
-### Query Phase
+### :material-magnify: Query Phase
 
-```python
+```mermaid
+graph TB
+    A[💬 User Query] --> B[🔢 Embed Query]
+    B --> C[📊 Query Vector]
+    C --> D[🔍 Similarity Search]
+    D --> E[💾 Vector Store]
+    E --> F[📚 Retrieved Docs]
+    F --> G[📋 Build Context]
+    G --> H[🤖 LLM Generate]
+    H --> I[✨ Final Answer]
+    
+    style A fill:#e3f2fd
+    style I fill:#c8e6c9
+```
+
+```python title="query_pipeline.py" linenums="1" hl_lines="2 5 8 11 14"
 # 1. Embed user query
 query = "What is RAG?"
 query_vector = embedding.embed(query)
+
+# 2. Search for similar documents
+results = store.search(
+    collection="knowledge_base",
+    query_vector=query_vector,
+    top_k=5,
+)
+
+# 3. Build context from results
+context = "\n\n".join([r.text for r in results])
+
+# 4. Generate answer with LLM
+prompt = f"""
+Context: {context}
+
+Question: {query}
+
+Answer:"""
+
+answer = llm.generate(prompt)
+print(answer)
+```
 
 # 2. Retrieve similar chunks
 results = store.search(

@@ -1,30 +1,49 @@
-# Hybrid Search Implementation
+# :material-magnify-expand: Hybrid Search Implementation
 
-Learn how to combine vector search with keyword search for more accurate and robust retrieval. Hybrid search leverages the strengths of both approaches to improve search quality.
+!!! success "Best of Both Worlds"
+    Learn how to combine vector search with keyword search for more accurate and robust retrieval. Hybrid search leverages the strengths of both approaches to improve search quality.
 
-## Why Hybrid Search?
+---
 
-Vector search and keyword search each have strengths and weaknesses:
+## :material-help-circle: Why Hybrid Search?
 
-**Vector Search:**
-- ✅ Semantic understanding
-- ✅ Finds conceptually similar content
-- ✅ Handles synonyms and paraphrases
-- ❌ May miss exact keyword matches
-- ❌ Less effective for proper nouns/codes
+!!! info "Complementary Strengths"
+    Vector search and keyword search each have unique advantages.
 
-**Keyword Search:**
-- ✅ Exact match precision
-- ✅ Great for proper nouns, codes, IDs
-- ✅ Fast and deterministic
-- ❌ No semantic understanding
-- ❌ Misses synonyms
+=== "🔍 Vector Search"
 
-**Hybrid Search:**
-- ✅ Best of both worlds
-- ✅ Semantic + exact matching
-- ✅ More robust retrieval
-- ✅ Better overall accuracy
+    **Advantages:**
+    
+    - ✅ Semantic understanding
+    - ✅ Finds conceptually similar content
+    - ✅ Handles synonyms and paraphrases
+    
+    **Limitations:**
+    
+    - ❌ May miss exact keyword matches
+    - ❌ Less effective for proper nouns/codes
+
+=== "📝 Keyword Search"
+
+    **Advantages:**
+    
+    - ✅ Exact match precision
+    - ✅ Great for proper nouns, codes, IDs
+    - ✅ Fast and deterministic
+    
+    **Limitations:**
+    
+    - ❌ No semantic understanding
+    - ❌ Misses synonyms
+
+=== "⚡ Hybrid Search"
+
+    **Benefits:**
+    
+    - ✅ Best of both worlds
+    - ✅ Semantic + exact matching
+    - ✅ More robust retrieval
+    - ✅ Better overall accuracy
 
 ## Basic Hybrid Search
 

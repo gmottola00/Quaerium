@@ -1,12 +1,18 @@
-# Production Setup Guide
+# :material-server-network: Production Setup Guide
 
-Deploy your RAG application to production with Docker, monitoring, scaling, and best practices.
+!!! warning "Deploy to Production"
+    Deploy your RAG application to production with Docker, monitoring, scaling, and best practices.
 
-## Docker Deployment
+---
 
-### Complete Docker Setup
+## :material-docker: Docker Deployment
 
-```yaml
+### :material-cog: Complete Docker Setup
+
+!!! tip "Docker Compose Configuration"
+    Use this complete docker-compose file for production deployment.
+
+```yaml title="docker-compose.yml" linenums="1" hl_lines="3 6 20 33"
 # docker-compose.yml
 version: '3.8'
 

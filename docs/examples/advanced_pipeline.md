@@ -1,12 +1,18 @@
-# Advanced RAG Pipeline
+# :material-tune-vertical: Advanced RAG Pipeline
 
-Learn how to build a production-ready RAG pipeline with advanced features like query rewriting, reranking, conversational memory, and multi-query strategies.
+!!! success "Production-Ready Features"
+    Learn how to build a production-ready RAG pipeline with advanced features like query rewriting, reranking, conversational memory, and multi-query strategies.
 
-## Complete Advanced Pipeline
+---
 
-### Full-Featured Implementation
+## :material-rocket: Complete Advanced Pipeline
 
-```python
+### :material-star: Full-Featured Implementation
+
+!!! example "All Features Enabled"
+    This implementation includes all advanced RAG capabilities.
+
+```python title="advanced_pipeline.py" linenums="1" hl_lines="9-19 34-36 39"
 from rag_toolkit import RagPipeline
 from rag_toolkit.infra.embedding import OpenAIEmbedding
 from rag_toolkit.infra.llm import OpenAILLM

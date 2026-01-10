@@ -1,86 +1,161 @@
-# Installation
+# :material-download: Installation
 
-## Requirements
+Get RAG Toolkit up and running in minutes with flexible installation options tailored to your needs.
 
-- Python 3.11 or higher
-- pip (recommended) or conda
-- Git (for development installation)
+---
 
-## Basic Installation
+## :material-check-circle: Requirements
 
-Install the core library with minimal dependencies:
+!!! info "System Requirements"
+    
+    === "Minimum"
+        - **Python**: 3.11 or higher
+        - **Package Manager**: pip or conda
+        - **Memory**: 2GB RAM minimum
+        - **Disk**: 500MB free space
+    
+    === "Recommended"
+        - **Python**: 3.12+
+        - **Package Manager**: pip 24.0+
+        - **Memory**: 8GB RAM (for LLM operations)
+        - **Disk**: 5GB free space
+        - **GPU**: CUDA-compatible (optional, for faster inference)
+    
+    === "Development"
+        - All recommended requirements
+        - **Git**: For version control
+        - **Docker**: For running services
+        - **Make**: For build automation
 
-```bash
-pip install rag-toolkit
-```
+---
 
-This includes:
-- Core protocols and types
-- Pydantic models
-- Basic infrastructure
+## :material-package: Basic Installation
 
-## Optional Dependencies
+!!! success "Quick Start"
+    Install the core library with minimal dependencies:
+    
+    ```bash
+    pip install rag-toolkit
+    ```
 
-rag-toolkit uses optional dependencies to keep the core library lightweight. Install only what you need:
+**What's included:**
 
-### LLM Providers
+- :material-shield-check: Core protocols and types
+- :material-code-braces: Pydantic models for validation
+- :material-application-cog: Basic infrastructure components
 
-**Ollama** (local LLM server):
-```bash
-pip install rag-toolkit[ollama]
-```
+---
 
-**OpenAI** (GPT models):
-```bash
-pip install rag-toolkit[openai]
-```
+## :material-puzzle: Optional Dependencies
 
-### Document Parsing
+!!! tip "Modular Installation"
+    RAG Toolkit uses optional dependencies to keep the core library lightweight. Install only what you need!
 
-**PDF Support**:
-```bash
-pip install rag-toolkit[pdf]
-```
+### :material-robot: LLM Providers
 
-**DOCX Support**:
-```bash
-pip install rag-toolkit[docx]
-```
+<div class="grid cards" markdown>
 
-**OCR Support** (for scanned documents):
-```bash
-pip install rag-toolkit[ocr]
-```
+- :material-server: **Ollama** — Local LLM server
 
-### Language Detection
+    ---
 
-**Language Detection**:
+    ```bash
+    pip install rag-toolkit[ollama]
+    ```
+
+    Perfect for privacy-focused deployments and offline use.
+
+- :material-openai: **OpenAI** — GPT models
+
+    ---
+
+    ```bash
+    pip install rag-toolkit[openai]
+    ```
+
+    Access state-of-the-art models like GPT-4 and GPT-3.5.
+
+</div>
+
+### :material-file-document: Document Parsing
+
+<div class="grid cards" markdown>
+
+- :material-file-pdf-box: **PDF Support**
+
+    ---
+
+    ```bash
+    pip install rag-toolkit[pdf]
+    ```
+
+    Parse PDF documents with advanced layout detection.
+
+- :material-file-word: **DOCX Support**
+
+    ---
+
+    ```bash
+    pip install rag-toolkit[docx]
+    ```
+
+    Extract content from Microsoft Word documents.
+
+- :material-scanner: **OCR Support**
+
+    ---
+
+    ```bash
+    pip install rag-toolkit[ocr]
+    ```
+
+    Extract text from scanned documents and images.
+
+</div>
+
+### :material-translate: Language Detection
+
 ```bash
 pip install rag-toolkit[lang]
 ```
 
-### Combined Installations
+Automatic language detection for multilingual document processing.
 
-**All LLM providers**:
-```bash
-pip install rag-toolkit[ollama,openai]
-```
+---
 
-**All document parsers**:
-```bash
-pip install rag-toolkit[pdf,docx,ocr]
-```
+### :material-package-variant: Combined Installations
 
-**Everything**:
-```bash
-pip install rag-toolkit[all]
-```
+!!! example "Common Combinations"
+    
+    === "All LLM Providers"
+        ```bash
+        pip install rag-toolkit[ollama,openai]
+        ```
+        
+        Install support for both local and cloud LLM providers.
+    
+    === "All Document Parsers"
+        ```bash
+        pip install rag-toolkit[pdf,docx,ocr]
+        ```
+        
+        Handle any document format: PDFs, Word docs, and scanned images.
+    
+    === "Everything"
+        ```bash
+        pip install rag-toolkit[all]
+        ```
+        
+        Get the full RAG Toolkit experience with all optional features.
 
-## Development Installation
+---
 
-For contributing to the project or running from source:
+## :material-wrench: Development Installation
 
-```bash
+!!! warning "For Contributors"
+    This installation method is for developers contributing to RAG Toolkit or running from source.
+
+```bash title="Clone and Install"
 # Clone the repository
 git clone https://github.com/gmottola00/rag-toolkit.git
 cd rag-toolkit
@@ -89,16 +164,27 @@ cd rag-toolkit
 pip install -e ".[dev,docs]"
 ```
 
-This installs:
-- All dev tools (pytest, mypy, ruff, black, isort)
-- Documentation tools (Sphinx, Furo theme)
-- All optional dependencies for testing
+**Development tools included:**
 
-## Verification
+<div class="grid" markdown>
 
-Verify your installation works:
+- :material-test-tube: **Testing**: pytest, pytest-cov, pytest-asyncio
+- :material-code-tags: **Type Checking**: mypy with strict mode
+- :material-format-paint: **Formatting**: black, isort for consistent style
+- :material-bug: **Linting**: ruff for fast Python linting
+- :material-book-open: **Documentation**: MkDocs Material ecosystem
+- :material-puzzle: **All Features**: All optional dependencies for comprehensive testing
 
-```python
+</div>
+
+---
+
+## :material-check-all: Verification
+
+!!! success "Test Your Installation"
+    Run this script to verify everything is working correctly:
+
+```python title="verify_installation.py" linenums="1" hl_lines="3-5"
 # Test basic imports
 from rag_toolkit import RagPipeline
 from rag_toolkit.core import VectorStoreClient, EmbeddingClient, LLMClient
@@ -119,114 +205,227 @@ except ImportError:
     print("ℹ️  OpenAI not installed (optional)")
 ```
 
-## External Services
+!!! tip "Expected Output"
+    You should see at minimum:
+    ```
+    ✅ Core installation verified!
+    ```
+    
+    Additional messages indicate which optional features are available.
 
-### Milvus (Vector Store)
+---
 
-rag-toolkit uses Milvus as the default vector store. Run it with Docker:
+## :material-cloud: External Services
 
-```bash
-# Using docker-compose (recommended)
-docker-compose up -d milvus
+### :material-database: Milvus (Vector Store)
 
-# Or using the Makefile
-make docker-milvus
-```
+!!! abstract "Default Vector Database"
+    RAG Toolkit uses Milvus as the default vector store for high-performance similarity search.
 
-Alternative: Use Milvus Lite (embedded):
-```bash
-pip install milvus
-```
+=== "Docker Compose (Recommended)"
+    ```bash
+    docker-compose up -d milvus
+    ```
+    
+    Starts Milvus with optimal production settings.
 
-### Ollama (Optional)
+=== "Makefile"
+    ```bash
+    make docker-milvus
+    ```
+    
+    Convenient shortcut for Docker Compose.
 
-For local LLM inference:
+=== "Milvus Lite (Embedded)"
+    ```bash
+    pip install milvus
+    ```
+    
+    Lightweight option for development and testing.
 
-```bash
-# macOS/Linux
-curl -fsSL https://ollama.ai/install.sh | sh
+### :material-robot-outline: Ollama (Optional)
 
-# Or with Docker
-docker run -d -p 11434:11434 ollama/ollama
+!!! info "Local LLM Server"
+    Run large language models locally for privacy and cost savings.
 
-# Pull a model
-ollama pull llama2
-ollama pull nomic-embed-text
-```
+=== "macOS/Linux"
+    ```bash
+    curl -fsSL https://ollama.ai/install.sh | sh
+    ```
 
-## Troubleshooting
+=== "Docker"
+    ```bash
+    docker run -d -p 11434:11434 ollama/ollama
+    ```
 
-### Import Errors
+=== "Pull Models"
+    ```bash
+    # Language model
+    ollama pull llama2
+    
+    # Embedding model
+    ollama pull nomic-embed-text
+    ```
 
-If you see `ModuleNotFoundError`, install the required optional dependency:
+---
 
-```python
-# Error: No module named 'ollama'
-# Solution:
-pip install rag-toolkit[ollama]
-```
+## :material-help-circle: Troubleshooting
 
-### Type Checking Issues
+!!! question "Common Issues"
 
-If using mypy, install type stubs:
-```bash
-pip install types-requests
-```
+### :material-alert: Import Errors
 
-### Docker Issues
+!!! failure "Problem"
+    ```python
+    ModuleNotFoundError: No module named 'ollama'
+    ```
 
-If Milvus won't start:
-```bash
-# Check if ports are available
-lsof -i :19530
+!!! success "Solution"
+    Install the required optional dependency:
+    ```bash
+    pip install rag-toolkit[ollama]
+    ```
 
-# Clean up and restart
-docker-compose down -v
-docker-compose up -d milvus
-```
+### :material-type-check: Type Checking Issues
 
-## Next Steps
+!!! failure "Problem"
+    Mypy reports missing type stubs for third-party libraries.
 
-- Follow the [Quick Start](quickstart.md) guide
-- Learn about [Core Concepts](user_guide/core_concepts.md)
-- Explore [Examples](examples/index.md)
+!!! success "Solution"
+    ```bash
+    pip install types-requests types-urllib3
+    ```
 
-## Platform-Specific Notes
+### :material-docker: Docker Issues
 
-### macOS
+!!! failure "Problem"
+    Milvus container won't start or connection refused.
 
-On Apple Silicon (M1/M2/M3), some dependencies may need Rosetta 2:
-```bash
-softwareupdate --install-rosetta
-```
+!!! success "Solution"
+    ```bash
+    # Check if ports are available
+    lsof -i :19530
+    
+    # Clean up and restart
+    docker-compose down -v
+    docker-compose up -d milvus
+    
+    # Check container logs
+    docker logs milvus-standalone
+    ```
 
-### Linux
+---
 
-Ensure you have Python 3.11+ development headers:
-```bash
-# Ubuntu/Debian
-sudo apt-get install python3.11-dev
+## :material-compass: Next Steps
 
-# CentOS/RHEL
-sudo yum install python311-devel
-```
+<div class="grid cards" markdown>
 
-### Windows
+- :material-rocket-launch: **Quick Start**
 
-Use WSL2 for best compatibility:
-```bash
-wsl --install
-```
+    ---
 
-## Update Instructions
+    Build your first RAG application in 5 minutes
 
-To update to the latest version:
+    [:material-arrow-right: Get Started](quickstart.md)
 
-```bash
-pip install --upgrade rag-toolkit
-```
+- :material-school: **Core Concepts**
 
-To update with all optional dependencies:
-```bash
-pip install --upgrade rag-toolkit[all]
-```
+    ---
+
+    Learn the fundamental principles of RAG Toolkit
+
+    [:material-arrow-right: Learn More](../guides/core_concepts.md)
+
+- :material-code-braces: **Examples**
+
+    ---
+
+    Explore real-world RAG applications
+
+    [:material-arrow-right: View Examples](../examples/index.md)
+
+- :material-api: **API Reference**
+
+    ---
+
+    Complete API documentation
+
+    [:material-arrow-right: Read Docs](../api/index.md)
+
+</div>
+
+---
+
+## :material-laptop: Platform-Specific Notes
+
+=== ":material-apple: macOS"
+    
+    !!! warning "Apple Silicon (M1/M2/M3)"
+        Some dependencies may need Rosetta 2:
+        ```bash
+        softwareupdate --install-rosetta
+        ```
+    
+    !!! tip "Homebrew Users"
+        Consider installing Python via Homebrew for better compatibility:
+        ```bash
+        brew install python@3.12
+        ```
+
+=== ":material-linux: Linux"
+    
+    !!! info "Development Headers Required"
+        Ensure you have Python development headers:
+        
+        ```bash title="Ubuntu/Debian"
+        sudo apt-get update
+        sudo apt-get install python3.11-dev build-essential
+        ```
+        
+        ```bash title="CentOS/RHEL"
+        sudo yum install python311-devel gcc gcc-c++
+        ```
+        
+        ```bash title="Arch Linux"
+        sudo pacman -S python python-pip base-devel
+        ```
+
+=== ":material-microsoft-windows: Windows"
+    
+    !!! warning "WSL2 Recommended"
+        For best compatibility, use Windows Subsystem for Linux:
+        ```bash
+        wsl --install
+        ```
+    
+    !!! info "Native Windows"
+        If using native Windows:
+        
+        1. Install [Python from python.org](https://www.python.org/downloads/)
+        2. Install [Visual C++ Build Tools](https://visualstudio.microsoft.com/downloads/)
+        3. Use PowerShell or Windows Terminal
+
+---
+
+## :material-update: Update Instructions
+
+!!! tip "Stay Up to Date"
+    Keep your RAG Toolkit installation current for the latest features and security patches.
+
+=== "Core Library"
+    ```bash
+    pip install --upgrade rag-toolkit
+    ```
+
+=== "With All Features"
+    ```bash
+    pip install --upgrade rag-toolkit[all]
+    ```
+
+=== "Check Version"
+    ```bash
+    python -c "import rag_toolkit; print(rag_toolkit.__version__)"
+    ```
+
+!!! info "Release Notes"
+    Check the [Changelog](../development/changelog.md) for what's new in each version.
