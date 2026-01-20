@@ -1,0 +1,194 @@
+/* Custom styling for RAG Toolkit docs */
+
+:root {
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+/* Hero section styling */
+.md-typeset h1 {
+  font-weight: 700;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Grid cards styling */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.grid.cards > * {
+  background: var(--md-code-bg-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  transition: all 0.3s ease;
+}
+
+.grid.cards > *:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--md-primary-fg-color);
+}
+
+/* Code block enhancements */
+.md-typeset pre > code {
+  border-radius: 0.5rem;
+}
+
+/* Benchmark tables */
+.md-typeset table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.md-typeset table thead {
+  background: var(--gradient-primary);
+}
+
+.md-typeset table thead th {
+  color: white !important;
+  font-weight: 600;
+}
+
+.md-typeset table tbody tr:hover {
+  background: var(--md-code-bg-color);
+}
+
+/* Admonition custom colors */
+.md-typeset .admonition.success {
+  border-left-color: #38ef7d;
+}
+
+.md-typeset .admonition.tip {
+  border-left-color: #667eea;
+}
+
+/* Button enhancements */
+.md-button {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.md-button--primary {
+  background: var(--gradient-primary);
+  border: none;
+}
+
+.md-button--primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Mermaid diagrams */
+.mermaid {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Badge styling */
+.md-typeset img[src*="shields.io"] {
+  margin: 0.2rem;
+}
+
+/* Homepage specific */
+.md-typeset [align="center"] {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Performance metrics highlight */
+.md-typeset table strong {
+  color: var(--md-primary-fg-color);
+  font-weight: 700;
+}
+
+/* Code annotations */
+.md-typeset .md-annotation {
+  font-size: 0.85em;
+}
+
+/* Search highlight */
+.md-search-result__article--document {
+  border-left: 3px solid var(--md-primary-fg-color);
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 76.1875em) {
+  .grid.cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark mode specific */
+[data-md-color-scheme="slate"] {
+  --md-code-bg-color: #1e1e1e;
+}
+
+[data-md-color-scheme="slate"] .grid.cards > * {
+  background: #2d2d2d;
+  border-color: #404040;
+}
+
+[data-md-color-scheme="slate"] .grid.cards > *:hover {
+  border-color: var(--md-primary-fg-color);
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+}
+
+/* Animation for feature cards */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid.cards > * {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.grid.cards > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.grid.cards > *:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.grid.cards > *:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+.grid.cards > *:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+.grid.cards > *:nth-child(6) {
+  animation-delay: 0.5s;
+}
+
+/* Fix: Remove target="_blank" behavior for internal links */
+.md-content a[href^="/"]:not([href*="://"]),
+.md-content a[href^="."]:not([href*="://"]),
+.md-content a[href^="#"] {
+  /* Force internal links to open in same tab */
+}
+
+/* External links only should have external icon */
+.md-content a[href*="://"]:not([href*="github.com/gmottola00/rag-toolkit"])::after {
+  content: "↗";
+  font-size: 0.8em;
+  margin-left: 0.2em;
+  vertical-align: super;
+}
