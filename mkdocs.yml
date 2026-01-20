@@ -72,9 +72,7 @@ theme:
     edit: material/pencil
     view: material/eye
     annotation: material/plus-circle
-  
-  logo: assets/logo.png
-  favicon: assets/favicon.ico
+    logo: material/book-search
 
 extra:
   social:
@@ -243,6 +241,7 @@ nav:
     - Production Setup: examples/production_setup.md
   
   - Tools:
+    - tools/index.md
     - Migration: tools/migration.md
     - Benchmarks: tools/benchmarks.md
     - Benchmark Results: tools/benchmark_results.md
