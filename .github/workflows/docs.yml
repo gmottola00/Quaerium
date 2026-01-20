@@ -1,4 +1,4 @@
-name: Build and Deploy Sphinx Documentation
+name: Build and Deploy MkDocs Documentation
 
 on:
   push:
@@ -10,11 +10,13 @@ on:
       - 'src/**'
       - '.github/workflows/docs.yml'
       - 'pyproject.toml'
+      - 'mkdocs.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'docs/**'
+      - 'mkdocs.yml'
   workflow_dispatch:  # Allow manual triggers
 
 # Sets permissions for GitHub Pages deployment
@@ -24,18 +26,18 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Full history for git info in docs
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Cache pip packages
         uses: actions/cache@v4
         with:
@@ -43,85 +45,54 @@ jobs:
           key: ${{ runner.os }}-pip-docs-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
             ${{ runner.os }}-pip-docs-
-      
+
       - name: Install dependencies and package
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[docs]"
-        env:
-          SPHINX_BUILD: "true"
-      
+
       - name: Verify package installation
         run: |
-          python -c "import rag_toolkit; print(f'✅ Package installed: {rag_toolkit.__version__}')"
-        env:
-          SPHINX_BUILD: "true"
-      
-      - name: Build Sphinx documentation
-        run: |
-          cd docs
-          make clean
-          make html
-        env:
-          SPHINXOPTS: "--keep-going --color"
-          SPHINX_BUILD: "true"
-      
-      - name: Check for broken links
-        run: |
-          cd docs
-          make linkcheck
-        continue-on-error: true
-      
+          python -c "import rag_toolkit; print(f'Package installed: {rag_toolkit.__version__}')"
+
+      - name: Build MkDocs documentation
+        run: mkdocs build --strict
+
       - name: Check documentation size
         run: |
-          du -sh docs/_build/html/
-          echo "📊 Documentation built successfully!"
+          du -sh site/
+          echo "Documentation built successfully!"
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+        with:
+          fetch-depth: 0  # Full history for git-revision-date plugin
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Install dependencies and package
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[docs]"
-      
-      - name: Build Sphinx documentation
-        run: |
-          cd docs
-          make clean
-          make html
-      
-      - name: Add .nojekyll file
-        run: touch docs/_build/html/.nojekyll
-      
+
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs/_build/html
-          publish_branch: gh-pages
-          force_orphan: true
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'docs: deploy documentation from ${{ github.sha }}'
-      
+        run: mkdocs gh-deploy --force
+
       - name: Deployment summary
         run: |
-          echo "✅ Documentation deployed to GitHub Pages"
-          echo "🌐 URL: https://gmottola00.github.io/rag-toolkit/"
+          echo "Documentation deployed to GitHub Pages"
+          echo "URL: https://gmottola00.github.io/rag-toolkit/"
           echo ""
-          echo "⚙️  Configure GitHub Pages:"
+          echo "Configure GitHub Pages:"
           echo "   1. Go to: https://github.com/gmottola00/Rag-Toolkit/settings/pages"
           echo "   2. Under 'Source', select: Deploy from a branch"
           echo "   3. Under 'Branch', select: gh-pages / (root)"
