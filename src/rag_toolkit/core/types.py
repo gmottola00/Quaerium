@@ -20,6 +20,9 @@ VectorMetadata: TypeAlias = dict[str, Any]
 # Embedding vector
 EmbeddingVector: TypeAlias = list[float]
 
+# Graph metadata can be any JSON-serializable dict
+GraphMetadata: TypeAlias = dict[str, Any]
+
 
 # ============================================================================
 # Data Classes
@@ -66,7 +69,7 @@ class SearchResult:
 class CollectionInfo:
     """
     Information about a vector collection.
-    
+
     Attributes:
         name: Collection name
         dimension: Vector dimension
@@ -82,9 +85,70 @@ class CollectionInfo:
     description: str | None = None
 
 
+@dataclass(frozen=True)
+class GraphNode:
+    """
+    Represents a node in a graph database.
+
+    Attributes:
+        id: Unique identifier for the node (can be internal DB ID or custom ID)
+        label: Node label/type (e.g., "Document", "Chunk", "Entity")
+        properties: Node properties as key-value pairs
+
+    Example:
+        >>> node = GraphNode(
+        ...     id="doc_123",
+        ...     label="Document",
+        ...     properties={
+        ...         "title": "User Manual",
+        ...         "source": "manual.pdf",
+        ...         "page_count": 42
+        ...     }
+        ... )
+        >>> print(f"{node.label}: {node.properties['title']}")
+    """
+
+    id: str
+    label: str
+    properties: GraphMetadata
+
+
+@dataclass(frozen=True)
+class GraphRelationship:
+    """
+    Represents a relationship between two nodes in a graph database.
+
+    Attributes:
+        id: Unique identifier for the relationship (internal DB ID)
+        type: Relationship type (e.g., "HAS_CHUNK", "RELATES_TO", "MENTIONS")
+        from_node_id: Source node ID
+        to_node_id: Target node ID
+        properties: Relationship properties as key-value pairs
+
+    Example:
+        >>> rel = GraphRelationship(
+        ...     id="rel_456",
+        ...     type="HAS_CHUNK",
+        ...     from_node_id="doc_123",
+        ...     to_node_id="chunk_1",
+        ...     properties={"position": 0, "confidence": 0.95}
+        ... )
+        >>> print(f"{rel.type}: {rel.from_node_id} -> {rel.to_node_id}")
+    """
+
+    id: str
+    type: str
+    from_node_id: str
+    to_node_id: str
+    properties: GraphMetadata
+
+
 __all__ = [
     "VectorMetadata",
     "EmbeddingVector",
     "SearchResult",
     "CollectionInfo",
+    "GraphMetadata",
+    "GraphNode",
+    "GraphRelationship",
 ]

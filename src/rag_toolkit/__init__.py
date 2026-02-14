@@ -11,6 +11,8 @@ Key Features:
     - Advanced RAG pipeline (query rewriting, reranking, context assembly)
     - Document parsing (PDF, DOCX, text)
     - Smart chunking strategies (dynamic, token-based)
+    - LLM-based metadata extraction for structured information
+    - Metadata enrichment for improved retrieval quality
 
 Example:
     >>> from rag_toolkit import RagPipeline, OllamaEmbedding, OllamaLLMClient
@@ -41,9 +43,10 @@ __license__ = "MIT"
 # Core Protocols (Type Definitions)
 # ============================================================================
 
-from rag_toolkit.core.chunking import Chunk, TokenChunk
+from rag_toolkit.core.chunking import Chunk, TokenChunk, MetadataEnricher
 from rag_toolkit.core.embedding import EmbeddingClient
 from rag_toolkit.core.llm import LLMClient
+from rag_toolkit.core.metadata import LLMMetadataExtractor
 from rag_toolkit.core.vectorstore import VectorStoreClient
 
 # ============================================================================
@@ -140,6 +143,9 @@ __all__ = [
     "EmbeddingClient",
     "LLMClient",
     "VectorStoreClient",
+    # Metadata & Enrichment
+    "LLMMetadataExtractor",
+    "MetadataEnricher",
     # Lazy loaders for implementations
     "get_ollama_embedding",
     "get_openai_embedding",
