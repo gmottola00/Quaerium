@@ -6,9 +6,11 @@ hide:
 
 <div align="center" markdown="1">
 
-# :rocket: RAG Toolkit
+# 🏛️ Quaerium
 
-### Production-ready RAG library with multi-vectorstore support
+*"Quaerere" (Latin): to seek, to search, to inquire*
+
+### Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture
 
 [Get Started](getting_started/installation.md){ .md-button .md-button--primary }
 [View on GitHub](https://github.com/gmottola00/quaerium){ .md-button }
@@ -100,6 +102,22 @@ hide:
         source_collection="docs",
         filter={"status": "published"},
         dry_run=True  # Test first!
+    )
+    ```
+
+-   :material-graph: **Graph RAG with Neo4j**
+
+    ---
+
+    Combine vector search with knowledge graphs for structured retrieval and relationship traversal.
+
+    ```python
+    from quaerium.infra.graphstores import create_neo4j_service
+
+    service = create_neo4j_service()
+    await service.create_node(
+        label="Document",
+        properties={"id": "doc_1", "title": "RAG Guide"}
     )
     ```
 
@@ -220,7 +238,7 @@ graph LR
 
 ---
 
-## :rocket: Why RAG Toolkit?
+## :rocket: Why Quaerium?
 
 <div class="grid" markdown>
 
@@ -246,11 +264,15 @@ graph LR
 
 -   :material-book-open-page-variant: **[Getting Started](getting_started/installation.md)**
 
-    Install RAG Toolkit and build your first application in 5 minutes.
+    Install Quaerium and build your first application in 5 minutes.
 
 -   :material-school: **[User Guide](guides/index.md)**
 
     Learn core concepts, protocols, and best practices for production RAG systems.
+
+-   :material-graph: **[Graph RAG Guide](guides/graph_rag.md)**
+
+    Combine vector search with Neo4j knowledge graphs for enhanced retrieval.
 
 -   :material-code-braces: **[API Reference](api/index.md)**
 
