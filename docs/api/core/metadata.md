@@ -4,7 +4,7 @@ Complete API documentation for metadata extraction and enrichment components.
 
 ## LLMMetadataExtractor
 
-::: rag_toolkit.core.metadata.LLMMetadataExtractor
+::: quaerium.core.metadata.LLMMetadataExtractor
     options:
       show_root_heading: true
       show_source: true
@@ -17,7 +17,7 @@ Complete API documentation for metadata extraction and enrichment components.
 
 ## MetadataEnricher
 
-::: rag_toolkit.core.chunking.MetadataEnricher
+::: quaerium.core.chunking.MetadataEnricher
     options:
       show_root_heading: true
       show_source: true
@@ -33,8 +33,8 @@ Complete API documentation for metadata extraction and enrichment components.
 ### LLMMetadataExtractor
 
 ```python
-from rag_toolkit.core.metadata import LLMMetadataExtractor
-from rag_toolkit.infra.llm import OllamaLLMClient
+from quaerium.core.metadata import LLMMetadataExtractor
+from quaerium.infra.llm import OllamaLLMClient
 
 # Initialize
 llm = OllamaLLMClient(model="phi3:mini")
@@ -53,7 +53,7 @@ metadata = extractor.extract("Document text...")
 ### MetadataEnricher
 
 ```python
-from rag_toolkit.core.chunking import MetadataEnricher
+from quaerium.core.chunking import MetadataEnricher
 
 # Initialize
 enricher = MetadataEnricher(

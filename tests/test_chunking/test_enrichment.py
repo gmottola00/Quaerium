@@ -4,7 +4,7 @@ import pytest
 from dataclasses import dataclass, field
 from typing import Dict, Any
 
-from rag_toolkit.core.chunking import MetadataEnricher
+from quaerium.core.chunking import MetadataEnricher
 
 
 @dataclass

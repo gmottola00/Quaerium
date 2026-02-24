@@ -4,9 +4,9 @@ import pytest
 from unittest.mock import Mock, patch, call
 from datetime import datetime
 
-from rag_toolkit.migration import VectorStoreMigrator, MigrationError, ValidationError
-from rag_toolkit.migration.exceptions import CollectionNotFoundError
-from rag_toolkit.migration.models import MigrationProgress
+from quaerium.migration import VectorStoreMigrator, MigrationError, ValidationError
+from quaerium.migration.exceptions import CollectionNotFoundError
+from quaerium.migration.models import MigrationProgress
 
 
 class TestVectorStoreMigrator:

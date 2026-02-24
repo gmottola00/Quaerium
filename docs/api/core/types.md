@@ -4,13 +4,13 @@ Type definitions and data models used throughout RAG Toolkit.
 
 ## Data Models
 
-::: rag_toolkit.core.chunking.models.Chunk
+::: quaerium.core.chunking.models.Chunk
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.core.chunking.models.TokenChunk
+::: quaerium.core.chunking.models.TokenChunk
     options:
       show_root_heading: true
       show_source: true
@@ -41,7 +41,7 @@ Documents = List[Document]
 ### Creating Chunks
 
 ```python
-from rag_toolkit.core.chunking.models import Chunk
+from quaerium.core.chunking.models import Chunk
 
 chunk = Chunk(
     text="RAG combines retrieval and generation.",
@@ -59,7 +59,7 @@ print(chunk.metadata)   # Access metadata
 ### Working with TokenChunks
 
 ```python
-from rag_toolkit.core.chunking.models import TokenChunk
+from quaerium.core.chunking.models import TokenChunk
 
 token_chunk = TokenChunk(
     text="Long document text...",

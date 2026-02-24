@@ -6,9 +6,9 @@ import os
 import pytest
 from typing import Generator
 
-from rag_toolkit.infra.vectorstores.milvus import MilvusService, MilvusConfig
-from rag_toolkit.infra.vectorstores.qdrant import QdrantService, QdrantConfig
-from rag_toolkit.infra.vectorstores.chroma import ChromaService, ChromaConfig
+from quaerium.infra.vectorstores.milvus import MilvusService, MilvusConfig
+from quaerium.infra.vectorstores.qdrant import QdrantService, QdrantConfig
+from quaerium.infra.vectorstores.chroma import ChromaService, ChromaConfig
 from tests.benchmarks.utils.data_generator import VectorDataGenerator
 from tests.benchmarks.utils.wrapper import VectorStoreWrapper
 

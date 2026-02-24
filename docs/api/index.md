@@ -41,7 +41,7 @@ Each page includes:
 ### Core Module
 
 ```python
-from rag_toolkit.core import (
+from quaerium.core import (
     EmbeddingClient,  # Protocol for embeddings
     LLMClient,        # Protocol for LLMs
     VectorStoreClient # Protocol for vector stores
@@ -51,7 +51,7 @@ from rag_toolkit.core import (
 ### RAG Module
 
 ```python
-from rag_toolkit.rag import (
+from quaerium.rag import (
     RagPipeline,      # Main RAG pipeline
     RagResponse,      # Response model
     RetrievedChunk    # Retrieved document chunk
@@ -61,7 +61,7 @@ from rag_toolkit.rag import (
 ### Migration Module
 
 ```python
-from rag_toolkit.migration import (
+from quaerium.migration import (
     VectorStoreMigrator,  # Migration engine
     MigrationResult,      # Result model
     MigrationError        # Exception types

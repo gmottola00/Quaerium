@@ -142,17 +142,17 @@
 
     ```bash title="install.sh" linenums="1"
     # Install RAG Toolkit
-    pip install rag-toolkit
+    pip install quaerium
 
     # With all vector stores
-    pip install rag-toolkit[all]
+    pip install quaerium[all]
     ```
 
 === "Basic Migration"
 
     ```python title="simple_migration.py" linenums="1"
-    from rag_toolkit.migration import VectorStoreMigrator
-    from rag_toolkit.infra.vectorstores import (
+    from quaerium.migration import VectorStoreMigrator
+    from quaerium.infra.vectorstores import (
         get_chromadb_service,
         get_qdrant_service,
     )
@@ -480,13 +480,13 @@ for name, store in stores:
 
     Detailed API documentation
 
--   :material-forum: **[Discussions](https://github.com/gmottola00/rag-toolkit/discussions)**
+-   :material-forum: **[Discussions](https://github.com/gmottola00/quaerium/discussions)**
 
     ---
 
     Ask questions and share ideas
 
--   :material-bug: **[Report Issues](https://github.com/gmottola00/rag-toolkit/issues)**
+-   :material-bug: **[Report Issues](https://github.com/gmottola00/quaerium/issues)**
 
     ---
 

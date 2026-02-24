@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned Features (Next Releases)
+
+#### Phase 2 Priority 2
+- **Incremental Migration**: Checkpoint-based resume capability for large datasets
+- **Schema Mapping**: Field transformation and mapping between different vector stores
+
+#### Phase 3
+- **CLI Tool**: Command-line interface with YAML configuration support
+- **Parallel Migration**: Multi-threaded/multi-process batch processing
+- **Metrics & Observability**: Prometheus metrics and OpenTelemetry tracing
+
+#### Future Enhancements
+- Enhanced document parsing with better table extraction
+- Query expansion strategies
+- Caching layer for embeddings and LLM responses
+- Async support for all I/O operations
+- Evaluation framework for RAG quality metrics
+- Examples for production deployments (Kubernetes, cloud platforms)
+- Zero-downtime migration with dual-write pattern
+- Data quality validation (embedding drift detection)
+
+---
+
+## [0.1.2] - 2026-02-10
+
+### 🎉 First Public Release as "Quaerium"
+
+This release marks the public debut of the package under its new name **Quaerium** (from Latin "quaerere" - to seek, search, inquire). The package includes all features from 0.1.0 plus significant additions in vector stores, migration tools, metadata extraction, and graph RAG capabilities.
+
 ### Added
 
 #### Graph RAG with Neo4j
@@ -32,26 +61,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `GraphRelationship`: Represents relationships between nodes
   - `GraphMetadata`: Type alias for graph metadata
 
-- **Documentation**:
+- **Graph Documentation**:
   - Complete Graph RAG guide with examples
   - API reference documentation
   - Working example script (examples/graph_rag_basic.py)
   - Integration with existing documentation
 
-- **Testing**:
+- **Graph Testing**:
   - Unit tests with mocks (no Neo4j required)
   - Integration tests with Docker Neo4j container
   - Makefile targets for graph testing
 
-- **Dependencies**:
-  - Optional `neo4j` dependency group: `pip install rag-toolkit[neo4j]`
+- **Graph Dependencies**:
+  - Optional `neo4j` dependency group: `pip install quaerium[neo4j]`
   - Added to `all` extras group
+
+#### Vector Store Integrations
+- **Qdrant Integration**: Full implementation with connection management, collection operations, and hybrid search
+- **ChromaDB Integration**: Complete support for local and client-server deployments
+- **Unified Testing Framework**: Comprehensive test suite for all vector store implementations
+- **Docker Compose Setup**: Development environment with Milvus, Qdrant, and Neo4j containers
+- **Benchmark Framework**: Performance comparison tool across vector stores (Milvus, Qdrant, ChromaDB)
+  - Query latency measurement
+  - Indexing throughput analysis
+  - Memory usage profiling
+  - HTML report generation
+
+#### Migration Tools
+- **VectorStoreMigrator**: Production-ready migration engine for vector data transfers across stores (Milvus, Qdrant, ChromaDB)
+- **Advanced Features**: Filtered migration, dry-run mode, retry logic with exponential backoff
+- **Models & Exceptions**: Complete migration lifecycle support with validation and error handling
+- **Migration Documentation**: Comprehensive guide with production examples and roadmap
+- **Test Coverage**: 60 tests (100% pass rate)
+
+#### Metadata Extraction & Enrichment
+- **LLMMetadataExtractor**: Generic metadata extractor using LLM prompts (`quaerium.core.metadata`)
+  - Customizable system and extraction prompt templates for domain-specific extraction
+  - Support for legal, medical, tender, academic, and custom domains
+  - Automatic JSON parsing with code block cleanup
+  - Graceful error handling (returns empty dict on failure)
+  - Custom response parser support for non-JSON formats
+  - Test coverage: 13 unit tests (100% coverage)
+
+- **MetadataEnricher**: Chunk text enrichment for improved retrieval (`quaerium.core.chunking`)
+  - Adds metadata inline to chunk text for better vector and keyword search
+  - Customizable format templates (e.g., `[key: value]`, `(key=value)`)
+  - Configurable excluded keys (defaults: file_name, chunk_id, id, source_chunk_id)
+  - Batch enrichment support via `enrich_chunks()` method
+  - Test coverage: 19 unit tests (100% coverage)
+
+- **Batch Embedding Support**: Enhanced embedding clients with batch operations
+  - `OllamaEmbeddingClient.embed_batch()`: Sequential batch processing
+  - `OpenAIEmbeddingClient.embed_batch()`: Native batch API for efficiency
+  - Improves performance for large-scale indexing operations
+  - Backward compatible with existing code
+
+- **Metadata Examples**: Working example demonstrating full metadata extraction pipeline
+  - `examples/metadata_extraction_example.py`: Legal document extraction demo
+  - Shows complete workflow: extract → chunk → enrich → embed
+  - Mock data included for easy testing
+
+### Changed
+- **Package Name**: Renamed from "rag-toolkit" to "quaerium"
+- **Documentation**: Updated roadmap reflecting completed vector store integrations
+- **Infrastructure**: Enhanced Docker setup for local development and testing (Milvus, Qdrant, Neo4j)
+- **Package Exports**: Added `LLMMetadataExtractor`, `MetadataEnricher`, and graph components to main package exports
+- **Module Docstring**: Updated feature list to include metadata extraction, enrichment, and graph RAG
+- **EmbeddingClient Protocol**: Now includes `embed_batch()` method (documented and implemented in all clients)
+
+### Breaking Changes
+- Package name changed from `rag-toolkit` to `quaerium`
+  - Update all imports: `from rag_toolkit` → `from quaerium`
+  - Update installation: `pip install rag-toolkit` → `pip install quaerium`
 
 ## [0.1.0] - 2025-12-22
 
 ### 🎉 Initial Release
 
-This is the first official release of `rag-toolkit`, a production-ready library for building Retrieval-Augmented Generation (RAG) systems with Protocol-based architecture.
+This is the first official release of `quaerium`, a production-ready library for building Retrieval-Augmented Generation (RAG) systems with Protocol-based architecture.
 
 ### Added
 
@@ -108,7 +195,7 @@ This is the first official release of `rag-toolkit`, a production-ready library 
   - API reference with auto-generated docs
   - Practical examples and tutorials
   - Production deployment guides
-  - Published at: https://gmottola00.github.io/rag-toolkit/
+  - Published at: https://gmottola00.github.io/quaerium/
 
 #### Development Tools
 - **Test Suite**: 28 tests with 19% initial coverage
@@ -144,85 +231,8 @@ None - initial release.
 ### Migration Guide
 Not applicable - initial release.
 
----
-
-## [Unreleased]
-
-### Added
-
-#### Vector Store Integrations (2025-12-23 to 2025-12-26)
-- **Qdrant Integration**: Full implementation with connection management, collection operations, and hybrid search
-- **ChromaDB Integration**: Complete support for local and client-server deployments
-- **Unified Testing Framework**: Comprehensive test suite for all vector store implementations
-- **Docker Compose Setup**: Development environment with Milvus and Qdrant containers
-- **Benchmark Framework**: Performance comparison tool across vector stores (Milvus, Qdrant, ChromaDB)
-  - Query latency measurement
-  - Indexing throughput analysis
-  - Memory usage profiling
-  - HTML report generation
-
-#### Migration Tools (2026-01-02)
-- **VectorStoreMigrator**: Production-ready migration engine for vector data transfers across stores (Milvus, Qdrant, ChromaDB)
-- **Advanced Features**: Filtered migration, dry-run mode, retry logic with exponential backoff
-- **Models & Exceptions**: Complete migration lifecycle support with validation and error handling
-- **Documentation**: Comprehensive guide with production examples and roadmap
-- **Test Coverage**: 60 tests (100% pass rate)
-
-#### Metadata Extraction & Enrichment (2026-02-10)
-- **LLMMetadataExtractor**: Generic metadata extractor using LLM prompts (`rag_toolkit.core.metadata`)
-  - Customizable system and extraction prompt templates for domain-specific extraction
-  - Support for legal, medical, tender, academic, and custom domains
-  - Automatic JSON parsing with code block cleanup
-  - Graceful error handling (returns empty dict on failure)
-  - Custom response parser support for non-JSON formats
-  - Test coverage: 13 unit tests (100% coverage)
-
-- **MetadataEnricher**: Chunk text enrichment for improved retrieval (`rag_toolkit.core.chunking`)
-  - Adds metadata inline to chunk text for better vector and keyword search
-  - Customizable format templates (e.g., `[key: value]`, `(key=value)`)
-  - Configurable excluded keys (defaults: file_name, chunk_id, id, source_chunk_id)
-  - Batch enrichment support via `enrich_chunks()` method
-  - Test coverage: 19 unit tests (100% coverage)
-
-- **Batch Embedding Support**: Enhanced embedding clients with batch operations
-  - `OllamaEmbeddingClient.embed_batch()`: Sequential batch processing
-  - `OpenAIEmbeddingClient.embed_batch()`: Native batch API for efficiency
-  - Improves performance for large-scale indexing operations
-  - Backward compatible with existing code
-
-- **Examples**: Working example demonstrating full metadata extraction pipeline
-  - `examples/metadata_extraction_example.py`: Legal document extraction demo
-  - Shows complete workflow: extract → chunk → enrich → embed
-  - Mock data included for easy testing
-
-### Changed
-- **Documentation**: Updated roadmap reflecting completed vector store integrations
-- **Infrastructure**: Enhanced Docker setup for local development and testing
-- **Package Exports**: Added `LLMMetadataExtractor` and `MetadataEnricher` to main package exports
-- **Module Docstring**: Updated feature list to include metadata extraction and enrichment
-- **EmbeddingClient Protocol**: Now includes `embed_batch()` method (documented and implemented in all clients)
-
-### Planned Features (Next Releases)
-
-#### Phase 2 Priority 2
-- **Incremental Migration**: Checkpoint-based resume capability for large datasets
-- **Schema Mapping**: Field transformation and mapping between different vector stores
-
-#### Phase 3
-- **CLI Tool**: Command-line interface with YAML configuration support
-- **Parallel Migration**: Multi-threaded/multi-process batch processing
-- **Metrics & Observability**: Prometheus metrics and OpenTelemetry tracing
-
-#### Future Enhancements
-- Enhanced document parsing with better table extraction
-- Query expansion strategies
-- Caching layer for embeddings and LLM responses
-- Async support for all I/O operations
-- Evaluation framework for RAG quality metrics
-- Examples for production deployments (Kubernetes, cloud platforms)
-- Zero-downtime migration with dual-write pattern
-- Data quality validation (embedding drift detection)
 
 ---
 
-[0.1.0]: https://github.com/gmottola00/rag-toolkit/releases/tag/v0.1.0
+[0.1.2]: https://github.com/gmottola00/quaerium/releases/tag/v0.1.2
+[0.1.0]: https://github.com/gmottola00/quaerium/releases/tag/v0.1.0

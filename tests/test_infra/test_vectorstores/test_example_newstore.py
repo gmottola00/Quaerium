@@ -16,8 +16,8 @@ from tests.test_infra.test_vectorstores.base_tests import (
 )
 
 # Import your new vector store (example)
-# from rag_toolkit.infra.vectorstores.newstore.config import NewStoreConfig
-# from rag_toolkit.infra.vectorstores.newstore.service import NewStoreService
+# from quaerium.infra.vectorstores.newstore.config import NewStoreConfig
+# from quaerium.infra.vectorstores.newstore.service import NewStoreService
 
 
 # ============================================================================

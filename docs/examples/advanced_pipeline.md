@@ -13,12 +13,12 @@
     This implementation includes all advanced RAG capabilities.
 
 ```python title="advanced_pipeline.py" linenums="1" hl_lines="9-19 34-36 39"
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.infra.llm import OpenAILLM
-from rag_toolkit.core.vectorstore import MilvusVectorStore
-from rag_toolkit.core.reranker import CrossEncoderReranker
-from rag_toolkit.core.types import SearchResult
+from quaerium import RagPipeline
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.infra.llm import OpenAILLM
+from quaerium.core.vectorstore import MilvusVectorStore
+from quaerium.core.reranker import CrossEncoderReranker
+from quaerium.core.types import SearchResult
 import asyncio
 
 class AdvancedRagPipeline:

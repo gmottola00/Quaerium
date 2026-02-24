@@ -1,10 +1,10 @@
-site_name: RAG Toolkit
-site_description: Production-ready RAG library with multi-vectorstore support and Protocol-based architecture
+site_name: Quaerium
+site_description: Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture
 site_author: Gianmarco Mottola
-site_url: https://gmottola00.github.io/rag-toolkit/
+site_url: https://gmottola00.github.io/quaerium/
 
-repo_name: gmottola00/rag-toolkit
-repo_url: https://github.com/gmottola00/rag-toolkit
+repo_name: gmottola00/quaerium
+repo_url: https://github.com/gmottola00/quaerium
 edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; 2025-2026 Gianmarco Mottola
@@ -77,10 +77,10 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/gmottola00/rag-toolkit
+      link: https://github.com/gmottola00/quaerium
       name: GitHub Repository
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/rag-toolkit/
+      link: https://pypi.org/project/quaerium/
       name: PyPI Package
   
   analytics:
@@ -209,7 +209,7 @@ markdown_extensions:
   - pymdownx.magiclink:
       repo_url_shorthand: true
       user: gmottola00
-      repo: rag-toolkit
+      repo: quaerium
 
 nav:
   - Home: index.md
@@ -266,5 +266,5 @@ nav:
     - Roadmap: development/roadmap.md
 
 watch:
-  - src/rag_toolkit
+  - src/quaerium
   - docs

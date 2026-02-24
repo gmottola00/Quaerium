@@ -7,14 +7,14 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.chroma.config import ChromaConfig, ChromaIndexConfig
-from rag_toolkit.infra.vectorstores.chroma.service import ChromaService
+from quaerium.infra.vectorstores.chroma.config import ChromaConfig, ChromaIndexConfig
+from quaerium.infra.vectorstores.chroma.service import ChromaService
 
 
 class TestChromaService:
     """Test ChromaService class."""
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_init(self, mock_connection_class: Mock, chroma_config: ChromaConfig) -> None:
         """Test initialization."""
         service = ChromaService(chroma_config)
@@ -23,7 +23,7 @@ class TestChromaService:
         assert service.collections is not None
         assert service.data is not None
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_create_collection(
         self,
         mock_connection_class: Mock,
@@ -41,7 +41,7 @@ class TestChromaService:
             "test_collection", None, None
         )
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_create_collection_with_config(
         self,
         mock_connection_class: Mock,
@@ -63,7 +63,7 @@ class TestChromaService:
         assert collection == mock_chroma_collection
         service.collections.create_collection.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_get_or_create_collection(
         self,
         mock_connection_class: Mock,
@@ -79,7 +79,7 @@ class TestChromaService:
         assert collection == mock_chroma_collection
         service.collections.get_or_create_collection.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_drop_collection(
         self,
         mock_connection_class: Mock,
@@ -93,7 +93,7 @@ class TestChromaService:
         
         service.collections.drop_collection.assert_called_once_with("test_collection")
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_add(
         self,
         mock_connection_class: Mock,
@@ -114,7 +114,7 @@ class TestChromaService:
         assert result_ids == sample_ids
         service.data.add.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_upsert(
         self,
         mock_connection_class: Mock,
@@ -135,7 +135,7 @@ class TestChromaService:
         assert result_ids == sample_ids
         service.data.upsert.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_query(
         self,
         mock_connection_class: Mock,
@@ -158,7 +158,7 @@ class TestChromaService:
         assert results == expected_results
         service.data.query.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_query_with_filters(
         self,
         mock_connection_class: Mock,
@@ -178,7 +178,7 @@ class TestChromaService:
         call_args = service.data.query.call_args
         assert call_args[1]["where"] == where_filter
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_get(
         self,
         mock_connection_class: Mock,
@@ -198,7 +198,7 @@ class TestChromaService:
         assert results == expected_results
         service.data.get.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_update(
         self,
         mock_connection_class: Mock,
@@ -218,7 +218,7 @@ class TestChromaService:
         
         service.data.update.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_delete(
         self,
         mock_connection_class: Mock,
@@ -236,7 +236,7 @@ class TestChromaService:
         
         service.data.delete.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_count(
         self,
         mock_connection_class: Mock,
@@ -251,7 +251,7 @@ class TestChromaService:
         assert count == 42
         service.data.count.assert_called_once_with("test_collection")
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_health_check(
         self,
         mock_connection_class: Mock,
@@ -264,7 +264,7 @@ class TestChromaService:
         assert service.health_check() is True
         service.connection.health_check.assert_called_once()
 
-    @patch("rag_toolkit.infra.vectorstores.chroma.connection.ChromaConnectionManager")
+    @patch("quaerium.infra.vectorstores.chroma.connection.ChromaConnectionManager")
     def test_close(
         self,
         mock_connection_class: Mock,

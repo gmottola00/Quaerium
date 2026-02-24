@@ -2,7 +2,7 @@
 
 import pytest
 
-from rag_toolkit.migration.exceptions import (
+from quaerium.migration.exceptions import (
     MigrationError,
     ValidationError,
     SchemaCompatibilityError,

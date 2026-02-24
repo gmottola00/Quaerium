@@ -84,7 +84,7 @@ embed("dog") ≠ embed("computer")    # Low similarity score: 0.15
 **Installation:**
 
 ```bash title="Install OpenAI Support"
-pip install rag-toolkit[openai]
+pip install quaerium[openai]
 export OPENAI_API_KEY="your-api-key"
 ```
 
@@ -92,7 +92,7 @@ export OPENAI_API_KEY="your-api-key"
 
 === "Basic"
     ```python
-    from rag_toolkit.infra.embedding import OpenAIEmbedding
+    from quaerium.infra.embedding import OpenAIEmbedding
     
     # Initialize
     embedding = OpenAIEmbedding(
@@ -156,7 +156,7 @@ export OPENAI_API_KEY="your-api-key"
     ollama pull nomic-embed-text
     
     # Install RAG Toolkit with Ollama support
-    pip install rag-toolkit[ollama]
+    pip install quaerium[ollama]
     ```
 
 === "Docker"
@@ -171,7 +171,7 @@ export OPENAI_API_KEY="your-api-key"
 **Usage:**
 
 ```python title="ollama_embedding.py" linenums="1" hl_lines="4-7"
-from rag_toolkit.infra.embedding import OllamaEmbedding
+from quaerium.infra.embedding import OllamaEmbedding
 
 # Initialize
 embedding = OllamaEmbedding(
@@ -371,7 +371,7 @@ for i in tqdm(range(0, len(documents), batch_size)):
 ### Error Handling
 
 ```python
-from rag_toolkit.core.embedding import EmbeddingError
+from quaerium.core.embedding import EmbeddingError
 
 try:
     embeddings = await embedding.embed_batch(documents)
@@ -445,10 +445,10 @@ embedding = OpenAIEmbedding(
 ### Basic RAG Pipeline
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium import RagPipeline
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.llm import OpenAILLM
 
 # Setup embedding
 embedding = OpenAIEmbedding(model="text-embedding-3-small")
@@ -734,7 +734,7 @@ print(f"dog <-> computer: {cosine_similarity(v1, v3):.3f}")  # ~0.2-0.3
 ### API Key Issues
 
 ```python
-from rag_toolkit.infra.embedding import OpenAIEmbedding
+from quaerium.infra.embedding import OpenAIEmbedding
 
 try:
     embedding = OpenAIEmbedding()
@@ -748,7 +748,7 @@ except Exception as e:
 ### Ollama Not Running
 
 ```python
-from rag_toolkit.infra.embedding import OllamaEmbedding
+from quaerium.infra.embedding import OllamaEmbedding
 
 try:
     embedding = OllamaEmbedding()

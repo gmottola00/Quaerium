@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.milvus.exceptions import CollectionError
+from quaerium.infra.vectorstores.milvus.exceptions import CollectionError
 
 
 def test_ensure_collection_creates_if_not_exists(

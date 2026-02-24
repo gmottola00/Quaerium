@@ -128,7 +128,7 @@ docker-up-chroma: ## Start ChromaDB only
 	./docker/docker.sh up chroma
 
 docker-up-neo4j: ## Start Neo4j only
-	docker run -d --name neo4j-dev -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password neo4j:latest
+	./docker/docker.sh up neo4j
 
 docker-down: ## Stop all services
 	./docker/docker.sh down all
@@ -143,7 +143,7 @@ docker-down-chroma: ## Stop ChromaDB
 	./docker/docker.sh down chroma
 
 docker-down-neo4j: ## Stop Neo4j
-	docker stop neo4j-dev && docker rm neo4j-dev
+	./docker/docker.sh down neo4j
 
 docker-restart: ## Restart all services
 	./docker/docker.sh restart all
@@ -170,6 +170,7 @@ dev-setup: dev docker-up docker-pull-models ## Complete development setup
 	@echo "   - Milvus:   http://localhost:19530 (UI: http://localhost:9091)"
 	@echo "   - Qdrant:   http://localhost:6333 (Dashboard: http://localhost:6333/dashboard)"
 	@echo "   - ChromaDB: http://localhost:8000 (Docs: http://localhost:8000/docs)"
+	@echo "   - Neo4j:    http://localhost:7474 (Browser, Bolt: bolt://localhost:7687)"
 	@echo "   - Ollama:   http://localhost:11434"
 	@echo ""
 	@echo "Next steps:"

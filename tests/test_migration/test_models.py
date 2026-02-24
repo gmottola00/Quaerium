@@ -3,7 +3,7 @@
 import pytest
 from datetime import datetime, timedelta
 
-from rag_toolkit.migration.models import (
+from quaerium.migration.models import (
     MigrationResult,
     MigrationEstimate,
     MigrationProgress,

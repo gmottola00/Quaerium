@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import pytest
 
-from rag_toolkit.infra.embedding.ollama import OllamaEmbeddingClient
-from rag_toolkit.infra.vectorstores.qdrant import QdrantService
+from quaerium.infra.embedding.ollama import OllamaEmbeddingClient
+from quaerium.infra.vectorstores.qdrant import QdrantService
 
 
 @pytest.mark.integration

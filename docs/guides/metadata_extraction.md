@@ -56,8 +56,8 @@ graph LR
 ### 1. Basic Extraction
 
 ```python
-from rag_toolkit.core.metadata import LLMMetadataExtractor
-from rag_toolkit.infra.llm import OllamaLLMClient
+from quaerium.core.metadata import LLMMetadataExtractor
+from quaerium.infra.llm import OllamaLLMClient
 
 # Define domain-specific prompts
 SYSTEM_PROMPT = """
@@ -92,7 +92,7 @@ print(metadata)
 ### 2. Enrich Chunks
 
 ```python
-from rag_toolkit.core.chunking import MetadataEnricher, TokenChunker
+from quaerium.core.chunking import MetadataEnricher, TokenChunker
 
 # Create chunks (simplified)
 chunker = TokenChunker(max_tokens=512)
@@ -113,7 +113,7 @@ print(enriched_texts[0])
 ### 3. Batch Embed
 
 ```python
-from rag_toolkit.infra.embedding import OllamaEmbeddingClient
+from quaerium.infra.embedding import OllamaEmbeddingClient
 
 # Embed enriched text
 embed_client = OllamaEmbeddingClient()

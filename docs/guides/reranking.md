@@ -53,7 +53,7 @@ Uses deep learning to score query-document pairs.
 **Best for**: High accuracy, production systems
 
 ```python
-from rag_toolkit.rag.rerankers import CrossEncoderReranker
+from quaerium.rag.rerankers import CrossEncoderReranker
 
 # Create reranker
 reranker = CrossEncoderReranker(
@@ -88,7 +88,7 @@ Uses LLM to judge relevance.
 **Best for**: Maximum quality, complex queries
 
 ```python
-from rag_toolkit.rag.rerankers import LLMReranker
+from quaerium.rag.rerankers import LLMReranker
 
 # Create LLM reranker
 reranker = LLMReranker(
@@ -120,7 +120,7 @@ Combines rankings from multiple retrievers.
 **Best for**: Hybrid search, multi-source retrieval
 
 ```python
-from rag_toolkit.rag.rerankers import ReciprocalRankFusion
+from quaerium.rag.rerankers import ReciprocalRankFusion
 
 # Create RRF reranker
 reranker = ReciprocalRankFusion(k=60)
@@ -147,7 +147,7 @@ Rerank by semantic similarity to query.
 **Best for**: Simple reranking, no external dependencies
 
 ```python
-from rag_toolkit.rag.rerankers import SimilarityReranker
+from quaerium.rag.rerankers import SimilarityReranker
 
 # Create similarity reranker
 reranker = SimilarityReranker(
@@ -169,7 +169,7 @@ Maximize diversity in results.
 **Best for**: Exploratory search, varied perspectives
 
 ```python
-from rag_toolkit.rag.rerankers import DiversityReranker
+from quaerium.rag.rerankers import DiversityReranker
 
 # Create diversity reranker
 reranker = DiversityReranker(
@@ -190,9 +190,9 @@ reranked = await reranker.rerank(
 ### Basic Integration
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.rag.rerankers import CrossEncoderReranker
-from rag_toolkit.rag.models import RagConfig
+from quaerium import RagPipeline
+from quaerium.rag.rerankers import CrossEncoderReranker
+from quaerium.rag.models import RagConfig
 
 # Create reranker
 reranker = CrossEncoderReranker()
@@ -245,7 +245,7 @@ final = await diversity_reranker.rerank(query, relevant, top_k=5)
 Combine multiple signals:
 
 ```python
-from rag_toolkit.rag.rerankers import WeightedReranker
+from quaerium.rag.rerankers import WeightedReranker
 
 # Create weighted reranker
 reranker = WeightedReranker(
@@ -269,7 +269,7 @@ reranked = await reranker.rerank(
 Boost results based on metadata:
 
 ```python
-from rag_toolkit.rag.rerankers import MetadataReranker
+from quaerium.rag.rerankers import MetadataReranker
 
 # Create metadata-aware reranker
 reranker = MetadataReranker(
@@ -293,7 +293,7 @@ reranked = await reranker.rerank(
 Adapt reranking to query type:
 
 ```python
-from rag_toolkit.rag.rerankers import AdaptiveReranker
+from quaerium.rag.rerankers import AdaptiveReranker
 
 # Create adaptive reranker
 reranker = AdaptiveReranker(
@@ -481,7 +481,7 @@ results = await batch_rerank(queries, candidates_lists, reranker)
 ### Reranking Quality
 
 ```python
-from rag_toolkit.rag.evaluation import RerankingEvaluator
+from quaerium.rag.evaluation import RerankingEvaluator
 
 # Create evaluator
 evaluator = RerankingEvaluator()

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from rag_toolkit.core.chunking.chunking import TokenChunker, default_tokenizer
-from rag_toolkit.core.chunking.dynamic_chunker import DynamicChunker
-from rag_toolkit.core.chunking.models import Chunk
-from rag_toolkit.core.chunking.types import ChunkLike
+from quaerium.core.chunking.chunking import TokenChunker, default_tokenizer
+from quaerium.core.chunking.dynamic_chunker import DynamicChunker
+from quaerium.core.chunking.models import Chunk
+from quaerium.core.chunking.types import ChunkLike
 
 
 def test_dynamic_chunker_initialization():

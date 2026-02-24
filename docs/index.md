@@ -11,7 +11,7 @@ hide:
 ### Production-ready RAG library with multi-vectorstore support
 
 [Get Started](getting_started/installation.md){ .md-button .md-button--primary }
-[View on GitHub](https://github.com/gmottola00/rag-toolkit){ .md-button }
+[View on GitHub](https://github.com/gmottola00/quaerium){ .md-button }
 
 </div>
 
@@ -63,10 +63,10 @@ hide:
 
     ```bash
     # Minimal install
-    pip install rag-toolkit
+    pip install quaerium
     
     # With Qdrant support
-    pip install rag-toolkit[qdrant]
+    pip install quaerium[qdrant]
     ```
 
 -   :material-test-tube: **Production Ready**
@@ -110,9 +110,9 @@ hide:
 ## :zap: Quick Example
 
 ```python title="basic_rag.py" linenums="1"
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra import get_ollama_embedding, get_ollama_llm
-from rag_toolkit.infra.vectorstores import get_qdrant_service
+from quaerium import RagPipeline
+from quaerium.infra import get_ollama_embedding, get_ollama_llm
+from quaerium.infra.vectorstores import get_qdrant_service
 
 # Initialize components
 embedding = get_ollama_embedding(model="nomic-embed-text")
@@ -270,9 +270,9 @@ We welcome contributions! Check out our [Contributing Guide](development/contrib
 
 <div align="center" markdown="1">
 
-[![GitHub Stars](https://img.shields.io/github/stars/gmottola00/rag-toolkit?style=social)](https://github.com/gmottola00/rag-toolkit)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/rag-toolkit)](https://pypi.org/project/rag-toolkit/)
-[![License](https://img.shields.io/github/license/gmottola00/rag-toolkit)](https://github.com/gmottola00/rag-toolkit/blob/main/LICENSE)
-[![Python Versions](https://img.shields.io/pypi/pyversions/rag-toolkit)](https://pypi.org/project/rag-toolkit/)
+[![GitHub Stars](https://img.shields.io/github/stars/gmottola00/quaerium?style=social)](https://github.com/gmottola00/quaerium)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/quaerium)](https://pypi.org/project/quaerium/)
+[![License](https://img.shields.io/github/license/gmottola00/quaerium)](https://github.com/gmottola00/quaerium/blob/main/LICENSE)
+[![Python Versions](https://img.shields.io/pypi/pyversions/quaerium)](https://pypi.org/project/quaerium/)
 
 </div>

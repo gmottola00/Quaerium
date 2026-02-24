@@ -67,10 +67,10 @@ graph LR
 ### :material-numeric-1-box: Basic Pipeline
 
 ```python title="basic_pipeline.py" linenums="1" hl_lines="6-16"
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium import RagPipeline
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.llm import OpenAILLM
 
 # Create pipeline
 pipeline = RagPipeline(
@@ -108,8 +108,8 @@ print(f"Sources: {[s.metadata for s in result.sources]}")
 ### Constructor Parameters
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.rag.models import RagConfig
+from quaerium import RagPipeline
+from quaerium.rag.models import RagConfig
 
 # Full configuration
 pipeline = RagPipeline(
@@ -309,7 +309,7 @@ print()  # New line
 Improve retrieval by rewriting queries:
 
 ```python
-from rag_toolkit.rag.rewriter import QueryRewriter
+from quaerium.rag.rewriter import QueryRewriter
 
 # Create rewriter
 rewriter = QueryRewriter(llm_client=llm)
@@ -337,7 +337,7 @@ result = await pipeline.query("What's ML?")
 Improve result quality with reranking:
 
 ```python
-from rag_toolkit.rag.rerankers import CrossEncoderReranker
+from quaerium.rag.rerankers import CrossEncoderReranker
 
 # Create reranker
 reranker = CrossEncoderReranker(
@@ -371,7 +371,7 @@ result = await pipeline.query("Important information")
 Combine vector and keyword search:
 
 ```python
-from rag_toolkit.rag.models import RagConfig
+from quaerium.rag.models import RagConfig
 
 # Enable hybrid search
 config = RagConfig(
@@ -396,7 +396,7 @@ result = await pipeline.query("machine learning algorithms")
 Control how context is assembled for the LLM:
 
 ```python
-from rag_toolkit.rag.assembler import ContextAssembler
+from quaerium.rag.assembler import ContextAssembler
 
 # Custom assembler
 assembler = ContextAssembler(
@@ -444,7 +444,7 @@ result = await pipeline.query("What is AI?")
 Maintain conversation history for multi-turn interactions:
 
 ```python
-from rag_toolkit.rag.models import ConversationHistory
+from quaerium.rag.models import ConversationHistory
 
 # Initialize conversation history
 history = ConversationHistory()
@@ -546,7 +546,7 @@ it_pipeline = RagPipeline(
 ### Basic Metrics
 
 ```python
-from rag_toolkit.rag.evaluation import RagEvaluator
+from quaerium.rag.evaluation import RagEvaluator
 
 # Create evaluator
 evaluator = RagEvaluator(pipeline=pipeline)
@@ -598,7 +598,7 @@ print(f"MRR: {retrieval_metrics.mrr:.2f}")
 ### Caching
 
 ```python
-from rag_toolkit.rag.cache import QueryCache
+from quaerium.rag.cache import QueryCache
 
 # Create cache
 cache = QueryCache(max_size=1000)

@@ -106,7 +106,7 @@ def docker_services(docker_compose_file: Path) -> Generator[None, None, None]:
 @pytest.fixture
 def ollama_client(docker_services):
     """Provide Ollama client for integration tests."""
-    from rag_toolkit.infra.embedding.ollama import OllamaEmbeddingClient
+    from quaerium.infra.embedding.ollama import OllamaEmbeddingClient
     
     return OllamaEmbeddingClient(
         model="nomic-embed-text",
@@ -117,8 +117,8 @@ def ollama_client(docker_services):
 @pytest.fixture
 def qdrant_service(docker_services):
     """Provide Qdrant service for integration tests."""
-    from rag_toolkit.infra.vectorstores.qdrant import QdrantService
-    from rag_toolkit.infra.vectorstores.qdrant.config import QdrantConfig
+    from quaerium.infra.vectorstores.qdrant import QdrantService
+    from quaerium.infra.vectorstores.qdrant.config import QdrantConfig
     
     config = QdrantConfig(url="http://localhost:6333")
     return QdrantService(config)
@@ -127,7 +127,7 @@ def qdrant_service(docker_services):
 @pytest.fixture
 def milvus_service(docker_services):
     """Provide Milvus service for integration tests."""
-    from rag_toolkit.infra.vectorstores.factory import create_milvus_service
+    from quaerium.infra.vectorstores.factory import create_milvus_service
     
     return create_milvus_service(uri="http://localhost:19530")
 

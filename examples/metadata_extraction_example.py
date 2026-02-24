@@ -9,10 +9,10 @@ This example demonstrates:
 Domain: Legal documents (contracts, court filings)
 """
 
-from rag_toolkit.core.metadata import LLMMetadataExtractor
-from rag_toolkit.core.chunking import DynamicChunker, TokenChunker, MetadataEnricher
-from rag_toolkit.infra.llm import OllamaLLMClient
-from rag_toolkit.infra.embedding import OllamaEmbeddingClient
+from quaerium.core.metadata import LLMMetadataExtractor
+from quaerium.core.chunking import DynamicChunker, TokenChunker, MetadataEnricher
+from quaerium.infra.llm import OllamaLLMClient
+from quaerium.infra.embedding import OllamaEmbeddingClient
 
 
 # ============================================================================

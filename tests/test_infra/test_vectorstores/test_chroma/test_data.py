@@ -7,8 +7,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.chroma.data import ChromaDataManager
-from rag_toolkit.infra.vectorstores.chroma.exceptions import DataOperationError
+from quaerium.infra.vectorstores.chroma.data import ChromaDataManager
+from quaerium.infra.vectorstores.chroma.exceptions import DataOperationError
 
 
 class TestChromaDataManager:

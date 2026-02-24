@@ -4,7 +4,7 @@ Vector store migration engine with validation, retry logic, and progress trackin
 
 ## VectorStoreMigrator
 
-::: rag_toolkit.migration.migrator.VectorStoreMigrator
+::: quaerium.migration.migrator.VectorStoreMigrator
     options:
       show_root_heading: true
       show_source: true
@@ -16,19 +16,19 @@ Vector store migration engine with validation, retry logic, and progress trackin
 
 ## Models
 
-::: rag_toolkit.migration.models.MigrationResult
+::: quaerium.migration.models.MigrationResult
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.migration.models.MigrationEstimate
+::: quaerium.migration.models.MigrationEstimate
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.migration.models.MigrationProgress
+::: quaerium.migration.models.MigrationProgress
     options:
       show_root_heading: true
       show_source: true
@@ -36,13 +36,13 @@ Vector store migration engine with validation, retry logic, and progress trackin
 
 ## Exceptions
 
-::: rag_toolkit.migration.exceptions.MigrationError
+::: quaerium.migration.exceptions.MigrationError
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.migration.exceptions.ValidationError
+::: quaerium.migration.exceptions.ValidationError
     options:
       show_root_heading: true
       show_source: true
@@ -53,8 +53,8 @@ Vector store migration engine with validation, retry logic, and progress trackin
 ### Basic Migration
 
 ```python
-from rag_toolkit.migration import VectorStoreMigrator
-from rag_toolkit.infra.vectorstores import get_qdrant_service, get_chromadb_service
+from quaerium.migration import VectorStoreMigrator
+from quaerium.infra.vectorstores import get_qdrant_service, get_chromadb_service
 
 # Initialize stores
 source = get_qdrant_service(host="localhost", port=6333)

@@ -1,7 +1,7 @@
 # :material-code-braces: Examples
 
 !!! quote "Real-World Applications"
-    Practical examples showing how to build production-ready RAG applications with rag-toolkit.
+    Practical examples showing how to build production-ready RAG applications with quaerium.
 
 ---
 
@@ -45,7 +45,7 @@
 
     ---
 
-    Deploy rag-toolkit in production with monitoring, scaling, and best practices.
+    Deploy quaerium in production with monitoring, scaling, and best practices.
 
     [:octicons-arrow-right-24: Deploy](production_setup.md)
 
@@ -162,8 +162,8 @@
 
     ```bash title="setup.sh" linenums="1"
     # Clone the repository
-    git clone https://github.com/gmottola00/rag-toolkit.git
-    cd rag-toolkit
+    git clone https://github.com/gmottola00/quaerium.git
+    cd quaerium
 
     # Install with all dependencies
     pip install -e ".[all]"
@@ -207,13 +207,13 @@
 
     Detailed API documentation
 
--   :material-forum: **[Discussions](https://github.com/gmottola00/rag-toolkit/discussions)**
+-   :material-forum: **[Discussions](https://github.com/gmottola00/quaerium/discussions)**
 
     ---
 
     Ask questions and share ideas
 
--   :material-bug: **[Report Issues](https://github.com/gmottola00/rag-toolkit/issues)**
+-   :material-bug: **[Report Issues](https://github.com/gmottola00/quaerium/issues)**
 
     ---
 

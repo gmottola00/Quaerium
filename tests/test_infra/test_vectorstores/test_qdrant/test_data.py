@@ -6,9 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.qdrant.connection import QdrantConnectionManager
-from rag_toolkit.infra.vectorstores.qdrant.data import QdrantDataManager
-from rag_toolkit.infra.vectorstores.qdrant.exceptions import DataOperationError
+from quaerium.infra.vectorstores.qdrant.connection import QdrantConnectionManager
+from quaerium.infra.vectorstores.qdrant.data import QdrantDataManager
+from quaerium.infra.vectorstores.qdrant.exceptions import DataOperationError
 
 
 def test_data_manager_initialization(mock_connection: QdrantConnectionManager) -> None:

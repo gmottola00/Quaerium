@@ -1,15 +1,17 @@
-# 🚀 Rag-Toolkit
+# 🏛️ Quaerium
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://img.shields.io/badge/tests-28%20passed-success.svg)](https://github.com/gmottola00/rag-toolkit)
-[![Coverage](https://img.shields.io/badge/coverage-19%25-yellow.svg)](https://github.com/gmottola00/rag-toolkit)
+[![Tests](https://img.shields.io/badge/tests-27%20passed-success.svg)](https://github.com/gmottola00/quaerium)
+[![Coverage](https://img.shields.io/badge/coverage-76%25-brightgreen.svg)](https://github.com/gmottola00/quaerium)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://gmottola00.github.io/rag-toolkit/)
+[![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://gmottola00.github.io/quaerium/)
 
-> **Advanced RAG library with multi-vectorstore support and production-ready components**
+> **Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture**
 
-Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean, Protocol-based architecture that makes it easy to switch between LLM providers, vector stores, and embedding models.
+*"Quaerere" (Latin): to seek, to search, to inquire - The art of intelligent knowledge retrieval.*
+
+Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean, Protocol-based architecture that seamlessly combines vector search and knowledge graphs.
 
 ---
 
@@ -20,10 +22,18 @@ Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean
 - **Swap implementations easily** - change vector stores without rewriting code
 - **Test-friendly** - mock any component with simple classes
 
-### 🔌 Multi-Provider Support
+### 🔌 Multi-Store Support
 - **LLMs**: Ollama, OpenAI (more coming soon)
 - **Embeddings**: Ollama (nomic-embed-text), OpenAI (text-embedding-3-small/large)
-- **Vector Stores**: Milvus (Pinecone, Qdrant, Weaviate coming soon)
+- **Vector Stores**: Milvus, Qdrant, ChromaDB
+- **Graph Stores**: Neo4j 5.x (async, production-ready) 🆕
+
+### 🕸️ Graph RAG (NEW!)
+- **Knowledge Graphs**: Native Neo4j integration for structured knowledge
+- **Hybrid Retrieval**: Combine vector similarity with graph traversal
+- **Entity Relationships**: Model documents, chunks, and entities with rich connections
+- **Cypher Queries**: Full power of Neo4j's query language
+- **APOC Support**: Advanced graph algorithms and procedures
 
 ### 📄 Document Processing
 - **Parsers**: PDF (PyMuPDF), DOCX, plain text
@@ -50,14 +60,14 @@ Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean
 
 ```bash
 # From PyPI (coming soon)
-pip install rag-toolkit
+pip install quaerium
 
 # From GitHub (current release)
-pip install git+https://github.com/gmottola00/rag-toolkit.git@v0.1.0
+pip install git+https://github.com/gmottola00/quaerium.git@v0.1.0
 
 # For development (editable install)
-git clone https://github.com/gmottola00/rag-toolkit.git
-cd rag-toolkit
+git clone https://github.com/gmottola00/quaerium.git
+cd quaerium
 pip install -e ".[dev]"
 ```
 
@@ -65,23 +75,23 @@ pip install -e ".[dev]"
 
 ```bash
 # With Ollama support
-pip install rag-toolkit[ollama]
+pip install quaerium[ollama]
 
 # With OpenAI support
-pip install rag-toolkit[openai]
+pip install quaerium[openai]
 
 # With document parsing (PDF, DOCX)
-pip install rag-toolkit[pdf,docx]
+pip install quaerium[pdf,docx]
 
 # All features
-pip install rag-toolkit[all]
+pip install quaerium[all]
 ```
 
 ### Basic Usage
 
 ```python
-from rag_toolkit import RagPipeline, get_ollama_embedding, get_ollama_llm
-from rag_toolkit.infra.vectorstore.milvus import MilvusVectorStore
+from quaerium import RagPipeline, get_ollama_embedding, get_ollama_llm
+from quaerium.infra.vectorstore.milvus import MilvusVectorStore
 
 # 1. Initialize components
 embedding = get_ollama_embedding()(model="nomic-embed-text")
@@ -131,7 +141,7 @@ for citation in response.citations:
 All core interfaces are defined as Protocols, not abstract base classes:
 
 ```python
-from rag_toolkit.core import EmbeddingClient, LLMClient, VectorStoreClient
+from quaerium.core import EmbeddingClient, LLMClient, VectorStoreClient
 
 # Any class implementing these methods works automatically
 class MyCustomEmbedding:
@@ -145,14 +155,14 @@ class MyCustomEmbedding:
     def model_name(self) -> str:
         return "my-model"
 
-# Works with any rag-toolkit component!
+# Works with any quaerium component!
 embedding: EmbeddingClient = MyCustomEmbedding()
 ```
 
 ### Clean Layered Architecture
 
 ```
-rag-toolkit/
+quaerium/
 ├── core/          # Protocols only (zero dependencies)
 │   ├── chunking.py
 │   ├── embedding.py
@@ -183,7 +193,7 @@ rag-toolkit/
 Implement the `VectorStoreClient` Protocol:
 
 ```python
-from rag_toolkit.core import VectorStoreClient, SearchResult
+from quaerium.core import VectorStoreClient, SearchResult
 
 class PineconeVectorStore:
     def create_collection(self, name: str, dimension: int, **kwargs):
@@ -217,7 +227,7 @@ results = vectorstore.hybrid_search(
 ### Custom RAG Pipeline
 
 ```python
-from rag_toolkit.rag import (
+from quaerium.rag import (
     QueryRewriter,
     LLMReranker,
     ContextAssembler
@@ -249,14 +259,14 @@ response = pipeline.run(
 pytest
 
 # With coverage
-pytest --cov=rag_toolkit --cov-report=html
+pytest --cov=quaerium --cov-report=html
 
 # Type checking
-mypy src/rag_toolkit
+mypy src/quaerium
 
 # Linting
-ruff check src/rag_toolkit
-black src/rag_toolkit --check
+ruff check src/quaerium
+black src/quaerium --check
 ```
 
 ### Performance Benchmarks
@@ -275,7 +285,7 @@ See [tests/benchmarks/README.md](tests/benchmarks/README.md) for detailed benchm
 
 ## 📖 Documentation
 
-Full documentation available at: [rag-toolkit.readthedocs.io](https://rag-toolkit.readthedocs.io) _(coming soon)_
+Full documentation available at: [quaerium.readthedocs.io](https://quaerium.readthedocs.io) _(coming soon)_
 
 ---
 
@@ -303,14 +313,14 @@ Full documentation available at: [rag-toolkit.readthedocs.io](https://rag-toolki
 
 ## 📚 Documentation
 
-Comprehensive documentation is available at **[gmottola00.github.io/rag-toolkit](https://gmottola00.github.io/rag-toolkit/)**
+Comprehensive documentation is available at **[gmottola00.github.io/quaerium](https://gmottola00.github.io/quaerium/)**
 
 ### Quick Links
 
-- **[Getting Started](https://gmottola00.github.io/rag-toolkit/getting_started/installation.html)** - Installation and quickstart
-- **[User Guide](https://gmottola00.github.io/rag-toolkit/user_guide/core_concepts.html)** - Core concepts and protocols
-- **[Examples](https://gmottola00.github.io/rag-toolkit/examples/basic_rag.html)** - Complete working examples
-- **[API Reference](https://gmottola00.github.io/rag-toolkit/autoapi/index.html)** - Full API documentation
+- **[Getting Started](https://gmottola00.github.io/quaerium/getting_started/installation.html)** - Installation and quickstart
+- **[User Guide](https://gmottola00.github.io/quaerium/user_guide/core_concepts.html)** - Core concepts and protocols
+- **[Examples](https://gmottola00.github.io/quaerium/examples/basic_rag.html)** - Complete working examples
+- **[API Reference](https://gmottola00.github.io/quaerium/autoapi/index.html)** - Full API documentation
 
 ### Build Docs Locally
 
@@ -332,14 +342,14 @@ Contributions welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) first.
 
 ```bash
 # Setup development environment
-git clone https://github.com/gmottola00/rag-toolkit.git
-cd rag-toolkit
+git clone https://github.com/gmottola00/quaerium.git
+cd quaerium
 pip install -e ".[dev]"
 
 # Run checks
 pytest
 ruff check .
-mypy src/rag_toolkit
+mypy src/quaerium
 ```
 
 ---
@@ -363,7 +373,7 @@ Built with inspiration from:
 
 - **Author**: Gianmarco Mottola
 - **GitHub**: [@gmottola00](https://github.com/gmottola00)
-- **Issues**: [GitHub Issues](https://github.com/gmottola00/rag-toolkit/issues)
+- **Issues**: [GitHub Issues](https://github.com/gmottola00/quaerium/issues)
 
 ---
 

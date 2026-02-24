@@ -6,9 +6,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.chroma.config import ChromaConfig
-from rag_toolkit.infra.vectorstores.chroma.connection import ChromaConnectionManager
-from rag_toolkit.infra.vectorstores.chroma.exceptions import ConnectionError
+from quaerium.infra.vectorstores.chroma.config import ChromaConfig
+from quaerium.infra.vectorstores.chroma.connection import ChromaConnectionManager
+from quaerium.infra.vectorstores.chroma.exceptions import ConnectionError
 
 
 class TestChromaConnectionManager:

@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from typing import Any, List, Dict, Union
-from rag_toolkit.infra.vectorstores.milvus import MilvusService
-from rag_toolkit.infra.vectorstores.qdrant import QdrantService
-from rag_toolkit.infra.vectorstores.chroma import ChromaService
+from quaerium.infra.vectorstores.milvus import MilvusService
+from quaerium.infra.vectorstores.qdrant import QdrantService
+from quaerium.infra.vectorstores.chroma import ChromaService
 
 
 class VectorStoreWrapper:

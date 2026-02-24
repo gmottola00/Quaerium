@@ -4,7 +4,7 @@ Complete RAG pipeline implementation with query rewriting, retrieval, reranking,
 
 ## RagPipeline
 
-::: rag_toolkit.rag.pipeline.RagPipeline
+::: quaerium.rag.pipeline.RagPipeline
     options:
       show_root_heading: true
       show_source: true
@@ -16,13 +16,13 @@ Complete RAG pipeline implementation with query rewriting, retrieval, reranking,
 
 ## Response Models
 
-::: rag_toolkit.rag.models.RagResponse
+::: quaerium.rag.models.RagResponse
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.rag.models.RetrievedChunk
+::: quaerium.rag.models.RetrievedChunk
     options:
       show_root_heading: true
       show_source: true
@@ -33,9 +33,9 @@ Complete RAG pipeline implementation with query rewriting, retrieval, reranking,
 ### Basic Pipeline
 
 ```python
-from rag_toolkit.rag import RagPipeline
-from rag_toolkit.infra import get_ollama_embedding, get_ollama_llm
-from rag_toolkit.infra.vectorstores import get_qdrant_service
+from quaerium.rag import RagPipeline
+from quaerium.infra import get_ollama_embedding, get_ollama_llm
+from quaerium.infra.vectorstores import get_qdrant_service
 
 # Initialize components
 embedding = get_ollama_embedding(model="nomic-embed-text")
@@ -67,8 +67,8 @@ print(f"Sources: {len(response.sources)}")
 ### Advanced Pipeline with Reranking
 
 ```python
-from rag_toolkit.rag import RagPipeline
-from rag_toolkit.rag.rerankers import LLMReranker
+from quaerium.rag import RagPipeline
+from quaerium.rag.rerankers import LLMReranker
 
 # Create reranker
 reranker = LLMReranker(llm_client=llm)

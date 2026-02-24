@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.chroma.config import ChromaConfig, ChromaIndexConfig
-from rag_toolkit.infra.vectorstores.chroma.connection import ChromaConnectionManager
+from quaerium.infra.vectorstores.chroma.config import ChromaConfig, ChromaIndexConfig
+from quaerium.infra.vectorstores.chroma.connection import ChromaConnectionManager
 
 
 @pytest.fixture

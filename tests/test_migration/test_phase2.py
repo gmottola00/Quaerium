@@ -4,8 +4,8 @@ import pytest
 from unittest.mock import Mock, patch
 from time import time
 
-from rag_toolkit.migration import VectorStoreMigrator, MigrationError
-from rag_toolkit.migration.migrator import (
+from quaerium.migration import VectorStoreMigrator, MigrationError
+from quaerium.migration.migrator import (
     DEFAULT_MAX_RETRIES,
     DEFAULT_RETRY_DELAY,
     DEFAULT_RETRY_BACKOFF,

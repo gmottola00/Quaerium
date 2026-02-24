@@ -107,7 +107,7 @@ def main() -> None:
     print("🔧 Building RAG pipeline...")
     
     # Create search strategy (simplified for demo)
-    from rag_toolkit.core.index.search_strategies import VectorSearch
+    from quaerium.core.index.search_strategies import VectorSearch
     
     # Mock indexer for demo
     class MockIndexer:

@@ -8,7 +8,7 @@
 ## :material-help-circle: Why Custom Vector Stores?
 
 !!! question "When to Build Custom Stores"
-    While rag-toolkit includes Milvus by default, you might want to:
+    While quaerium includes Milvus by default, you might want to:
 
 <div class="grid cards" markdown>
 
@@ -47,7 +47,7 @@
 
 ```python title="protocol.py" linenums="1" hl_lines="1-3 6 12-17 19-24 26-31 33-38"
 from typing import Protocol, runtime_checkable
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.types import SearchResult
 
 @runtime_checkable
 class VectorStoreClient(Protocol):
@@ -101,9 +101,9 @@ import uuid
 from typing import Optional
 import chromadb
 from chromadb.config import Settings
-from rag_toolkit.core.vectorstore import VectorStoreClient
-from rag_toolkit.core.embedding import EmbeddingClient
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.vectorstore import VectorStoreClient
+from quaerium.core.embedding import EmbeddingClient
+from quaerium.core.types import SearchResult
 
 class ChromaVectorStore:
     """ChromaDB vector store implementation."""
@@ -269,7 +269,7 @@ class ChromaVectorStore:
         return search_results
     
     def _convert_filter(self, filter: dict) -> dict:
-        """Convert rag-toolkit filter to ChromaDB where clause."""
+        """Convert quaerium filter to ChromaDB where clause."""
         where = {}
         
         for key, value in filter.items():
@@ -312,7 +312,7 @@ class ChromaVectorStore:
 ### Basic Usage
 
 ```python
-from rag_toolkit.infra.embedding import OpenAIEmbedding
+from quaerium.infra.embedding import OpenAIEmbedding
 
 # Create embedding client
 embedding = OpenAIEmbedding(model="text-embedding-3-small")
@@ -344,8 +344,8 @@ for result in results:
 ### Integration with RAG Pipeline
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium import RagPipeline
+from quaerium.infra.llm import OpenAILLM
 
 # Create RAG pipeline with custom vector store
 pipeline = RagPipeline(
@@ -618,8 +618,8 @@ async def test_metadata_filter():
 @pytest.mark.asyncio
 async def test_rag_pipeline_integration():
     """Test integration with RAG pipeline."""
-    from rag_toolkit import RagPipeline
-    from rag_toolkit.infra.llm import OpenAILLM
+    from quaerium import RagPipeline
+    from quaerium.infra.llm import OpenAILLM
     
     pipeline = RagPipeline(
         embedding_client=embedding,

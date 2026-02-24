@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from rag_toolkit.core.embedding import EmbeddingClient
-from rag_toolkit.core.llm import LLMClient
-from rag_toolkit.core.vectorstore import VectorStoreClient
+from quaerium.core.embedding import EmbeddingClient
+from quaerium.core.llm import LLMClient
+from quaerium.core.vectorstore import VectorStoreClient
 
 
 def test_embedding_protocol_compliance(mock_embedding):
@@ -114,20 +114,20 @@ def test_vectorstore_insert_search(mock_vectorstore, mock_embedding, sample_chun
 def test_core_imports():
     """Test that all core imports work correctly."""
     # Core protocols
-    from rag_toolkit import EmbeddingClient, LLMClient, VectorStoreClient
+    from quaerium import EmbeddingClient, LLMClient, VectorStoreClient
     
     assert EmbeddingClient is not None
     assert LLMClient is not None
     assert VectorStoreClient is not None
     
     # Chunking types
-    from rag_toolkit import Chunk, TokenChunk
+    from quaerium import Chunk, TokenChunk
     
     assert Chunk is not None
     assert TokenChunk is not None
     
     # RAG components
-    from rag_toolkit import RagPipeline, RagResponse
+    from quaerium import RagPipeline, RagResponse
     
     assert RagPipeline is not None
     assert RagResponse is not None
@@ -135,7 +135,7 @@ def test_core_imports():
 
 def test_lazy_import_helpers():
     """Test lazy import helper functions."""
-    from rag_toolkit import (
+    from quaerium import (
         get_ollama_embedding,
         get_ollama_llm,
         get_openai_embedding,
@@ -155,7 +155,7 @@ def test_lazy_import_helpers():
 
 def test_version():
     """Test that version is accessible."""
-    import rag_toolkit
+    import quaerium
     
     assert hasattr(rag_toolkit, "__version__")
     assert isinstance(rag_toolkit.__version__, str)

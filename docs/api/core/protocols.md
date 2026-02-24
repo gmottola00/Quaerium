@@ -8,7 +8,7 @@ RAG Toolkit uses Python Protocols (PEP 544) for type safety without inheritance 
 
 ## Embedding Protocols
 
-::: rag_toolkit.core.embedding.base.EmbeddingClient
+::: quaerium.core.embedding.base.EmbeddingClient
     options:
       show_root_heading: true
       show_source: true
@@ -16,7 +16,7 @@ RAG Toolkit uses Python Protocols (PEP 544) for type safety without inheritance 
 
 ## LLM Protocols
 
-::: rag_toolkit.core.llm.base.LLMClient
+::: quaerium.core.llm.base.LLMClient
     options:
       show_root_heading: true
       show_source: true
@@ -24,7 +24,7 @@ RAG Toolkit uses Python Protocols (PEP 544) for type safety without inheritance 
 
 ## Vector Store Protocols
 
-::: rag_toolkit.core.vectorstore.VectorStoreClient
+::: quaerium.core.vectorstore.VectorStoreClient
     options:
       show_root_heading: true
       show_source: true
@@ -32,13 +32,13 @@ RAG Toolkit uses Python Protocols (PEP 544) for type safety without inheritance 
 
 ## Chunking Protocols
 
-::: rag_toolkit.core.chunking.types.ChunkLike
+::: quaerium.core.chunking.types.ChunkLike
     options:
       show_root_heading: true
       show_source: true
       heading_level: 3
 
-::: rag_toolkit.core.chunking.types.TokenChunkLike
+::: quaerium.core.chunking.types.TokenChunkLike
     options:
       show_root_heading: true
       show_source: true
@@ -50,7 +50,7 @@ RAG Toolkit uses Python Protocols (PEP 544) for type safety without inheritance 
 
 ```python
 from typing import List
-from rag_toolkit.core import EmbeddingClient
+from quaerium.core import EmbeddingClient
 
 class MyEmbedding(EmbeddingClient):
     """Custom embedding implementation."""
@@ -74,7 +74,7 @@ vectors = embedding.embed(["Hello", "World"])
 
 ```python
 from typing import List, Dict, Any, Optional
-from rag_toolkit.core import VectorStoreClient
+from quaerium.core import VectorStoreClient
 
 class MyVectorStore(VectorStoreClient):
     """Custom vector store implementation."""

@@ -6,8 +6,8 @@ from unittest.mock import patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.milvus import MilvusService
-from rag_toolkit.infra.vectorstores.milvus.config import MilvusConfig
+from quaerium.infra.vectorstores.milvus import MilvusService
+from quaerium.infra.vectorstores.milvus.config import MilvusConfig
 
 
 @pytest.fixture

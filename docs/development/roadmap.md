@@ -1,6 +1,6 @@
 # Roadmap
 
-The future development plan for rag-toolkit.
+The future development plan for quaerium.
 
 ## Current Status: v0.1.0
 
@@ -156,15 +156,15 @@ We welcome contributions! Here's how you can help:
 
 1. **Vector Store Implementations**
    - Implement new vector store adapters
-   - See `src/rag_toolkit/core/vectorstore.py` for the protocol
+   - See `src/quaerium/core/vectorstore.py` for the protocol
 
 2. **LLM Provider Integrations**
    - Add support for new LLM providers
-   - See `src/rag_toolkit/core/llm.py` for the protocol
+   - See `src/quaerium/core/llm.py` for the protocol
 
 3. **Embedding Models**
    - Integrate new embedding models
-   - See `src/rag_toolkit/core/embedding.py` for the protocol
+   - See `src/quaerium/core/embedding.py` for the protocol
 
 4. **Examples and Tutorials**
    - Write tutorials for specific use cases
@@ -178,7 +178,7 @@ We welcome contributions! Here's how you can help:
 
 ### Feature Requests
 
-Have an idea? [Open an issue](https://github.com/gmottola00/rag-toolkit/issues/new) with:
+Have an idea? [Open an issue](https://github.com/gmottola00/quaerium/issues/new) with:
 - Clear description of the feature
 - Use case and benefits
 - Proposed implementation (optional)
@@ -186,7 +186,7 @@ Have an idea? [Open an issue](https://github.com/gmottola00/rag-toolkit/issues/n
 
 ### Voting
 
-Check our [GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discussions) to:
+Check our [GitHub Discussions](https://github.com/gmottola00/quaerium/discussions) to:
 - Vote on proposed features
 - Suggest new features
 - Share your use cases
@@ -211,10 +211,10 @@ Check our [GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discuss
 
 ## Stay Updated
 
-- 📧 [Mailing list](https://github.com/gmottola00/rag-toolkit) (coming soon)
+- 📧 [Mailing list](https://github.com/gmottola00/quaerium) (coming soon)
 - 🐦 [Twitter](https://twitter.com) (coming soon)
 - 💬 [Discord community](https://discord.gg) (coming soon)
-- ⭐ [Star on GitHub](https://github.com/gmottola00/rag-toolkit)
+- ⭐ [Star on GitHub](https://github.com/gmottola00/quaerium)
 
 ---
 

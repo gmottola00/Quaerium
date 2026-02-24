@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, Mock
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.qdrant.config import QdrantConfig, QdrantIndexConfig
-from rag_toolkit.infra.vectorstores.qdrant.connection import QdrantConnectionManager
+from quaerium.infra.vectorstores.qdrant.config import QdrantConfig, QdrantIndexConfig
+from quaerium.infra.vectorstores.qdrant.connection import QdrantConnectionManager
 
 
 @pytest.fixture

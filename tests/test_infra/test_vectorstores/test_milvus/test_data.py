@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.milvus.exceptions import DataOperationError
+from quaerium.infra.vectorstores.milvus.exceptions import DataOperationError
 
 
 def test_insert_data(mock_data_manager, mock_milvus_client, sample_data):

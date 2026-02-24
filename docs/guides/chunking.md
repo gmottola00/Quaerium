@@ -54,7 +54,7 @@ graph LR
 **Best for**: Structured documents with clear sections (PDFs, documentation, reports)
 
 ```python title="dynamic_chunking.py" linenums="1" hl_lines="4-7 11"
-from rag_toolkit.core.chunking import DynamicChunker
+from quaerium.core.chunking import DynamicChunker
 
 # Create dynamic chunker
 chunker = DynamicChunker(
@@ -131,7 +131,7 @@ graph TB
 **Best for**: Controlling token budget, optimal embedding sizes, LLM context limits
 
 ```python title="token_chunking.py" linenums="1" hl_lines="4-7 11"
-from rag_toolkit.core.chunking import TokenChunker
+from quaerium.core.chunking import TokenChunker
 
 # Create token chunker
 chunker = TokenChunker(
@@ -226,7 +226,7 @@ Chunk 3:                      ░░░░████████████�
 The recommended approach is to use both chunkers together:
 
 ```python
-from rag_toolkit.core.chunking import DynamicChunker, TokenChunker
+from quaerium.core.chunking import DynamicChunker, TokenChunker
 
 # Stage 1: Structural chunking
 dynamic_chunker = DynamicChunker(
@@ -398,12 +398,12 @@ results = await vector_store.search(
 
 ## Integration with RAG Pipeline
 
-Complete example with rag-toolkit:
+Complete example with quaerium:
 
 ```python
-from rag_toolkit.core.chunking import DynamicChunker, TokenChunker
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.core.vectorstore import MilvusVectorStore
+from quaerium.core.chunking import DynamicChunker, TokenChunker
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.core.vectorstore import MilvusVectorStore
 
 # Initialize components
 dynamic_chunker = DynamicChunker()
@@ -529,7 +529,7 @@ Split text into fixed-size chunks with optional overlap.
 **Best for**: General documents, simple use cases
 
 ```python
-from rag_toolkit.core.chunking import FixedSizeChunker
+from quaerium.core.chunking import FixedSizeChunker
 
 # Create chunker
 chunker = FixedSizeChunker(
@@ -566,7 +566,7 @@ Split by token count instead of characters, respecting LLM limits.
 **Best for**: Production systems, token budget control
 
 ```python
-from rag_toolkit.core.chunking import TokenChunker
+from quaerium.core.chunking import TokenChunker
 
 # Create token-aware chunker
 chunker = TokenChunker(
@@ -594,7 +594,7 @@ Split at natural semantic boundaries (sentences, paragraphs).
 **Best for**: Maintaining context integrity
 
 ```python
-from rag_toolkit.core.chunking import SemanticChunker
+from quaerium.core.chunking import SemanticChunker
 
 # Create semantic chunker
 chunker = SemanticChunker(
@@ -619,7 +619,7 @@ Hierarchical chunking with fallback strategies.
 **Best for**: Complex documents, robust processing
 
 ```python
-from rag_toolkit.core.chunking import RecursiveChunker
+from quaerium.core.chunking import RecursiveChunker
 
 # Create recursive chunker
 chunker = RecursiveChunker(
@@ -644,7 +644,7 @@ Respect Markdown structure (headers, lists, code blocks).
 **Best for**: Documentation, technical content
 
 ```python
-from rag_toolkit.core.chunking import MarkdownChunker
+from quaerium.core.chunking import MarkdownChunker
 
 # Create Markdown chunker
 chunker = MarkdownChunker(
@@ -677,7 +677,7 @@ Adapt chunk size based on content characteristics.
 **Best for**: Mixed content types, optimal retrieval
 
 ```python
-from rag_toolkit.core.chunking import DynamicChunker
+from quaerium.core.chunking import DynamicChunker
 
 # Create dynamic chunker
 chunker = DynamicChunker(
@@ -698,7 +698,7 @@ chunks = await chunker.chunk(document)
 Add metadata to chunks for better filtering:
 
 ```python
-from rag_toolkit.core.chunking import MetadataEnricher
+from quaerium.core.chunking import MetadataEnricher
 
 # Enrich chunks with metadata
 enricher = MetadataEnricher()
@@ -724,7 +724,7 @@ for chunk in enriched_chunks:
 Create parent-child relationships:
 
 ```python
-from rag_toolkit.core.chunking import HierarchicalChunker
+from quaerium.core.chunking import HierarchicalChunker
 
 # Create hierarchical chunks
 chunker = HierarchicalChunker(
@@ -747,7 +747,7 @@ for child in children:
 Include surrounding context in chunks:
 
 ```python
-from rag_toolkit.core.chunking import ContextChunker
+from quaerium.core.chunking import ContextChunker
 
 # Add context to chunks
 chunker = ContextChunker(
@@ -779,7 +779,7 @@ for chunk in chunks:
 ### Finding Optimal Size
 
 ```python
-from rag_toolkit.core.chunking import ChunkSizeOptimizer
+from quaerium.core.chunking import ChunkSizeOptimizer
 
 # Optimize chunk size for your data
 optimizer = ChunkSizeOptimizer(
@@ -832,8 +832,8 @@ chunker = FixedSizeChunker(
 ### PDF Documents
 
 ```python
-from rag_toolkit.infra.parsers.pdf import PDFParser
-from rag_toolkit.core.chunking import SemanticChunker
+from quaerium.infra.parsers.pdf import PDFParser
+from quaerium.core.chunking import SemanticChunker
 
 # Parse PDF
 parser = PDFParser()
@@ -855,7 +855,7 @@ for chunk in chunks:
 ### Code Files
 
 ```python
-from rag_toolkit.core.chunking import CodeChunker
+from quaerium.core.chunking import CodeChunker
 
 # Chunk code by functions/classes
 chunker = CodeChunker(
@@ -884,7 +884,7 @@ for chunk in chunks:
 ### Structured Data
 
 ```python
-from rag_toolkit.core.chunking import StructuredChunker
+from quaerium.core.chunking import StructuredChunker
 
 # Chunk JSON/CSV
 chunker = StructuredChunker(
@@ -905,8 +905,8 @@ chunks = await chunker.chunk(json_data)
 ### With RAG Pipeline
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.core.chunking import TokenChunker
+from quaerium import RagPipeline
+from quaerium.core.chunking import TokenChunker
 
 # Create chunker
 chunker = TokenChunker(chunk_size=512, chunk_overlap=50)
@@ -929,7 +929,7 @@ await pipeline.index(
 ### Custom Preprocessing
 
 ```python
-from rag_toolkit.core.chunking import Preprocessor
+from quaerium.core.chunking import Preprocessor
 
 # Create preprocessor
 preprocessor = Preprocessor(
@@ -949,7 +949,7 @@ chunks = await chunker.chunk(cleaned_text)
 ### Chunk Quality Metrics
 
 ```python
-from rag_toolkit.core.chunking import ChunkQualityEvaluator
+from quaerium.core.chunking import ChunkQualityEvaluator
 
 # Evaluate chunk quality
 evaluator = ChunkQualityEvaluator()

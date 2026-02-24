@@ -1,14 +1,14 @@
 [project]
-name = "rag-toolkit"
-version = "0.1.0"
-description = "Advanced RAG toolkit with multi-vectorstore support and production-ready components"
+name = "quaerium"
+version = "0.1.2"
+description = "Quaerium: Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = { text = "MIT" }
 authors = [
     { name = "Gianmarco Mottola", email = "gianmarcomottola00@gmail.com" }
 ]
-keywords = ["rag", "retrieval", "llm", "vector-search", "milvus", "embeddings"]
+keywords = ["rag", "retrieval", "llm", "vector-search", "graph-rag", "neo4j", "milvus", "embeddings", "knowledge-graph"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -72,14 +72,14 @@ docs = [
 
 # All optional dependencies
 all = [
-    "rag-toolkit[qdrant,chroma,neo4j,ollama,openai,pdf,docx,ocr,lang]",
+    "quaerium[qdrant,chroma,neo4j,ollama,openai,pdf,docx,ocr,lang]",
 ]
 
 [project.urls]
-Homepage = "https://github.com/gmottola00/rag-toolkit"
-Documentation = "https://gmottola00.github.io/rag-toolkit/"
-Repository = "https://github.com/gmottola00/rag-toolkit"
-Issues = "https://github.com/gmottola00/rag-toolkit/issues"
+Homepage = "https://github.com/gmottola00/quaerium"
+Documentation = "https://gmottola00.github.io/quaerium/"
+Repository = "https://github.com/gmottola00/quaerium"
+Issues = "https://github.com/gmottola00/quaerium/issues"
 
 [build-system]
 requires = ["setuptools>=65.0", "wheel"]
@@ -90,7 +90,7 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["rag_toolkit*"]
+include = ["quaerium*"]
 namespaces = false
 
 # Ruff configuration
@@ -163,7 +163,7 @@ python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
-    "--cov=rag_toolkit",
+    "--cov=quaerium",
     "--cov-report=term-missing",
     "--cov-report=html",
 ]

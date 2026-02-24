@@ -50,9 +50,9 @@
 ### Simple Implementation
 
 ```python
-from rag_toolkit.core.vectorstore import MilvusVectorStore
-from rag_toolkit.core.embedding import OpenAIEmbedding
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.vectorstore import MilvusVectorStore
+from quaerium.core.embedding import OpenAIEmbedding
+from quaerium.core.types import SearchResult
 
 class HybridSearcher:
     """Simple hybrid search combining vector + keyword."""
@@ -502,8 +502,8 @@ results3 = await adaptive.search("error code ERR_123")
 ### Custom Hybrid RAG
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium import RagPipeline
+from quaerium.infra.llm import OpenAILLM
 
 class HybridRagPipeline(RagPipeline):
     """RAG pipeline with hybrid search."""

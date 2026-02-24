@@ -6,8 +6,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.qdrant.config import QdrantConfig, QdrantIndexConfig
-from rag_toolkit.infra.vectorstores.qdrant.service import QdrantService
+from quaerium.infra.vectorstores.qdrant.config import QdrantConfig, QdrantIndexConfig
+from quaerium.infra.vectorstores.qdrant.service import QdrantService
 
 
 def test_service_initialization(qdrant_config: QdrantConfig) -> None:

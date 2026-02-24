@@ -1,6 +1,6 @@
-# Contributing to rag-toolkit
+# Contributing to quaerium
 
-Thank you for your interest in contributing to rag-toolkit! This document provides guidelines and instructions for contributors.
+Thank you for your interest in contributing to quaerium! This document provides guidelines and instructions for contributors.
 
 ## 🎯 Development Philosophy
 
@@ -15,8 +15,8 @@ Thank you for your interest in contributing to rag-toolkit! This document provid
 ### 1. Fork and Clone
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/rag-toolkit.git
-cd rag-toolkit
+git clone https://github.com/YOUR_USERNAME/quaerium.git
+cd quaerium
 ```
 
 ### 2. Setup Development Environment
@@ -49,16 +49,16 @@ We follow **PEP 8** with these tools:
 
 ```bash
 # Format code
-black src/rag_toolkit tests
+black src/quaerium tests
 
 # Sort imports
-isort src/rag_toolkit tests
+isort src/quaerium tests
 
 # Lint
-ruff check src/rag_toolkit tests
+ruff check src/quaerium tests
 
 # Type check
-mypy src/rag_toolkit
+mypy src/quaerium
 ```
 
 ### Type Hints
@@ -117,7 +117,7 @@ def search(
 pytest
 
 # Run with coverage
-pytest --cov=rag_toolkit --cov-report=html
+pytest --cov=quaerium --cov-report=html
 
 # Run specific test file
 pytest tests/core/test_embedding.py
@@ -130,7 +130,7 @@ pytest tests/core/test_embedding.py::test_embed_batch
 
 ```python
 import pytest
-from rag_toolkit.core import EmbeddingClient
+from quaerium.core import EmbeddingClient
 
 def test_embedding_protocol():
     """Test that custom embedding implements protocol."""
@@ -157,7 +157,7 @@ def test_embedding_protocol():
 @pytest.fixture
 def mock_ollama():
     """Mock Ollama API responses."""
-    with patch("rag_toolkit.infra.embedding.ollama.requests.post") as mock:
+    with patch("quaerium.infra.embedding.ollama.requests.post") as mock:
         mock.return_value.json.return_value = {
             "embedding": [0.1] * 768
         }
@@ -176,11 +176,11 @@ def test_ollama_embedding(mock_ollama):
 
 ### Adding a New Vector Store
 
-1. **Create Protocol implementation** in `src/rag_toolkit/infra/vectorstore/`:
+1. **Create Protocol implementation** in `src/quaerium/infra/vectorstore/`:
 
 ```python
-# src/rag_toolkit/infra/vectorstore/pinecone/client.py
-from rag_toolkit.core import VectorStoreClient, SearchResult
+# src/quaerium/infra/vectorstore/pinecone/client.py
+from quaerium.core import VectorStoreClient, SearchResult
 
 class PineconeVectorStore:
     """Pinecone vector store implementation."""
@@ -215,10 +215,10 @@ pinecone = ["pinecone-client>=2.0.0"]
 
 ### Adding a New LLM Provider
 
-Similar process in `src/rag_toolkit/infra/llm/`:
+Similar process in `src/quaerium/infra/llm/`:
 
 ```python
-from rag_toolkit.core import LLMClient
+from quaerium.core import LLMClient
 
 class AnthropicLLMClient:
     """Anthropic Claude LLM client."""
@@ -270,7 +270,7 @@ A clear description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce:
-1. Install rag-toolkit with '...'
+1. Install quaerium with '...'
 2. Run code '...'
 3. See error
 
@@ -280,7 +280,7 @@ What you expected to happen.
 **Environment**
 - OS: [e.g., Ubuntu 22.04]
 - Python version: [e.g., 3.11.5]
-- rag-toolkit version: [e.g., 0.1.0]
+- quaerium version: [e.g., 0.1.0]
 - Relevant dependencies: [e.g., pymilvus 2.3.0]
 
 **Additional context**
@@ -292,7 +292,7 @@ Any other context about the problem.
 1. **Update tests**: Ensure all tests pass
 2. **Update docs**: Add/update relevant documentation
 3. **Update CHANGELOG**: Add entry under "Unreleased"
-4. **Run checks**: `pytest && mypy src/rag_toolkit && ruff check .`
+4. **Run checks**: `pytest && mypy src/quaerium && ruff check .`
 5. **Create PR**: Use descriptive title and description
 
 ### PR Title Format
@@ -310,7 +310,7 @@ test(rag): add integration tests for pipeline
 ### PR Checklist
 
 - [ ] Tests pass locally (`pytest`)
-- [ ] Type checks pass (`mypy src/rag_toolkit`)
+- [ ] Type checks pass (`mypy src/quaerium`)
 - [ ] Linting passes (`ruff check .`)
 - [ ] Code formatted (`black .` and `isort .`)
 - [ ] Documentation updated
@@ -336,9 +336,9 @@ test(rag): add integration tests for pipeline
 
 ## 📞 Questions?
 
-- **Discussions**: [GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discussions)
-- **Issues**: [GitHub Issues](https://github.com/gmottola00/rag-toolkit/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/gmottola00/quaerium/discussions)
+- **Issues**: [GitHub Issues](https://github.com/gmottola00/quaerium/issues)
 
 ---
 
-**Thank you for contributing to rag-toolkit!** 🚀
+**Thank you for contributing to quaerium!** 🚀

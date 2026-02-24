@@ -5,8 +5,8 @@ This page provides complete, runnable examples for metadata extraction and enric
 ## Prerequisites
 
 ```bash
-# Install rag-toolkit
-pip install rag-toolkit
+# Install quaerium
+pip install quaerium
 
 # Start Ollama (if using local LLMs)
 ollama serve
@@ -21,10 +21,10 @@ ollama pull nomic-embed-text
 Extract case information from legal filings and enrich chunks for retrieval.
 
 ```python
-from rag_toolkit.core.metadata import LLMMetadataExtractor
-from rag_toolkit.core.chunking import MetadataEnricher, TokenChunker
-from rag_toolkit.infra.llm import OllamaLLMClient
-from rag_toolkit.infra.embedding import OllamaEmbeddingClient
+from quaerium.core.metadata import LLMMetadataExtractor
+from quaerium.core.chunking import MetadataEnricher, TokenChunker
+from quaerium.infra.llm import OllamaLLMClient
+from quaerium.infra.embedding import OllamaEmbeddingClient
 
 # ============================================================================
 # Define Legal Domain Prompts
@@ -318,11 +318,11 @@ print(metadata)
 Complete example with PDF parsing, chunking, extraction, enrichment, and indexing.
 
 ```python
-from rag_toolkit.core.chunking import DynamicChunker, TokenChunker, MetadataEnricher
-from rag_toolkit.core.metadata import LLMMetadataExtractor
-from rag_toolkit.infra.parsers import create_ingestion_service
-from rag_toolkit.infra.llm import OllamaLLMClient
-from rag_toolkit.infra.embedding import OllamaEmbeddingClient
+from quaerium.core.chunking import DynamicChunker, TokenChunker, MetadataEnricher
+from quaerium.core.metadata import LLMMetadataExtractor
+from quaerium.infra.parsers import create_ingestion_service
+from quaerium.infra.llm import OllamaLLMClient
+from quaerium.infra.embedding import OllamaEmbeddingClient
 
 def process_document(
     file_path: str,
@@ -466,8 +466,8 @@ All examples are available in the repository:
 
 ```bash
 # Clone repository
-git clone https://github.com/gmottola00/rag-toolkit.git
-cd rag-toolkit
+git clone https://github.com/gmottola00/quaerium.git
+cd quaerium
 
 # Install with examples
 pip install -e ".[dev,all]"

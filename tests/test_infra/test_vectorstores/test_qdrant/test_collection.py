@@ -6,10 +6,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.qdrant.collection import QdrantCollectionManager
-from rag_toolkit.infra.vectorstores.qdrant.config import QdrantIndexConfig
-from rag_toolkit.infra.vectorstores.qdrant.connection import QdrantConnectionManager
-from rag_toolkit.infra.vectorstores.qdrant.exceptions import CollectionError
+from quaerium.infra.vectorstores.qdrant.collection import QdrantCollectionManager
+from quaerium.infra.vectorstores.qdrant.config import QdrantIndexConfig
+from quaerium.infra.vectorstores.qdrant.connection import QdrantConnectionManager
+from quaerium.infra.vectorstores.qdrant.exceptions import CollectionError
 
 
 def test_collection_manager_initialization(mock_connection: QdrantConnectionManager) -> None:

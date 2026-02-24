@@ -6,8 +6,8 @@ from typing import Any, Dict, List
 
 import pytest
 
-from rag_toolkit.rag.models import RagResponse, RetrievedChunk
-from rag_toolkit.rag.pipeline import RagPipeline
+from quaerium.rag.models import RagResponse, RetrievedChunk
+from quaerium.rag.pipeline import RagPipeline
 
 
 class MockSearchStrategy:

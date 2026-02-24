@@ -154,7 +154,7 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ```txt
 # requirements.txt
-rag-toolkit>=0.1.0
+quaerium>=0.1.0
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 redis>=5.0.0
@@ -175,10 +175,10 @@ from pydantic import BaseModel
 import redis.asyncio as redis
 import hashlib
 import json
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.infra.llm import OpenAILLM
-from rag_toolkit.core.vectorstore import MilvusVectorStore
+from quaerium import RagPipeline
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.infra.llm import OpenAILLM
+from quaerium.core.vectorstore import MilvusVectorStore
 from prometheus_client import Counter, Histogram, generate_latest
 import time
 import logging

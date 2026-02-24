@@ -4,7 +4,7 @@ import pytest
 from unittest.mock import Mock, MagicMock
 from typing import List, Dict, Any
 
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.types import SearchResult
 
 
 @pytest.fixture

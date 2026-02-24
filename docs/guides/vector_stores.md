@@ -71,7 +71,7 @@ graph LR
 
 ```bash
 # Install with Milvus support (included by default)
-pip install rag-toolkit
+pip install quaerium
 
 # Start Milvus (Docker)
 docker run -d --name milvus-standalone \
@@ -83,8 +83,8 @@ docker run -d --name milvus-standalone \
 **Basic Usage:**
 
 ```python
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
-from rag_toolkit.infra.embedding import OpenAIEmbedding
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.embedding import OpenAIEmbedding
 
 # Initialize vector store
 vector_store = MilvusVectorStore(
@@ -120,7 +120,7 @@ for result in results:
 ### Connection Settings
 
 ```python
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
 
 # Local Milvus
 vector_store = MilvusVectorStore(
@@ -149,7 +149,7 @@ vector_store = MilvusVectorStore(
 Different index types offer trade-offs between speed, accuracy, and memory:
 
 ```python
-from rag_toolkit.infra.vectorstores.milvus.config import IndexConfig
+from quaerium.infra.vectorstores.milvus.config import IndexConfig
 
 # HNSW - Best for high accuracy (default)
 index_config = IndexConfig(
@@ -201,7 +201,7 @@ vector_store = MilvusVectorStore(
 ### Creating Collections
 
 ```python
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
 
 # Auto-create collection on first insert
 vector_store = MilvusVectorStore(
@@ -402,7 +402,7 @@ results = vector_store.hybrid_search(
 Improve result quality with reranking:
 
 ```python
-from rag_toolkit.rag.rerankers import CrossEncoderReranker
+from quaerium.rag.rerankers import CrossEncoderReranker
 
 # Initial search with more results
 results = vector_store.search(
@@ -552,8 +552,8 @@ You can implement your own vector store by following the `VectorStoreClient` pro
 
 ```python
 from typing import Protocol, runtime_checkable
-from rag_toolkit.core.vectorstore import VectorStoreClient
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.vectorstore import VectorStoreClient
+from quaerium.core.types import SearchResult
 
 @runtime_checkable
 class CustomVectorStore(VectorStoreClient):
@@ -643,7 +643,7 @@ if embedding_dim != collection_dim:
 batch_size = 100  # Reduce if still OOM
 
 # Or use memory-efficient index
-from rag_toolkit.infra.vectorstores.milvus.config import IndexConfig
+from quaerium.infra.vectorstores.milvus.config import IndexConfig
 
 index_config = IndexConfig(
     index_type="IVF_PQ",  # More memory efficient

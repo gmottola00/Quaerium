@@ -52,8 +52,8 @@ Transfer vector data seamlessly between different vector store implementations w
 ### :material-numeric-1-box: Basic Migration
 
 ```python title="simple_migration.py" linenums="1" hl_lines="6-14 17-21 24"
-from rag_toolkit.migration import VectorStoreMigrator
-from rag_toolkit.infra.vectorstores import (
+from quaerium.migration import VectorStoreMigrator
+from quaerium.infra.vectorstores import (
     get_chromadb_service,
     get_qdrant_service,
 )
@@ -377,7 +377,7 @@ result = migrator.migrate(
 === "Error Handling"
 
     ```python title="error_handling.py" linenums="1" hl_lines="1 4-7"
-    from rag_toolkit.migration import MigrationError
+    from quaerium.migration import MigrationError
 
     try:
         result = migrator.migrate(source_collection="docs")
@@ -876,7 +876,7 @@ restore_result = restore_migrator.migrate(
 Base exception for all migration errors:
 
 ```python
-from rag_toolkit.migration import MigrationError
+from quaerium.migration import MigrationError
 
 try:
     result = migrator.migrate(source_collection="docs")
@@ -889,7 +889,7 @@ except MigrationError as e:
 Raised when source collection doesn't exist:
 
 ```python
-from rag_toolkit.migration import CollectionNotFoundError
+from quaerium.migration import CollectionNotFoundError
 
 try:
     estimate = migrator.estimate(collection_name="missing")
@@ -902,7 +902,7 @@ except CollectionNotFoundError:
 Raised when post-migration validation fails:
 
 ```python
-from rag_toolkit.migration import ValidationError
+from quaerium.migration import ValidationError
 
 try:
     result = migrator.migrate(
@@ -1144,7 +1144,7 @@ migrator.migrate(
 # - Structured logging (JSON) with correlation IDs
 # - Pluggable exporters (Prometheus, Grafana, Datadog)
 
-from rag_toolkit.migration import MetricsExporter
+from quaerium.migration import MetricsExporter
 
 migrator = VectorStoreMigrator(
     source=source,

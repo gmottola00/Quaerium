@@ -6,9 +6,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.milvus.config import MilvusConfig
-from rag_toolkit.infra.vectorstores.milvus.connection import MilvusConnectionManager
-from rag_toolkit.infra.vectorstores.milvus.exceptions import ConnectionError
+from quaerium.infra.vectorstores.milvus.config import MilvusConfig
+from quaerium.infra.vectorstores.milvus.connection import MilvusConnectionManager
+from quaerium.infra.vectorstores.milvus.exceptions import ConnectionError
 
 
 def test_connection_initialization(milvus_config):

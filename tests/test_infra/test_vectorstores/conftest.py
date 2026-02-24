@@ -8,15 +8,15 @@ from typing import Generator
 import pytest
 
 # Import all vector store services
-from rag_toolkit.infra.vectorstores.milvus.config import MilvusConfig
-from rag_toolkit.infra.vectorstores.milvus.service import MilvusService
-from rag_toolkit.infra.vectorstores.qdrant.config import QdrantConfig
-from rag_toolkit.infra.vectorstores.qdrant.service import QdrantService
+from quaerium.infra.vectorstores.milvus.config import MilvusConfig
+from quaerium.infra.vectorstores.milvus.service import MilvusService
+from quaerium.infra.vectorstores.qdrant.config import QdrantConfig
+from quaerium.infra.vectorstores.qdrant.service import QdrantService
 
 # ChromaDB might not be installed
 try:
-    from rag_toolkit.infra.vectorstores.chroma.config import ChromaConfig
-    from rag_toolkit.infra.vectorstores.chroma.service import ChromaService
+    from quaerium.infra.vectorstores.chroma.config import ChromaConfig
+    from quaerium.infra.vectorstores.chroma.service import ChromaService
     CHROMA_AVAILABLE = True
 except ImportError:
     CHROMA_AVAILABLE = False

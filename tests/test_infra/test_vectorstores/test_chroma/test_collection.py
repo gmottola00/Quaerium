@@ -7,9 +7,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from rag_toolkit.infra.vectorstores.chroma.collection import ChromaCollectionManager
-from rag_toolkit.infra.vectorstores.chroma.config import ChromaIndexConfig
-from rag_toolkit.infra.vectorstores.chroma.exceptions import CollectionError
+from quaerium.infra.vectorstores.chroma.collection import ChromaCollectionManager
+from quaerium.infra.vectorstores.chroma.config import ChromaIndexConfig
+from quaerium.infra.vectorstores.chroma.exceptions import CollectionError
 
 
 class TestChromaCollectionManager:

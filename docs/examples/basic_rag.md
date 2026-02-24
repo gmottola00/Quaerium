@@ -22,10 +22,10 @@ This example demonstrates:
 4. Querying with context
 """
 
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding.ollama import OllamaEmbedding
-from rag_toolkit.infra.llm.ollama import OllamaLLMClient
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium import RagPipeline
+from quaerium.infra.embedding.ollama import OllamaEmbedding
+from quaerium.infra.llm.ollama import OllamaLLMClient
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
 
 def main():
     # Step 1: Initialize components
@@ -225,7 +225,7 @@ print(response.metadata)    # Additional info
     Extract text from PDFs and index them directly.
 
 ```python title="pdf_processing.py" linenums="1" hl_lines="1 4 5 8 9 12"
-from rag_toolkit.infra.parsers.pdf import PDFParser
+from quaerium.infra.parsers.pdf import PDFParser
 
 # Parse PDF
 parser = PDFParser()
@@ -361,10 +361,10 @@ except Exception as e:
 #!/usr/bin/env python3
 """Complete RAG application."""
 
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding.ollama import OllamaEmbedding
-from rag_toolkit.infra.llm.ollama import OllamaLLMClient
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium import RagPipeline
+from quaerium.infra.embedding.ollama import OllamaEmbedding
+from quaerium.infra.llm.ollama import OllamaLLMClient
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
 
 def setup_pipeline():
     """Initialize and return configured pipeline."""

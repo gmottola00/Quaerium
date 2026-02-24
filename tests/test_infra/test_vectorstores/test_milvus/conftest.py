@@ -8,7 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 if TYPE_CHECKING:
-    from rag_toolkit.infra.vectorstores.milvus.config import MilvusConfig
+    from quaerium.infra.vectorstores.milvus.config import MilvusConfig
 
 
 @pytest.fixture
@@ -35,7 +35,7 @@ def mock_milvus_client():
 @pytest.fixture
 def milvus_config() -> MilvusConfig:
     """Milvus configuration for tests."""
-    from rag_toolkit.infra.vectorstores.milvus.config import MilvusConfig
+    from quaerium.infra.vectorstores.milvus.config import MilvusConfig
     
     return MilvusConfig(
         uri="http://localhost:19530",
@@ -48,7 +48,7 @@ def milvus_config() -> MilvusConfig:
 @pytest.fixture
 def mock_connection_manager(mock_milvus_client, milvus_config):
     """Mock Milvus connection manager."""
-    from rag_toolkit.infra.vectorstores.milvus.connection import MilvusConnectionManager
+    from quaerium.infra.vectorstores.milvus.connection import MilvusConnectionManager
     
     manager = MilvusConnectionManager(milvus_config)
     manager._client = mock_milvus_client
@@ -58,7 +58,7 @@ def mock_connection_manager(mock_milvus_client, milvus_config):
 @pytest.fixture
 def mock_collection_manager(mock_connection_manager):
     """Mock Milvus collection manager."""
-    from rag_toolkit.infra.vectorstores.milvus.collection import MilvusCollectionManager
+    from quaerium.infra.vectorstores.milvus.collection import MilvusCollectionManager
     
     return MilvusCollectionManager(mock_connection_manager)
 
@@ -66,7 +66,7 @@ def mock_collection_manager(mock_connection_manager):
 @pytest.fixture
 def mock_data_manager(mock_connection_manager):
     """Mock Milvus data manager."""
-    from rag_toolkit.infra.vectorstores.milvus.data import MilvusDataManager
+    from quaerium.infra.vectorstores.milvus.data import MilvusDataManager
     
     return MilvusDataManager(mock_connection_manager)
 

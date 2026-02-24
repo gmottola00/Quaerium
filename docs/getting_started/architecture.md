@@ -255,7 +255,7 @@ class VectorStoreClient(Protocol):
 
 === "Ollama"
     ```python
-    from rag_toolkit.infra.embedding.ollama import OllamaEmbedding
+    from quaerium.infra.embedding.ollama import OllamaEmbedding
     
     embedding = OllamaEmbedding(
         base_url="http://localhost:11434",
@@ -273,7 +273,7 @@ class VectorStoreClient(Protocol):
 
 === "OpenAI"
     ```python
-    from rag_toolkit.infra.embedding.openai_embedding import OpenAIEmbedding
+    from quaerium.infra.embedding.openai_embedding import OpenAIEmbedding
     
     embedding = OpenAIEmbedding(
         api_key="your-api-key",
@@ -293,7 +293,7 @@ class VectorStoreClient(Protocol):
 
 === "Ollama"
     ```python
-    from rag_toolkit.infra.llm.ollama import OllamaLLMClient
+    from quaerium.infra.llm.ollama import OllamaLLMClient
     
     llm = OllamaLLMClient(
         base_url="http://localhost:11434",
@@ -306,7 +306,7 @@ class VectorStoreClient(Protocol):
 
 === "OpenAI"
     ```python
-    from rag_toolkit.infra.llm.openai_llm import OpenAILLMClient
+    from quaerium.infra.llm.openai_llm import OpenAILLMClient
     
     llm = OpenAILLMClient(
         api_key="your-api-key",
@@ -326,7 +326,7 @@ class VectorStoreClient(Protocol):
     ---
 
     ```python
-    from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+    from quaerium.infra.vectorstores.milvus import MilvusVectorStore
     
     store = MilvusVectorStore(
         host="localhost",
@@ -406,7 +406,7 @@ graph LR
 
 === "HyDE"
     ```python
-    from rag_toolkit.rag.rewriter import QueryRewriter
+    from quaerium.rag.rewriter import QueryRewriter
     
     rewriter = QueryRewriter(llm_client=llm)
     
@@ -436,7 +436,7 @@ graph LR
     Intelligently assemble retrieved chunks into coherent context.
 
 ```python title="rag/assembler.py"
-from rag_toolkit.rag.assembler import ContextAssembler
+from quaerium.rag.assembler import ContextAssembler
 
 assembler = ContextAssembler(
     max_context_length=2048,
@@ -555,7 +555,7 @@ graph TB
 !!! tip "Protocol Checking"
     Use `isinstance()` to verify protocol implementation:
     ```python
-    from rag_toolkit.core import EmbeddingClient
+    from quaerium.core import EmbeddingClient
     
     assert isinstance(MyEmbeddingProvider(), EmbeddingClient)
     ```

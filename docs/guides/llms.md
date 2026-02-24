@@ -57,14 +57,14 @@ OpenAI provides state-of-the-art models with excellent quality and reliability.
 **Installation:**
 
 ```bash
-pip install rag-toolkit[openai]
+pip install quaerium[openai]
 export OPENAI_API_KEY="your-api-key"
 ```
 
 **Usage:**
 
 ```python
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium.infra.llm import OpenAILLM
 
 # Initialize
 llm = OpenAILLM(
@@ -111,14 +111,14 @@ curl -fsSL https://ollama.com/install.sh | sh
 # Pull a model
 ollama pull llama3
 
-# Install rag-toolkit with Ollama support
-pip install rag-toolkit[ollama]
+# Install quaerium with Ollama support
+pip install quaerium[ollama]
 ```
 
 **Usage:**
 
 ```python
-from rag_toolkit.infra.llm import OllamaLLM
+from quaerium.infra.llm import OllamaLLM
 
 # Initialize
 llm = OllamaLLM(
@@ -235,7 +235,7 @@ print()  # New line after streaming
 Maintain conversation context:
 
 ```python
-from rag_toolkit.core.llm import Message
+from quaerium.core.llm import Message
 
 # Build chat history
 messages = [
@@ -323,10 +323,10 @@ print(data)  # {"name": "John Smith", "age": 30, ...}
 ### Basic RAG Query
 
 ```python
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding import OpenAIEmbedding
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium import RagPipeline
+from quaerium.infra.embedding import OpenAIEmbedding
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium.infra.llm import OpenAILLM
 
 # Setup LLM
 llm = OpenAILLM(
@@ -790,7 +790,7 @@ response = await generate_with_validation(
 ### API Key Issues
 
 ```python
-from rag_toolkit.infra.llm import OpenAILLM
+from quaerium.infra.llm import OpenAILLM
 
 try:
     llm = OpenAILLM()

@@ -39,13 +39,13 @@ Build your first RAG application with RAG Toolkit in less than 5 minutes!
 
 !!! success "Install with Ollama Support"
     ```bash
-    pip install rag-toolkit[ollama]
+    pip install quaerium[ollama]
     ```
 
 !!! tip "Alternative: OpenAI"
     If you prefer using OpenAI models:
     ```bash
-    pip install rag-toolkit[openai]
+    pip install quaerium[openai]
     ```
 
 ---
@@ -108,10 +108,10 @@ Build your first RAG application with RAG Toolkit in less than 5 minutes!
     Create a file `my_first_rag.py`:
 
 ```python title="my_first_rag.py" linenums="1" hl_lines="7-9 13-15 19-21 26 36"
-from rag_toolkit import RagPipeline
-from rag_toolkit.infra.embedding.ollama import OllamaEmbedding
-from rag_toolkit.infra.llm.ollama import OllamaLLMClient
-from rag_toolkit.infra.vectorstores.milvus import MilvusVectorStore
+from quaerium import RagPipeline
+from quaerium.infra.embedding.ollama import OllamaEmbedding
+from quaerium.infra.llm.ollama import OllamaLLMClient
+from quaerium.infra.vectorstores.milvus import MilvusVectorStore
 
 # Initialize components
 embedding = OllamaEmbedding(
@@ -141,7 +141,7 @@ pipeline = RagPipeline(
 documents = [
     "RAG stands for Retrieval-Augmented Generation. It's a technique that combines information retrieval with text generation.",
     "Vector stores enable semantic search by storing embeddings of text and finding similar content.",
-    "rag-toolkit is a Python library that makes it easy to build production-ready RAG applications.",
+    "quaerium is a Python library that makes it easy to build production-ready RAG applications.",
 ]
 
 print("📚 Indexing documents...")
@@ -172,7 +172,7 @@ for i, source in enumerate(response.sources, 1):
     
     Sources used: 2
       1. RAG stands for Retrieval-Augmented Generation. It's a technique...
-      2. rag-toolkit is a Python library that makes it easy to build...
+      2. quaerium is a Python library that makes it easy to build...
     ```
 ---
 
@@ -273,7 +273,7 @@ graph LR
 
 !!! example "Parse PDF Files"
     ```python
-    from rag_toolkit.infra.parsers.pdf import PDFParser
+    from quaerium.infra.parsers.pdf import PDFParser
     
     # Parse PDF files
     parser = PDFParser()
@@ -287,8 +287,8 @@ graph LR
 
 !!! example "Cloud-Based Models"
     ```python
-    from rag_toolkit.infra.embedding.openai_embedding import OpenAIEmbedding
-    from rag_toolkit.infra.llm.openai_llm import OpenAILLMClient
+    from quaerium.infra.embedding.openai_embedding import OpenAIEmbedding
+    from quaerium.infra.llm.openai_llm import OpenAILLMClient
     
     embedding = OpenAIEmbedding(
         api_key="your-api-key",
@@ -507,13 +507,13 @@ graph LR
 
 <div class="grid" markdown>
 
-- :material-book-open-page-variant: **[Documentation](https://gmottola00.github.io/rag-toolkit/)**  
+- :material-book-open-page-variant: **[Documentation](https://gmottola00.github.io/quaerium/)**  
   Comprehensive guides and tutorials
 
-- :material-forum: **[GitHub Discussions](https://github.com/gmottola00/rag-toolkit/discussions)**  
+- :material-forum: **[GitHub Discussions](https://github.com/gmottola00/quaerium/discussions)**  
   Ask questions and share ideas
 
-- :material-bug: **[Issue Tracker](https://github.com/gmottola00/rag-toolkit/issues)**  
+- :material-bug: **[Issue Tracker](https://github.com/gmottola00/quaerium/issues)**  
   Report bugs and request features
 
 - :material-email: **[Email Support](mailto:gianmarcomottola00@gmail.com)**  
@@ -525,4 +525,4 @@ graph LR
     - Start with the [installation guide](installation.md) if you haven't already
     - Check out [architecture overview](architecture.md) to understand the design
     - Browse [examples](../examples/index.md) for inspiration
-    - Join our [community discussions](https://github.com/gmottola00/rag-toolkit/discussions)
+    - Join our [community discussions](https://github.com/gmottola00/quaerium/discussions)

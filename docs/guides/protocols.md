@@ -337,7 +337,7 @@ pipeline = RagPipeline(
 
 ```python
 import chromadb
-from rag_toolkit.core.types import SearchResult
+from quaerium.core.types import SearchResult
 
 class ChromaVectorStore:
     """Custom vector store using ChromaDB."""
@@ -523,7 +523,7 @@ Protocols make testing incredibly easy:
 
 ```python
 import pytest
-from rag_toolkit import RagPipeline
+from quaerium import RagPipeline
 
 class MockEmbedding:
     """Simple mock - no complex setup needed!"""

@@ -424,7 +424,7 @@ class MyEmbedding(BaseEmbedding):  # Must inherit!
         return [0.0] * 768
 ```
 
-### rag-toolkit Approach (Protocols)
+### quaerium Approach (Protocols)
 
 ```python
 from typing import Protocol

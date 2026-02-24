@@ -35,7 +35,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     Install the core library with minimal dependencies:
     
     ```bash
-    pip install rag-toolkit
+    pip install quaerium
     ```
 
 **What's included:**
@@ -60,7 +60,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     ---
 
     ```bash
-    pip install rag-toolkit[ollama]
+    pip install quaerium[ollama]
     ```
 
     Perfect for privacy-focused deployments and offline use.
@@ -70,7 +70,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     ---
 
     ```bash
-    pip install rag-toolkit[openai]
+    pip install quaerium[openai]
     ```
 
     Access state-of-the-art models like GPT-4 and GPT-3.5.
@@ -86,7 +86,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     ---
 
     ```bash
-    pip install rag-toolkit[pdf]
+    pip install quaerium[pdf]
     ```
 
     Parse PDF documents with advanced layout detection.
@@ -96,7 +96,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     ---
 
     ```bash
-    pip install rag-toolkit[docx]
+    pip install quaerium[docx]
     ```
 
     Extract content from Microsoft Word documents.
@@ -106,7 +106,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
     ---
 
     ```bash
-    pip install rag-toolkit[ocr]
+    pip install quaerium[ocr]
     ```
 
     Extract text from scanned documents and images.
@@ -116,7 +116,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
 ### :material-translate: Language Detection
 
 ```bash
-pip install rag-toolkit[lang]
+pip install quaerium[lang]
 ```
 
 Automatic language detection for multilingual document processing.
@@ -129,21 +129,21 @@ Automatic language detection for multilingual document processing.
     
     === "All LLM Providers"
         ```bash
-        pip install rag-toolkit[ollama,openai]
+        pip install quaerium[ollama,openai]
         ```
         
         Install support for both local and cloud LLM providers.
     
     === "All Document Parsers"
         ```bash
-        pip install rag-toolkit[pdf,docx,ocr]
+        pip install quaerium[pdf,docx,ocr]
         ```
         
         Handle any document format: PDFs, Word docs, and scanned images.
     
     === "Everything"
         ```bash
-        pip install rag-toolkit[all]
+        pip install quaerium[all]
         ```
         
         Get the full RAG Toolkit experience with all optional features.
@@ -157,8 +157,8 @@ Automatic language detection for multilingual document processing.
 
 ```bash title="Clone and Install"
 # Clone the repository
-git clone https://github.com/gmottola00/rag-toolkit.git
-cd rag-toolkit
+git clone https://github.com/gmottola00/quaerium.git
+cd quaerium
 
 # Install in editable mode with dev dependencies
 pip install -e ".[dev,docs]"
@@ -186,20 +186,20 @@ pip install -e ".[dev,docs]"
 
 ```python title="verify_installation.py" linenums="1" hl_lines="3-5"
 # Test basic imports
-from rag_toolkit import RagPipeline
-from rag_toolkit.core import VectorStoreClient, EmbeddingClient, LLMClient
+from quaerium import RagPipeline
+from quaerium.core import VectorStoreClient, EmbeddingClient, LLMClient
 
 print("✅ Core installation verified!")
 
 # Test optional imports (if installed)
 try:
-    from rag_toolkit import get_ollama_embedding
+    from quaerium import get_ollama_embedding
     print("✅ Ollama support available")
 except ImportError:
     print("ℹ️  Ollama not installed (optional)")
 
 try:
-    from rag_toolkit import get_openai_embedding
+    from quaerium import get_openai_embedding
     print("✅ OpenAI support available")
 except ImportError:
     print("ℹ️  OpenAI not installed (optional)")
@@ -283,7 +283,7 @@ except ImportError:
 !!! success "Solution"
     Install the required optional dependency:
     ```bash
-    pip install rag-toolkit[ollama]
+    pip install quaerium[ollama]
     ```
 
 ### :material-type-check: Type Checking Issues
@@ -414,17 +414,17 @@ except ImportError:
 
 === "Core Library"
     ```bash
-    pip install --upgrade rag-toolkit
+    pip install --upgrade quaerium
     ```
 
 === "With All Features"
     ```bash
-    pip install --upgrade rag-toolkit[all]
+    pip install --upgrade quaerium[all]
     ```
 
 === "Check Version"
     ```bash
-    python -c "import rag_toolkit; print(rag_toolkit.__version__)"
+    python -c "import quaerium; print(quaerium.__version__)"
     ```
 
 !!! info "Release Notes"

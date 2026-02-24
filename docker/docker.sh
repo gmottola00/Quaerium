@@ -31,7 +31,7 @@ usage() {
 Usage: $0 <command> [service]
 
 Commands:
-    up [service]        Start services (all, milvus, qdrant, ollama)
+    up [service]        Start services (all, milvus, qdrant, chroma, neo4j, ollama)
     down [service]      Stop services
     restart [service]   Restart services
     logs [service]      View logs
@@ -46,12 +46,14 @@ Services:
     milvus              Milvus only
     qdrant              Qdrant only
     chroma              ChromaDB only
+    neo4j               Neo4j only
 
 Examples:
     $0 up                    # Start all services
     $0 up milvus             # Start only Milvus
     $0 logs qdrant           # View Qdrant logs
     $0 up chroma             # Start only ChromaDB
+    $0 up neo4j              # Start only Neo4j
     $0 down                  # Stop all services
     $0 clean all             # Remove all data (careful!)
     $0 health                # Check service health
@@ -83,7 +85,7 @@ cmd_up() {
     check_docker
     
     if [ ! -f "$compose_file" ]; then
-        print_error "Service '$service' not found. Available: all, milvus, qdrant, chroma"
+        print_error "Service '$service' not found. Available: all, milvus, qdrant, chroma, neo4j"
         exit 1
     fi
     
@@ -141,7 +143,7 @@ cmd_logs() {
 cmd_ps() {
     check_docker
     print_info "Running RAG Toolkit services:"
-    docker ps --filter "name=milvus\|qdrant\|ollama" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+    docker ps --filter "name=milvus\|qdrant\|ollama\|chromadb\|neo4j" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 }
 
 # Clean (remove volumes)
@@ -215,6 +217,15 @@ cmd_health() {
             print_success "ChromaDB is healthy (http://localhost:8000)"
         else
             print_error "ChromaDB is not responding"
+        fi
+    fi
+
+    # Check Neo4j
+    if [ "$service" = "all" ] || [ "$service" = "neo4j" ]; then
+        if curl -sf http://localhost:7474 > /dev/null 2>&1; then
+            print_success "Neo4j is healthy (Browser: http://localhost:7474, Bolt: bolt://localhost:7687)"
+        else
+            print_error "Neo4j is not responding"
         fi
     fi
 }
