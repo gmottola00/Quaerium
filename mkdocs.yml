@@ -97,6 +97,7 @@ extra_css:
 extra_javascript:
   - javascripts/extra.js
   - https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js
+  - https://unpkg.com/mermaid@10.6.1/dist/mermaid.min.js
 
 plugins:
   - search:
@@ -232,6 +233,7 @@ nav:
       - Vector Stores: guides/vector_stores.md
       - Graph Stores: guides/graph_rag.md
       - Reranking: guides/reranking.md
+      - Evaluation & Metrics: guides/evaluation.md
     - RAG Pipeline: guides/rag_pipeline.md
   
   - Examples:
@@ -243,6 +245,7 @@ nav:
     - Custom Vector Store: examples/custom_vectorstore.md
     - Hybrid Search: examples/hybrid_search.md
     - Production Setup: examples/production_setup.md
+    - Evaluation & Metrics: examples/evaluation.md
   
   - Tools:
     - tools/index.md
@@ -259,6 +262,7 @@ nav:
       - Graph Store: api/core/graphstore.md
     - RAG Pipeline: api/rag/pipeline.md
     - Migration: api/migration/migrator.md
+    - Evaluation: api/evaluation/index.md
   
   - Development:
     - Contributing: development/contributing.md

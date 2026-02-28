@@ -49,6 +49,23 @@ from quaerium.core.llm import LLMClient
 from quaerium.core.metadata import LLMMetadataExtractor
 from quaerium.core.vectorstore import VectorStoreClient
 
+# Evaluation protocols and metrics
+from quaerium.core.evaluation import (
+    MetricCalculator,
+    RetrievalEvaluator,
+    GenerationEvaluator,
+    LLMJudge,
+    PipelineObserver,
+    MetricScore,
+    RetrievalMetrics,
+    GenerationMetrics,
+    EndToEndMetrics,
+    EvaluationResult,
+    EvaluationExample,
+    DatasetMetadata,
+    EvaluationDataset,
+)
+
 # ============================================================================
 # Infrastructure Implementations
 # ============================================================================
@@ -155,6 +172,22 @@ __all__ = [
     "RagPipeline",
     "RagResponse",
     "RetrievedChunk",
+    # Evaluation Protocols
+    "MetricCalculator",
+    "RetrievalEvaluator",
+    "GenerationEvaluator",
+    "LLMJudge",
+    "PipelineObserver",
+    # Evaluation Metrics
+    "MetricScore",
+    "RetrievalMetrics",
+    "GenerationMetrics",
+    "EndToEndMetrics",
+    "EvaluationResult",
+    # Evaluation Dataset
+    "EvaluationExample",
+    "DatasetMetadata",
+    "EvaluationDataset",
 ]
 
 

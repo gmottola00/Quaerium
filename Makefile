@@ -59,6 +59,33 @@ test-graph-integration: ## Run graph store integration tests (requires Neo4j)
 test-graph-all: ## Run all graph store tests with coverage
 	uv run pytest tests/test_core/test_graphstore_protocol.py tests/integration/test_neo4j_service.py -v --cov=rag_toolkit.core.graphstore --cov=rag_toolkit.infra.graphstores --cov-report=term --cov-report=html
 
+test-evaluation: ## Run all evaluation tests
+	uv run pytest tests/test_evaluation/ -v
+
+test-evaluation-retrieval: ## Run retrieval metrics tests only
+	uv run pytest tests/test_evaluation/test_retrieval_metrics.py -v
+
+test-evaluation-generation: ## Run generation metrics tests only
+	uv run pytest tests/test_evaluation/test_generation_metrics.py -v
+
+test-evaluation-pipeline: ## Run pipeline observer tests only
+	uv run pytest tests/test_evaluation/test_observers.py -v
+
+test-evaluation-datasets: ## Run dataset tests only
+	uv run pytest tests/test_evaluation/test_datasets.py -v
+
+test-evaluation-all: ## Run all evaluation tests with coverage
+	uv run pytest tests/test_evaluation/ -v --cov=quaerium.core.evaluation --cov=quaerium.infra.evaluation --cov-report=term --cov-report=html
+
+test-evaluation-quick: ## Quick evaluation tests (no coverage)
+	uv run pytest tests/test_evaluation/ -v --tb=short -q
+
+run-evaluation-example: ## Run evaluation example (requires LLM)
+	@echo "🚀 Running evaluation example..."
+	@echo "   Note: Uses mock LLM if OPENAI_API_KEY not set"
+	@echo ""
+	uv run python examples/evaluation_example.py
+
 benchmark: ## Run performance benchmarks
 	uv run pytest tests/benchmarks/ --benchmark-only --benchmark-autosave
 

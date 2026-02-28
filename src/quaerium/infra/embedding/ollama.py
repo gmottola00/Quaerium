@@ -20,7 +20,7 @@ DEFAULT_OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 
 
 class OllamaEmbeddingClient(EmbeddingClient):
-    """Client for Ollama's /api/embeddings endpoint."""
+    """Client for Ollama's /api/embed endpoint."""
 
     def __init__(
         self,
@@ -40,10 +40,10 @@ class OllamaEmbeddingClient(EmbeddingClient):
         return self._model
 
     def embed(self, text: str) -> List[float]:
-        # Ollama embeddings API expects "prompt"; support "input" for backward compatibility.
-        payload: Dict[str, Any] = {"model": self._model, "prompt": text}
+        # Ollama >= 0.1.34 uses /api/embed with "input" key
+        payload: Dict[str, Any] = {"model": self._model, "input": text}
         resp = requests.post(
-            f"{self.base_url}/api/embeddings",
+            f"{self.base_url}/api/embed",
             json=payload,
             timeout=self.timeout,
         )

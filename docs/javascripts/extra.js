@@ -1,5 +1,17 @@
 // Custom JavaScript for RAG Toolkit docs
 
+// Initialize Mermaid for diagrams
+if (typeof mermaid !== 'undefined') {
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    securityLevel: 'loose',
+    themeVariables: {
+      fontFamily: 'Inter, sans-serif'
+    }
+  });
+}
+
 // Initialize Chart.js for benchmark visualizations
 document.addEventListener('DOMContentLoaded', function() {
   // Remove target="_blank" from internal links to prevent opening new tabs

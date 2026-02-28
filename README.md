@@ -52,6 +52,13 @@ Build production-grade Retrieval-Augmented Generation (RAG) systems with a clean
 - **Context assembly**: Intelligent context window management
 - **Citation tracking**: Full provenance of generated answers
 
+### 📊 Evaluation & Metrics (NEW!)
+- **Retrieval Metrics**: Precision@K, Recall@K, MRR, NDCG, Hit Rate
+- **Generation Metrics**: LLM-as-judge for relevance, faithfulness, hallucination detection
+- **End-to-End Metrics**: Latency tracking, token usage, cost estimation
+- **Pipeline Observability**: Non-invasive observer pattern for production monitoring
+- **Dataset Management**: JSONL format support for evaluation datasets
+
 ---
 
 ## 🚀 Quick Start
@@ -175,7 +182,12 @@ quaerium/
 │   │   └── openai.py
 │   ├── llm/
 │   ├── vectorstore/
-│   └── parsers/
+│   ├── parsers/
+│   └── evaluation/  # NEW!
+│       ├── retrieval/
+│       ├── generation/
+│       ├── pipeline/
+│       └── datasets/
 │
 └── rag/           # RAG orchestration
     ├── pipeline.py
@@ -250,6 +262,56 @@ response = pipeline.run(
 )
 ```
 
+### Evaluation & Metrics
+
+```python
+from quaerium.infra.evaluation.pipeline import MetricsObserver
+from quaerium.infra.evaluation.retrieval import StandardRetrievalEvaluator
+from quaerium.infra.evaluation.generation import StandardGenerationEvaluator, OpenAIJudge
+from quaerium.infra.evaluation.datasets import JSONLDataset
+
+# 1. Add observer to pipeline
+observer = MetricsObserver()
+pipeline = RagPipeline(..., observers=[observer])
+
+# 2. Run pipeline
+response = pipeline.run("What is RAG?")
+
+# 3. Get end-to-end metrics
+result = observer.get_results()
+print(f"Latency: {result.end_to_end_metrics.total_latency_ms:.0f}ms")
+print(f"Cost: ${result.end_to_end_metrics.cost_usd:.4f}")
+print(f"Tokens: {result.end_to_end_metrics.total_tokens}")
+
+# 4. Evaluate retrieval quality
+retrieval_eval = StandardRetrievalEvaluator(k_values=[5, 10])
+retrieval_metrics = retrieval_eval.evaluate_retrieval(
+    query="What is RAG?",
+    retrieved_docs=retrieved_docs,  # From pipeline
+    relevant_doc_ids=["doc1", "doc3"]  # Ground truth
+)
+print(f"Precision@5: {retrieval_metrics.precision_at_k[5]:.2%}")
+
+# 5. Evaluate generation quality
+judge = OpenAIJudge(llm=llm)
+generation_eval = StandardGenerationEvaluator(judge)
+generation_metrics = generation_eval.evaluate_answer(
+    question="What is RAG?",
+    generated_answer=response.answer,
+    context=[c.text for c in response.citations]
+)
+print(f"Relevance: {generation_metrics.relevance_score:.2%}")
+print(f"Faithfulness: {generation_metrics.faithfulness_score:.2%}")
+
+# 6. Load and evaluate on dataset
+dataset = JSONLDataset("eval_data.jsonl")
+for example in dataset:
+    # Run evaluation...
+    pass
+```
+
+See [examples/evaluation_example.py](examples/evaluation_example.py) for a complete example.
+
 ---
 
 ## 🧪 Testing
@@ -285,6 +347,9 @@ See [tests/benchmarks/README.md](tests/benchmarks/README.md) for detailed benchm
 
 ## 📖 Documentation
 
+- **[Evaluation Guide](docs/guides/evaluation.md)** - Complete guide to RAG evaluation and metrics
+- **[Evaluation API Reference](docs/api/evaluation/index.md)** - API documentation for evaluation modules
+
 Full documentation available at: [quaerium.readthedocs.io](https://quaerium.readthedocs.io) _(coming soon)_
 
 ---
@@ -301,6 +366,13 @@ Full documentation available at: [quaerium.readthedocs.io](https://quaerium.read
 - [ ] Multi-query retrieval
 - [ ] Hypothetical document embeddings (HyDE)
 - [ ] Parent-child chunking
+
+### v0.3.0 - Evaluation & Metrics ✅ (COMPLETED)
+- [x] Retrieval metrics (Precision@K, Recall@K, MRR, NDCG)
+- [x] Generation metrics (LLM-as-judge, faithfulness, hallucination detection)
+- [x] End-to-end metrics (latency, cost, token tracking)
+- [x] Pipeline observability (non-invasive observer pattern)
+- [x] Dataset management (JSONL format)
 
 ### v0.4.0 - Production Features
 - [ ] Async support throughout

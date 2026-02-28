@@ -23,10 +23,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Query expansion strategies
 - Caching layer for embeddings and LLM responses
 - Async support for all I/O operations
-- Evaluation framework for RAG quality metrics
 - Examples for production deployments (Kubernetes, cloud platforms)
 - Zero-downtime migration with dual-write pattern
 - Data quality validation (embedding drift detection)
+
+---
+
+## [0.3.0] - 2026-02-25
+
+### 🎯 Major Feature: Evaluation & Metrics Framework
+
+Comprehensive evaluation framework for measuring and improving RAG system quality with retrieval metrics, generation quality assessment, and end-to-end performance tracking.
+
+### Added
+
+#### Core Evaluation Protocols
+- **MetricCalculator Protocol**: Base protocol for individual metric calculation
+- **RetrievalEvaluator Protocol**: Protocol for evaluating retrieval quality
+- **GenerationEvaluator Protocol**: Protocol for evaluating generation quality
+- **LLMJudge Protocol**: Protocol for LLM-based evaluation
+- **PipelineObserver Protocol**: Protocol for non-invasive pipeline monitoring
+
+#### Data Models
+- **MetricScore**: Individual metric result with metadata
+- **RetrievalMetrics**: Complete retrieval evaluation results (Precision@K, Recall@K, MRR, NDCG, Hit Rate)
+- **GenerationMetrics**: Complete generation evaluation results (Relevance, Faithfulness, Hallucination)
+- **EndToEndMetrics**: Pipeline performance metrics (Latency, Tokens, Cost, Context Utilization)
+- **EvaluationResult**: Unified result container for all metrics
+- **EvaluationExample**: Single evaluation example with ground truth
+- **DatasetMetadata**: Metadata for evaluation datasets
+- **EvaluationDataset Protocol**: Protocol for evaluation dataset management
+
+#### Retrieval Metrics
+- **PrecisionAtK**: Precision at K calculator (K=5,10,20,...)
+- **RecallAtK**: Recall at K calculator
+- **MRRCalculator**: Mean Reciprocal Rank
+- **NDCGCalculator**: Normalized Discounted Cumulative Gain
+- **HitRateCalculator**: Binary hit rate metric
+- **StandardRetrievalEvaluator**: Composite evaluator with all retrieval metrics
+- 33 comprehensive tests with 100% coverage
+
+#### Generation Metrics
+- **OpenAIJudge**: LLM-as-judge implementation with robust score parsing
+- **AnswerRelevanceEvaluator**: Measures if answer addresses the question
+- **FaithfulnessEvaluator**: Measures if answer is grounded in context
+- **HallucinationDetector**: Detects information not present in context
+- **StandardGenerationEvaluator**: Composite evaluator with all generation metrics
+- 24 comprehensive tests with mock LLM support
+
+#### Pipeline Integration
+- **MetricsObserver**: Non-invasive observer for RAG pipeline with automatic latency tracking, token counting, and cost estimation
+- **LatencyTracker**: Stage-by-stage latency tracking
+- **TokenTracker**: Token usage and cost estimation for GPT-4, GPT-3.5, GPT-4o models
+- Added `observers` parameter to RagPipeline (~20 lines change)
+- 20 integration tests with full pipeline simulation
+
+#### Dataset Management
+- **JSONLDataset**: JSONL format dataset loader with validation
+- Sample dataset with 10 evaluation examples
+- 13 dataset loading and validation tests
+
+#### Documentation
+- **Evaluation Guide** (500+ lines): Complete guide with examples and best practices
+- **API Reference** (600+ lines): Full protocol and implementation documentation
+- **Examples Documentation**: Quick start, patterns, and result interpretation
+- **Working Example** (327 lines): Complete end-to-end evaluation script
+
+#### Testing
+- **90 Total Tests**: All passing in 0.41s
+- **100% Coverage**: On all metric calculations
+- **Mock Support**: Testing without API keys
+
+### Changed
+- **RagPipeline**: Added optional `observers` parameter for metrics collection
+- **Package Exports**: Added all evaluation protocols and metrics to `__all__`
+- **README.md**: Updated roadmap to mark v0.3.0 as COMPLETED ✅
+
+### Fixed
+- **Mermaid Graphs**: Fixed rendering in documentation by adding Mermaid.js library
+- **Documentation Build**: Created missing evaluation.md example file
+- **LLM Judge**: Fixed negative number parsing in score extraction
 
 ---
 
