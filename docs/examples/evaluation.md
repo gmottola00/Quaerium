@@ -168,7 +168,7 @@ else:
 
 ## Complete Example
 
-See the [full evaluation example](../../examples/evaluation_example.py) for a comprehensive demonstration including:
+See the full evaluation example (`examples/evaluation_example.py`) for a comprehensive demonstration including:
 
 - Loading evaluation datasets
 - Creating all types of evaluators
@@ -486,5 +486,5 @@ retrieval_eval = StandardRetrievalEvaluator(k_values=[5])  # Instead of [5, 10, 
 
 - [Evaluation Guide](../guides/evaluation.md) - Comprehensive evaluation documentation
 - [Evaluation API Reference](../api/evaluation/index.md) - Complete API documentation
-- [evaluation_example.py](../../examples/evaluation_example.py) - Full working example
+- `examples/evaluation_example.py` - Full working example
 - [RAG Pipeline](../guides/rag_pipeline.md) - Pipeline integration

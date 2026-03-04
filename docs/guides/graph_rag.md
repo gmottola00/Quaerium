@@ -405,9 +405,9 @@ ORDER BY mention_count DESC
 ## Next Steps
 
 - See [API Reference](../api/core/graphstore.md) for complete API documentation
-- Check out [examples/graph_rag_basic.py](../../examples/graph_rag_basic.py) for a working example
-- Learn about [combining vector and graph search](./hybrid_search.md) (future)
-- Explore [advanced graph patterns](./advanced_graph_patterns.md) (future)
+- Check out `examples/graph_rag_basic.py` for a working example
+- Learn about combining vector and graph search (coming soon)
+- Explore advanced graph patterns (coming soon)
 
 ## Troubleshooting
 

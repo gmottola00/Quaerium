@@ -153,7 +153,7 @@ class GraphStoreClient(Protocol):
             ...     parameters={"doc_id": "doc_123"}
             ... )
             >>> for record in results:
-            ...     print(f"Chunk {record['chunk_id']}: {record['text'][:50]}...")
+            ...     print(record['chunk_id'], record['text'])
         """
         ...
 

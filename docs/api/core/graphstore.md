@@ -200,5 +200,4 @@ assert isinstance(service, GraphStoreClient)
 ## See Also
 
 - [Graph RAG Guide](../../guides/graph_rag.md) - Complete guide to using Graph RAG
-- [Vector Store API](./vectorstore.md) - Vector database operations
-- [RAG Pipeline API](./pipeline.md) - End-to-end RAG pipelines
+- [RAG Pipeline API](../rag/pipeline.md) - End-to-end RAG pipelines

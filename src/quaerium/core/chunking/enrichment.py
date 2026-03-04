@@ -26,7 +26,7 @@ class MetadataEnricher:
             >>> metadata = {"author": "Legal Dept", "contract_id": "C-2024-001"}
             >>> enriched = enricher.enrich_text(text, metadata)
             >>> print(enriched)
-            'The contract duration is 24 months. [author: Legal Dept] [contract_id: C-2024-001]'
+            'The contract duration is 24 months. \[author: Legal Dept\] \[contract_id: C-2024-001\]'
 
         Custom Format:
             >>> enricher = MetadataEnricher(
@@ -94,7 +94,7 @@ class MetadataEnricher:
             ...     {"client": "Acme Corp", "year": "2024"}
             ... )
             >>> print(enriched)
-            'Contract terms... [client: Acme Corp] [year: 2024]'
+            'Contract terms... \[client: Acme Corp\] \[year: 2024\]'
         """
         enriched_parts = [text]
 

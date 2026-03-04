@@ -593,4 +593,4 @@ See [API Documentation](../api/evaluation/index.md) for complete reference.
 
 ## Examples
 
-See [evaluation_example.py](../../examples/evaluation_example.py) for a complete working example.
+See `examples/evaluation_example.py` for a complete working example.
