@@ -1,131 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/api/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/api/core/protocols/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/core/graphstore/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/api/core/types/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/core/metadata/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/api/migration/migrator/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/core/protocols/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/api/rag/pipeline/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/core/types/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/development/changelog/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/evaluation/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/development/contributing/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/migration/migrator/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/development/roadmap/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/api/rag/pipeline/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/development/changelog/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/advanced_pipeline/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/development/contributing/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/basic_rag/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/development/roadmap/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/custom_vectorstore/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/hybrid_search/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/advanced_pipeline/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/examples/production_setup/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/basic_rag/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/getting_started/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/custom_vectorstore/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/getting_started/architecture/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/evaluation/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/getting_started/installation/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/graph_rag_basic/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/getting_started/quickstart/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/hybrid_search/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/metadata_extraction/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/chunking/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/examples/production_setup/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/core_concepts/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/getting_started/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/embeddings/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/getting_started/architecture/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/llms/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/getting_started/installation/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/protocols/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/getting_started/quickstart/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/rag_pipeline/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/reranking/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/chunking/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/guides/vector_stores/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/core_concepts/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/tools/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/embeddings/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/tools/benchmark_results/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/evaluation/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/tools/benchmarks/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/graph_rag/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
     <url>
-         <loc>https://gmottola00.github.io/rag-toolkit/tools/migration/</loc>
-         <lastmod>2026-01-20</lastmod>
+         <loc>https://gmottola00.github.io/quaerium/guides/llms/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/guides/metadata_extraction/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/guides/protocols/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/guides/rag_pipeline/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/guides/reranking/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/guides/vector_stores/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/tools/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/tools/benchmark_results/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/tools/benchmarks/</loc>
+         <lastmod>2026-03-04</lastmod>
+    </url>
+    <url>
+         <loc>https://gmottola00.github.io/quaerium/tools/migration/</loc>
+         <lastmod>2026-03-04</lastmod>
     </url>
 </urlset>
