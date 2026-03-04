@@ -37,27 +37,27 @@ jobs:
     
     - name: Lint with ruff
       run: |
-        ruff check src/rag_toolkit tests --exit-zero
+        ruff check src/quaerium tests --exit-zero
       continue-on-error: true
     
     - name: Check formatting with black
       run: |
-        black --check src/rag_toolkit tests examples scripts
+        black --check src/quaerium tests examples scripts
       continue-on-error: true
     
     - name: Check imports with isort
       run: |
-        isort --check-only src/rag_toolkit tests examples scripts
+        isort --check-only src/quaerium tests examples scripts
       continue-on-error: true
     
     - name: Type check with mypy
       run: |
-        mypy src/rag_toolkit
+        mypy src/quaerium
       continue-on-error: true
     
     - name: Test with pytest
       run: |
-        pytest --cov=rag_toolkit --cov-report=xml --cov-report=term || echo "⚠️ No tests found or tests failed"
+        pytest --cov=quaerium --cov-report=xml --cov-report=term || echo "⚠️ No tests found or tests failed"
       continue-on-error: true
     
     - name: Upload coverage to Codecov

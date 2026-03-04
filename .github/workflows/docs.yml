@@ -53,7 +53,7 @@ jobs:
 
       - name: Verify package installation
         run: |
-          python -c "import rag_toolkit; print(f'Package installed: {rag_toolkit.__version__}')"
+          python -c "import quaerium; print(f'Package installed: {quaerium.__version__}')"
 
       - name: Build MkDocs documentation
         run: mkdocs build --strict
