@@ -9,6 +9,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Planned Features (Next Releases)
 
+---
+
+## [0.4.0] - 2026-03-16
+
+### 🤖 Major Feature: Agentic Reasoning System
+
+Complete multi-step agent framework with ReAct execution loop, pluggable tool system, memory management, and four built-in agents.
+
+### Added
+
+#### Core Protocols (agents/protocols.py)
+- **Tool Protocol**: `@runtime_checkable` protocol for agent tools (name, description, parameters_schema, run, arun)
+- **AgentMemory Protocol**: Conversation memory abstraction (add_message, get_history, clear)
+- **AgentObserver Protocol**: Non-invasive execution monitoring (on_step_start, on_step_end, on_tool_call, on_agent_finish)
+- **ExecutionStrategy Protocol**: Swappable execution loop (execute)
+
+#### Data Models (agents/models.py)
+- **ToolCall**: Captures tool invocation with arguments and raw LLM output
+- **AgentStep**: Single ReAct loop iteration (thought, tool_call, observation, latency)
+- **AgentTrace**: Full execution trace with success/error status and total latency
+- **AgentResponse**: High-level response with answer, trace, and sources
+
+#### Tool System (agents/tool.py)
+- **@tool decorator**: Auto-derives JSON Schema from type hints via `inspect.signature()`
+- **FunctionTool**: Wraps any callable as a Tool-Protocol-compatible object
+- **ToolDefinition**: Explicit schema definition with retry and fallback support
+- **ToolRegistry**: Dict-based registry with `to_prompt_block()` for LLM prompt generation
+
+#### Memory (agents/memory.py)
+- **InMemoryConversationMemory**: Sliding-window memory, zero dependencies, default for all agents
+- **VectorLongTermMemory**: Semantic recall using existing VectorStoreClient + EmbeddingClient
+
+#### Execution (agents/executor.py + agents/runtime.py)
+- **ReActExecutor**: Default ExecutionStrategy with Thought/Action/Observation loop (~80 lines)
+- **AgentRuntime**: Central orchestrator wiring LLM, tools, memory, strategy, and observers
+
+#### Prompts (agents/prompts.py)
+- **ReAct prompt template**: System + user + history composition
+- **parse_react_output()**: Regex-based parser with JSON fallback (`{"query": raw}`)
+
+#### Built-in Agents (agents/builtin/)
+- **RAGAgent**: Wraps RagPipeline as `rag_search` tool with citation extraction
+- **IngestionAgent**: Wraps IngestionService with `parse_document`, `list_formats`, `check_status` tools
+- **EvaluationAgent**: Wraps RetrievalEvaluator + GenerationEvaluator as tools
+- **ResearchAgent**: Composes sub-agents as tools for multi-hop reasoning
+
+#### Testing
+- **38 tests**: All passing in 0.03s — Tool, Memory, Prompts, Executor, Runtime
+- **Zero new mandatory dependencies**: Pure Python stdlib only
+
+#### Documentation
+- Comprehensive Agents Guide with mermaid diagrams, grid cards, examples
+- API Reference for all agent components
+- Example scripts: `examples/agent_rag_example.py`, `examples/agent_research_example.py`
+
+### Changed
+- **`src/quaerium/__init__.py`**: Added 20 agent exports to public API
+- **`mkdocs.yml`**: Added Agents section to nav
+
+### Technical Notes
+- Bug fix: `AgentRuntime` uses `memory is not None` instead of `memory or ...` (empty memory has `__len__=0` → falsy)
+- ReAct parser uses two `re.DOTALL` regexes, no external parsers
+- All agents pass `is not None` checks for optional parameters
+
+---
+
 #### Phase 2 Priority 2
 - **Incremental Migration**: Checkpoint-based resume capability for large datasets
 - **Schema Mapping**: Field transformation and mapping between different vector stores
@@ -29,7 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.3.0] - 2026-02-25
+## [0.1.3] - 2026-02-25
 
 ### 🎯 Major Feature: Evaluation & Metrics Framework
 
