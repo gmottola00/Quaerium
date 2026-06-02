@@ -148,6 +148,32 @@ from quaerium.rag.models import RagResponse, RetrievedChunk
 from quaerium.rag.pipeline import RagPipeline
 
 # ============================================================================
+# Agents
+# ============================================================================
+
+from quaerium.agents import (
+    AgentMemory,
+    AgentObserver,
+    AgentResponse,
+    AgentRuntime,
+    AgentStep,
+    AgentTrace,
+    EvaluationAgent,
+    ExecutionStrategy,
+    FunctionTool,
+    IngestionAgent,
+    InMemoryConversationMemory,
+    RAGAgent,
+    ReActExecutor,
+    ResearchAgent,
+    Tool,
+    ToolCall,
+    ToolDefinition,
+    ToolRegistry,
+    tool,
+)
+
+# ============================================================================
 # Public API
 # ============================================================================
 
@@ -188,6 +214,31 @@ __all__ = [
     "EvaluationExample",
     "DatasetMetadata",
     "EvaluationDataset",
+    # Agents — Protocols
+    "Tool",
+    "AgentMemory",
+    "AgentObserver",
+    "ExecutionStrategy",
+    # Agents — Models
+    "ToolCall",
+    "AgentStep",
+    "AgentTrace",
+    "AgentResponse",
+    # Agents — Tool system
+    "tool",
+    "FunctionTool",
+    "ToolDefinition",
+    "ToolRegistry",
+    # Agents — Memory
+    "InMemoryConversationMemory",
+    # Agents — Execution
+    "ReActExecutor",
+    "AgentRuntime",
+    # Agents — Built-in
+    "RAGAgent",
+    "IngestionAgent",
+    "EvaluationAgent",
+    "ResearchAgent",
 ]
 
 

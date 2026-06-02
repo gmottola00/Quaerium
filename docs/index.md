@@ -121,6 +121,18 @@ hide:
     )
     ```
 
+-   :material-robot-excited: **Agentic Reasoning**
+
+    ---
+
+    Multi-step ReAct loop con tool-use, memory e observer. Quattro agenti built-in per RAG, ingestion, evaluation e ricerca multi-hop.
+
+    ```python
+    agent = RAGAgent(llm=llm, rag_pipeline=pipeline)
+    response = agent.run("Quali sono le scadenze?")
+    print(response.answer)
+    ```
+
 </div>
 
 ---
@@ -216,17 +228,26 @@ graph LR
     B --> C[Chunker]
     C --> D[Embeddings]
     D --> E[Vector Store]
-    
+
     F[Query] --> G[Rewriter]
     G --> H[Retriever]
     E --> H
     H --> I[Reranker]
     I --> J[LLM]
     J --> K[Response]
-    
+
+    L[Task] --> M[AgentRuntime]
+    M --> N[ReActExecutor]
+    N --> O[Tools]
+    O --> P[RagPipeline / IngestionService / Evaluators]
+    N --> J
+
     style A fill:#e1f5ff
     style E fill:#fff3e0
     style K fill:#e8f5e9
+    style L fill:#fce4ec
+    style M fill:#f3e5f5
+    style P fill:#e8f5e9
 ```
 
 **Protocol-based design** means any component can be swapped:
@@ -281,6 +302,10 @@ graph LR
 -   :material-lightbulb-on: **[Examples](examples/index.md)**
 
     Real-world examples from basic RAG to production deployments.
+
+-   :material-robot-excited: **[Agents Guide](guides/agents.md)**
+
+    Build intelligent multi-step agents with tool-use, memory, and built-in RAG integration.
 
 </div>
 

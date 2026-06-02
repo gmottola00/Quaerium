@@ -38,6 +38,10 @@ Welcome to the quaerium user guide! This section covers everything you need to k
 
     Improving retrieval quality with reranking techniques.
 
+-   :material-robot-excited: **[Agents](agents.md)**
+
+    Multi-step reasoning with ReAct, tool-use, memory, and built-in agents for RAG, ingestion, and evaluation.
+
 </div>
 
 ## Getting Help

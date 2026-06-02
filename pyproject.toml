@@ -1,6 +1,6 @@
 [project]
 name = "quaerium"
-version = "0.1.2"
+version = "0.3.0"
 description = "Quaerium: Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"

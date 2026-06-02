@@ -234,6 +234,7 @@ nav:
       - Graph Stores: guides/graph_rag.md
       - Reranking: guides/reranking.md
       - Evaluation & Metrics: guides/evaluation.md
+      - Agents: guides/agents.md
     - RAG Pipeline: guides/rag_pipeline.md
   
   - Examples:
@@ -246,6 +247,7 @@ nav:
     - Hybrid Search: examples/hybrid_search.md
     - Production Setup: examples/production_setup.md
     - Evaluation & Metrics: examples/evaluation.md
+    - Agents: examples/agents.md
   
   - Tools:
     - tools/index.md
@@ -263,6 +265,7 @@ nav:
     - RAG Pipeline: api/rag/pipeline.md
     - Migration: api/migration/migrator.md
     - Evaluation: api/evaluation/index.md
+    - Agents: api/agents/index.md
   
   - Development:
     - Contributing: development/contributing.md
