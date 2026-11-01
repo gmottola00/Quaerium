@@ -25,7 +25,7 @@ def test_upsert_points(
     """Test upserting points."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.PointStruct") as mock_point_struct:
+    with patch("quaerium.infra.vectorstores.qdrant.data.PointStruct") as mock_point_struct:
         mock_point_struct.side_effect = lambda **kwargs: Mock(**kwargs)
         
         ids = manager.upsert(
@@ -50,8 +50,8 @@ def test_upsert_points_without_ids(
         for i, vec in enumerate(sample_vectors)
     ]
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.PointStruct"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.uuid4") as mock_uuid:
+    with patch("quaerium.infra.vectorstores.qdrant.data.PointStruct"), \
+         patch("quaerium.infra.vectorstores.qdrant.data.uuid4") as mock_uuid:
         
         mock_uuid.side_effect = lambda: Mock(__str__=lambda self: f"uuid-{mock_uuid.call_count}")
         
@@ -69,7 +69,7 @@ def test_upsert_error(mock_connection: QdrantConnectionManager) -> None:
     manager = QdrantDataManager(mock_connection)
     mock_connection.client.upsert.side_effect = RuntimeError("Upsert failed")
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.PointStruct"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.PointStruct"):
         with pytest.raises(DataOperationError, match="Failed to upsert points"):
             manager.upsert(
                 collection_name="test_collection",
@@ -112,7 +112,7 @@ def test_search_with_filter(
     manager = QdrantDataManager(mock_connection)
     mock_connection.client.search.return_value = []
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.QdrantFilter"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.QdrantFilter"):
         results = manager.search(
             collection_name="test_collection",
             query_vector=sample_vectors[0],
@@ -173,7 +173,7 @@ def test_batch_search(
     ]
     mock_connection.client.search_batch.return_value = mock_results
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.SearchRequest"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.SearchRequest"):
         results = manager.batch_search(
             collection_name="test_collection",
             query_vectors=sample_vectors[:2],
@@ -193,7 +193,7 @@ def test_batch_search_error(
     manager = QdrantDataManager(mock_connection)
     mock_connection.client.search_batch.side_effect = RuntimeError("Batch search failed")
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.SearchRequest"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.SearchRequest"):
         with pytest.raises(DataOperationError, match="Failed to batch search"):
             manager.batch_search(
                 collection_name="test_collection",
@@ -242,7 +242,7 @@ def test_delete_by_ids(mock_connection: QdrantConnectionManager) -> None:
     """Test deleting points by IDs."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.PointIdsList") as mock_ids_list:
+    with patch("quaerium.infra.vectorstores.qdrant.data.PointIdsList") as mock_ids_list:
         mock_selector = Mock()
         mock_ids_list.return_value = mock_selector
         
@@ -283,7 +283,7 @@ def test_delete_error(mock_connection: QdrantConnectionManager) -> None:
     manager = QdrantDataManager(mock_connection)
     mock_connection.client.delete.side_effect = RuntimeError("Delete failed")
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.PointIdsList"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.PointIdsList"):
         with pytest.raises(DataOperationError, match="Failed to delete points"):
             manager.delete(
                 collection_name="test_collection",
@@ -340,12 +340,12 @@ def test_build_filter_simple(mock_connection: QdrantConnectionManager) -> None:
     """Test building simple filter."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.Filter") as mock_filter, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.MatchValue"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
+         patch("quaerium.infra.vectorstores.qdrant.data.Filter") as mock_filter, \
+         patch("quaerium.infra.vectorstores.qdrant.data.MatchValue"):
         
         filter_dict = {"source": "test.pdf"}
-        result = manager._build_filter(filter_dict)
+        manager._build_filter(filter_dict)
         
         mock_field.assert_called_once()
         mock_filter.assert_called_once()
@@ -355,12 +355,12 @@ def test_build_filter_range(mock_connection: QdrantConnectionManager) -> None:
     """Test building range filter."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.Filter"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.Range"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
+         patch("quaerium.infra.vectorstores.qdrant.data.Filter"), \
+         patch("quaerium.infra.vectorstores.qdrant.data.Range"):
         
         filter_dict = {"year": {"$gte": 2020, "$lte": 2023}}
-        result = manager._build_filter(filter_dict)
+        manager._build_filter(filter_dict)
         
         mock_field.assert_called_once()
 
@@ -369,12 +369,12 @@ def test_build_filter_in(mock_connection: QdrantConnectionManager) -> None:
     """Test building IN filter."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.Filter"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.data.MatchValue"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.FieldCondition") as mock_field, \
+         patch("quaerium.infra.vectorstores.qdrant.data.Filter"), \
+         patch("quaerium.infra.vectorstores.qdrant.data.MatchValue"):
         
         filter_dict = {"category": {"$in": ["tech", "science"]}}
-        result = manager._build_filter(filter_dict)
+        manager._build_filter(filter_dict)
         
         # Should create condition for each value
         assert mock_field.call_count == 2
@@ -384,7 +384,7 @@ def test_build_filter_empty(mock_connection: QdrantConnectionManager) -> None:
     """Test building empty filter."""
     manager = QdrantDataManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.data.Filter"):
+    with patch("quaerium.infra.vectorstores.qdrant.data.Filter"):
         result = manager._build_filter({})
         
         assert result is None

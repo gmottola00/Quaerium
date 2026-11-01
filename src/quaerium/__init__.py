@@ -1,5 +1,5 @@
 """
-rag-toolkit: Advanced RAG library with multi-vectorstore support.
+Quaerium: Advanced RAG library with multi-vectorstore support.
 
 A production-ready toolkit for building Retrieval-Augmented Generation (RAG) pipelines
 with support for multiple vector stores, LLM providers, and document formats.
@@ -7,7 +7,7 @@ with support for multiple vector stores, LLM providers, and document formats.
 Key Features:
     - Protocol-based architecture for easy extensibility
     - Multi-provider support (Ollama, OpenAI, custom)
-    - Vector store abstractions (Milvus, Pinecone, Qdrant)
+    - Vector store abstractions (Milvus, Qdrant, Chroma)
     - Advanced RAG pipeline (query rewriting, reranking, context assembly)
     - Document parsing (PDF, DOCX, text)
     - Smart chunking strategies (dynamic, token-based)
@@ -16,12 +16,12 @@ Key Features:
 
 Example:
     >>> from quaerium import RagPipeline, OllamaEmbedding, OllamaLLMClient
-    >>> from quaerium.infra.vectorstore.milvus import MilvusVectorStore
+    >>> from quaerium.infra.vectorstores import create_milvus_service
     >>>
     >>> # Initialize components
     >>> embedding = OllamaEmbedding(model="nomic-embed-text")
     >>> llm = OllamaLLMClient(model="llama3.2")
-    >>> vectorstore = MilvusVectorStore(host="localhost")
+    >>> vectorstore = create_milvus_service(uri="http://localhost:19530")
     >>>
     >>> # Build and run pipeline
     >>> pipeline = RagPipeline.from_components(
@@ -35,7 +35,12 @@ Example:
 
 from __future__ import annotations
 
-__version__ = "0.1.0"
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
+
+try:
+    __version__ = _pkg_version("quaerium")
+except PackageNotFoundError:  # pragma: no cover - running from a source tree
+    __version__ = "0.0.0"
 __author__ = "Gianmarco Mottola"
 __license__ = "MIT"
 
@@ -78,8 +83,8 @@ def _import_ollama_embedding() -> type:
         return OllamaEmbeddingClient
     except ImportError as e:
         raise ImportError(
-            "Ollama support requires the 'ollama' package. "
-            "Install it with: pip install rag-toolkit[ollama]"
+            "Ollama support requires the 'requests' package. "
+            "Install it with: pip install quaerium[ollama]"
         ) from e
 
 
@@ -91,7 +96,7 @@ def _import_openai_embedding() -> type:
     except ImportError as e:
         raise ImportError(
             "OpenAI support requires the 'openai' package. "
-            "Install it with: pip install rag-toolkit[openai]"
+            "Install it with: pip install quaerium[openai]"
         ) from e
 
 
@@ -102,8 +107,8 @@ def _import_ollama_llm() -> type:
         return OllamaLLMClient
     except ImportError as e:
         raise ImportError(
-            "Ollama support requires the 'ollama' package. "
-            "Install it with: pip install rag-toolkit[ollama]"
+            "Ollama support requires the 'requests' package. "
+            "Install it with: pip install quaerium[ollama]"
         ) from e
 
 
@@ -115,7 +120,7 @@ def _import_openai_llm() -> type:
     except ImportError as e:
         raise ImportError(
             "OpenAI support requires the 'openai' package. "
-            "Install it with: pip install rag-toolkit[openai]"
+            "Install it with: pip install quaerium[openai]"
         ) from e
 
 
@@ -146,32 +151,6 @@ def get_openai_llm() -> type:
 
 from quaerium.rag.models import RagResponse, RetrievedChunk
 from quaerium.rag.pipeline import RagPipeline
-
-# ============================================================================
-# Agents
-# ============================================================================
-
-from quaerium.agents import (
-    AgentMemory,
-    AgentObserver,
-    AgentResponse,
-    AgentRuntime,
-    AgentStep,
-    AgentTrace,
-    EvaluationAgent,
-    ExecutionStrategy,
-    FunctionTool,
-    IngestionAgent,
-    InMemoryConversationMemory,
-    RAGAgent,
-    ReActExecutor,
-    ResearchAgent,
-    Tool,
-    ToolCall,
-    ToolDefinition,
-    ToolRegistry,
-    tool,
-)
 
 # ============================================================================
 # Public API
@@ -214,31 +193,6 @@ __all__ = [
     "EvaluationExample",
     "DatasetMetadata",
     "EvaluationDataset",
-    # Agents — Protocols
-    "Tool",
-    "AgentMemory",
-    "AgentObserver",
-    "ExecutionStrategy",
-    # Agents — Models
-    "ToolCall",
-    "AgentStep",
-    "AgentTrace",
-    "AgentResponse",
-    # Agents — Tool system
-    "tool",
-    "FunctionTool",
-    "ToolDefinition",
-    "ToolRegistry",
-    # Agents — Memory
-    "InMemoryConversationMemory",
-    # Agents — Execution
-    "ReActExecutor",
-    "AgentRuntime",
-    # Agents — Built-in
-    "RAGAgent",
-    "IngestionAgent",
-    "EvaluationAgent",
-    "ResearchAgent",
 ]
 
 
@@ -254,7 +208,7 @@ def __getattr__(name: str) -> type:
         from quaerium import OllamaEmbedding
     
     Instead of:
-        OllamaEmbedding = rag_toolkit.get_ollama_embedding()
+        OllamaEmbedding = quaerium.get_ollama_embedding()
     """
     lazy_imports = {
         "OllamaEmbedding": _import_ollama_embedding,

@@ -98,7 +98,7 @@ class VectorStoreMigrator:
                 )
 
             # Get dimension info (search for a sample vector)
-            sample_results = self.source.search(
+            self.source.search(
                 collection_name=collection_name,
                 query_vector=[0.0] * 384,  # Dummy vector for dimension check
                 top_k=1,

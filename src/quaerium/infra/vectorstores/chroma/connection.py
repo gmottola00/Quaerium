@@ -48,7 +48,6 @@ class ChromaConnectionManager:
         """
         try:
             import chromadb
-            from chromadb.config import Settings
         except ImportError as exc:
             raise ConnectionError(
                 "chromadb is not installed. Install it with: pip install chromadb"
@@ -57,13 +56,6 @@ class ChromaConnectionManager:
         try:
             # Remote client
             if self.config.host:
-                settings = Settings(
-                    chroma_api_impl="chromadb.api.fastapi.FastAPI",
-                    chroma_server_host=self.config.host,
-                    chroma_server_http_port=self.config.port or 8000,
-                    chroma_server_ssl_enabled=self.config.ssl,
-                    chroma_server_headers=self.config.headers or {},
-                )
                 return chromadb.HttpClient(
                     host=self.config.host,
                     port=self.config.port or 8000,

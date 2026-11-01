@@ -114,7 +114,7 @@ class TestVectorStoreMigrator:
             validate=False,
         )
         
-        result = migrator.migrate(
+        migrator.migrate(
             source_collection="test_col",
             batch_size=50,
         )

@@ -40,7 +40,7 @@ def test_connection_with_token(mock_milvus_client):
         password="test-pass",
     )
     
-    with patch("rag_toolkit.infra.vectorstores.milvus.connection.MilvusClient") as mock:
+    with patch("quaerium.infra.vectorstores.milvus.connection.MilvusClient") as mock:
         mock.return_value = mock_milvus_client
         manager = MilvusConnectionManager(config)
         _ = manager.client
@@ -57,7 +57,7 @@ def test_connection_with_custom_db(mock_milvus_client):
         db_name="custom_db",
     )
     
-    with patch("rag_toolkit.infra.vectorstores.milvus.connection.MilvusClient") as mock:
+    with patch("quaerium.infra.vectorstores.milvus.connection.MilvusClient") as mock:
         mock.return_value = mock_milvus_client
         manager = MilvusConnectionManager(config)
         _ = manager.client
@@ -69,7 +69,7 @@ def test_connection_error_handling():
     """Test connection error handling."""
     config = MilvusConfig(uri="http://invalid:19530")
     
-    with patch("rag_toolkit.infra.vectorstores.milvus.connection.MilvusClient") as mock:
+    with patch("quaerium.infra.vectorstores.milvus.connection.MilvusClient") as mock:
         mock.side_effect = Exception("Connection failed")
         
         manager = MilvusConnectionManager(config)

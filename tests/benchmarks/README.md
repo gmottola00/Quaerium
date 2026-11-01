@@ -226,4 +226,4 @@ To add new benchmarks:
 ## References
 
 - [pytest-benchmark documentation](https://pytest-benchmark.readthedocs.io/)
-- [RAG Toolkit documentation](https://gmottola00.github.io/rag-toolkit/)
+- [Quaerium documentation](https://gmottola00.github.io/quaerium/)

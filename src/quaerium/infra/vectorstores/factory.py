@@ -7,16 +7,17 @@ vector stores with sensible defaults while allowing configuration overrides.
 from __future__ import annotations
 
 import os
-from typing import Callable, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional
 
 from quaerium.core.embedding import EmbeddingClient
 from quaerium.core.index.service import IndexService
-from quaerium.infra.vectorstores.milvus.config import MilvusConfig
-from quaerium.infra.vectorstores.milvus.service import MilvusService
-from quaerium.infra.vectorstores.qdrant.config import QdrantConfig
-from quaerium.infra.vectorstores.qdrant.service import QdrantService
-from quaerium.infra.vectorstores.chroma.config import ChromaConfig
-from quaerium.infra.vectorstores.chroma.service import ChromaService
+
+# Backend imports are deferred to each factory so that installing one
+# backend extra (e.g. quaerium[qdrant]) does not require the others.
+if TYPE_CHECKING:
+    from quaerium.infra.vectorstores.chroma.service import ChromaService
+    from quaerium.infra.vectorstores.milvus.service import MilvusService
+    from quaerium.infra.vectorstores.qdrant.service import QdrantService
 
 
 def create_milvus_service(
@@ -57,6 +58,9 @@ def create_milvus_service(
         )
         ```
     """
+    from quaerium.infra.vectorstores.milvus.config import MilvusConfig
+    from quaerium.infra.vectorstores.milvus.service import MilvusService
+
     config = MilvusConfig(
         uri=uri or os.getenv("MILVUS_URI", "http://localhost:19530"),
         user=user or os.getenv("MILVUS_USER"),
@@ -164,6 +168,9 @@ def create_qdrant_service(
         )
         ```
     """
+    from quaerium.infra.vectorstores.qdrant.config import QdrantConfig
+    from quaerium.infra.vectorstores.qdrant.service import QdrantService
+
     config = QdrantConfig(
         url=url or os.getenv("QDRANT_URL", "http://localhost:6333"),
         api_key=api_key or os.getenv("QDRANT_API_KEY"),
@@ -223,6 +230,9 @@ def create_chroma_service(
         )
         ```
     """
+    from quaerium.infra.vectorstores.chroma.config import ChromaConfig
+    from quaerium.infra.vectorstores.chroma.service import ChromaService
+
     config = ChromaConfig(
         path=path or os.getenv("CHROMA_PATH"),
         host=host or os.getenv("CHROMA_HOST"),

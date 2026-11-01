@@ -3,9 +3,51 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import os
+from pathlib import Path
 from typing import Any, Dict, Iterable, List, Sequence
 
 import pytest
+
+_TESTS_DIR = Path(__file__).parent
+
+# Tests that need live services (Docker: Milvus, Qdrant, Chroma, Neo4j, Ollama).
+_INTEGRATION_PATHS = (
+    "tests/benchmarks/",
+    "tests/integration/",
+    "tests/test_infra/test_vectorstores/test_unified.py",
+)
+
+
+def _known_failures() -> set[str]:
+    path = _TESTS_DIR / "known_failures.txt"
+    if not path.exists():
+        return set()
+    lines = (line.strip() for line in path.read_text().splitlines())
+    return {line for line in lines if line and not line.startswith("#")}
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--run-integration",
+        action="store_true",
+        default=False,
+        help="run tests that need live services (also: QUAERIUM_INTEGRATION=1)",
+    )
+
+
+def pytest_collection_modifyitems(config, items):
+    run_integration = config.getoption("--run-integration") or os.getenv("QUAERIUM_INTEGRATION") == "1"
+    skip_integration = pytest.mark.skip(reason="needs live services: use --run-integration")
+    known = _known_failures()
+    stale = pytest.mark.xfail(reason="out of sync with implementation (tests/known_failures.txt)", strict=True)
+    for item in items:
+        if item.nodeid.startswith(_INTEGRATION_PATHS) or item.get_closest_marker("integration"):
+            item.add_marker(pytest.mark.integration)
+            if not run_integration:
+                item.add_marker(skip_integration)
+        if item.nodeid in known:
+            item.add_marker(stale)
 
 
 # ============================================================================
@@ -32,6 +74,9 @@ def pytest_configure(config):
     )
     config.addinivalue_line(
         "markers", "integration: mark test as integration test (requires Docker)"
+    )
+    config.addinivalue_line(
+        "markers", "script: mark test as running against the scripted (fake) LLM"
     )
 
 

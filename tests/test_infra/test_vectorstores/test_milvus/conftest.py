@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 @pytest.fixture
 def mock_milvus_client():
     """Mock Milvus client."""
-    with patch("rag_toolkit.infra.vectorstores.milvus.connection.MilvusClient") as mock:
+    with patch("quaerium.infra.vectorstores.milvus.connection.MilvusClient") as mock:
         client = MagicMock()
         mock.return_value = client
         

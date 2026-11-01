@@ -15,7 +15,7 @@ def milvus_service(mock_milvus_client):
     """Milvus service instance."""
     config = MilvusConfig(uri="http://localhost:19530")
     
-    with patch("rag_toolkit.infra.vectorstores.milvus.connection.MilvusClient") as mock:
+    with patch("quaerium.infra.vectorstores.milvus.connection.MilvusClient") as mock:
         mock.return_value = mock_milvus_client
         service = MilvusService(config=config)
         yield service

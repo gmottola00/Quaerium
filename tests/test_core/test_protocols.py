@@ -157,8 +157,8 @@ def test_version():
     """Test that version is accessible."""
     import quaerium
     
-    assert hasattr(rag_toolkit, "__version__")
-    assert isinstance(rag_toolkit.__version__, str)
-    assert len(rag_toolkit.__version__) > 0
+    assert hasattr(quaerium, "__version__")
+    assert isinstance(quaerium.__version__, str)
+    assert len(quaerium.__version__) > 0
     # Version should follow semantic versioning pattern
-    assert rag_toolkit.__version__.count(".") >= 2
+    assert quaerium.__version__.count(".") >= 2

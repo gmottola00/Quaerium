@@ -26,8 +26,8 @@ def test_create_collection(
     """Test collection creation."""
     manager = QdrantCollectionManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
         
         mock_distance.COSINE = "Cosine"
         mock_params = Mock()
@@ -49,8 +49,8 @@ def test_create_collection_default_config(mock_connection: QdrantConnectionManag
     """Test collection creation with default configuration."""
     manager = QdrantCollectionManager(mock_connection)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
         
         mock_distance.COSINE = "Cosine"
         mock_params = Mock()
@@ -106,8 +106,8 @@ def test_ensure_collection_creates_if_not_exists(mock_connection: QdrantConnecti
     manager = QdrantCollectionManager(mock_connection)
     mock_connection.client.collection_exists.return_value = False
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams"):
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance"), \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams"):
         
         manager.ensure_collection(
             collection_name="test_collection",
@@ -235,8 +235,8 @@ def test_create_collection_euclid_distance(mock_connection: QdrantConnectionMana
     
     config = QdrantIndexConfig(distance="Euclid")
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams"):
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams"):
         
         mock_distance.EUCLID = "Euclid"
         
@@ -258,8 +258,8 @@ def test_create_collection_with_quantization(mock_connection: QdrantConnectionMa
         quantization={"scalar": {"type": "int8"}},
     )
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
         
         mock_distance.COSINE = "Cosine"
         mock_params = Mock()
@@ -285,8 +285,8 @@ def test_create_collection_on_disk(mock_connection: QdrantConnectionManager) -> 
         on_disk=True,
     )
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
+    with patch("quaerium.infra.vectorstores.qdrant.collection.Distance") as mock_distance, \
+         patch("quaerium.infra.vectorstores.qdrant.collection.VectorParams") as mock_vector_params:
         
         mock_distance.COSINE = "Cosine"
         mock_params = Mock()
