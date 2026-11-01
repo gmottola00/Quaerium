@@ -11,87 +11,68 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.4.0] - 2026-03-16
+## [0.4.0] - Unreleased
 
-### 🤖 Major Feature: Agentic Reasoning System
+### 🤖 Agents kernel, and a lean core install
 
-Complete multi-step agent framework with ReAct execution loop, pluggable tool system, memory management, and four built-in agents.
+`quaerium.agents` is now the agent runtime shared by Jarvis (homelab) and Alfred
+(finance): a small LangGraph loop around the Anthropic SDK, with a human approval
+gate that survives restarts. It replaces the text-based ReAct experiment that was
+in this module before, which had no users.
+
+### ⚠️ Breaking changes
+
+- **Core dependencies are now `pydantic` and `pydantic-settings` only.** Backends
+  moved to extras: `milvus` (pymilvus), `ollama` (requests), `supabase`, `pdf`
+  (pymupdf, pdfplumber, ftfy, charset-normalizer), `docx`, `lang` (lingua).
+  `pip install quaerium` no longer pulls in pymilvus — use `quaerium[milvus]`.
+- **`quaerium.agents` is a different API.** The ReAct experiment (`AgentRuntime`,
+  `ReActExecutor`, `RAGAgent`, …) is removed, and so are its re-exports from the
+  top-level `quaerium` package.
+- Removed the `ocr` extra (easyocr was never imported) and `aiohttp` (never used).
+- Removed `quaerium.core.index.vector`, an unused copy of
+  `quaerium.infra.vectorstores.milvus`.
 
 ### Added
 
-#### Core Protocols (agents/protocols.py)
-- **Tool Protocol**: `@runtime_checkable` protocol for agent tools (name, description, parameters_schema, run, arun)
-- **AgentMemory Protocol**: Conversation memory abstraction (add_message, get_history, clear)
-- **AgentObserver Protocol**: Non-invasive execution monitoring (on_step_start, on_step_end, on_tool_call, on_agent_finish)
-- **ExecutionStrategy Protocol**: Swappable execution loop (execute)
+- **`quaerium.agents`** (extra `agents`):
+  - `@tool` — tools as typed async functions; JSON Schema from signature and docstring.
+  - `ToolRegistry`, `RiskLevel` (read / write / destructive), `PolicyGate` with
+    app-supplied explanation texts.
+  - `build_graph` — router → model → gate → act; injectable router heuristic,
+    static + per-turn system blocks, effort per route, step ceiling.
+  - `AgentRunner` — runs as a flat stream of `RunEvent`s; suspends on destructive
+    calls via LangGraph `interrupt` and resumes from the checkpoint.
+  - `AnthropicLLM` — adaptive thinking, effort, refusal fallbacks; optional
+    LiteLLM gateway for non-Claude models.
+  - `checkpointer` (extra `agents-postgres`) with an allowlist serializer and
+    `legacy_modules`, so runs suspended before a migration still resume.
+  - `MemorySessionStore` / `RedisSessionStore` (extra `agents-redis`) and
+    `AuditLog` (Postgres optional), both namespaced per app.
+  - `ClientProvider` — real client, optional fake, or a clear configuration error.
+  - `rag_tool` / `graph_query_tool` — a `RagPipeline` or a graph store as a tool.
+  - `quaerium.agents.testing.ScriptedLLM` — deterministic tests without an API key.
+- **`quaerium.agents.server`** (extra `server`): SSE streaming and the shared
+  `/api/approvals` and `/api/runs` routers.
+- `examples/agent_rag_example.py`, runnable offline.
 
-#### Data Models (agents/models.py)
-- **ToolCall**: Captures tool invocation with arguments and raw LLM output
-- **AgentStep**: Single ReAct loop iteration (thought, tool_call, observation, latency)
-- **AgentTrace**: Full execution trace with success/error status and total latency
-- **AgentResponse**: High-level response with answer, trace, and sources
+### Fixed
 
-#### Tool System (agents/tool.py)
-- **@tool decorator**: Auto-derives JSON Schema from type hints via `inspect.signature()`
-- **FunctionTool**: Wraps any callable as a Tool-Protocol-compatible object
-- **ToolDefinition**: Explicit schema definition with retry and fallback support
-- **ToolRegistry**: Dict-based registry with `to_prompt_block()` for LLM prompt generation
+- The wheel was missing `quaerium.core.index` and `quaerium.infra.evaluation`
+  (no `__init__.py` with `namespaces = false`), so `import quaerium.rag` failed
+  from an installed package.
+- Optional backends are imported lazily: installing one vector store extra no
+  longer requires the others.
+- `quaerium.__version__` comes from the package metadata.
+- Leftover `rag_toolkit` references in tests, Makefile and messages.
 
-#### Memory (agents/memory.py)
-- **InMemoryConversationMemory**: Sliding-window memory, zero dependencies, default for all agents
-- **VectorLongTermMemory**: Semantic recall using existing VectorStoreClient + EmbeddingClient
+### CI
 
-#### Execution (agents/executor.py + agents/runtime.py)
-- **ReActExecutor**: Default ExecutionStrategy with Thought/Action/Observation loop (~80 lines)
-- **AgentRuntime**: Central orchestrator wiring LLM, tools, memory, strategy, and observers
-
-#### Prompts (agents/prompts.py)
-- **ReAct prompt template**: System + user + history composition
-- **parse_react_output()**: Regex-based parser with JSON fallback (`{"query": raw}`)
-
-#### Built-in Agents (agents/builtin/)
-- **RAGAgent**: Wraps RagPipeline as `rag_search` tool with citation extraction
-- **IngestionAgent**: Wraps IngestionService with `parse_document`, `list_formats`, `check_status` tools
-- **EvaluationAgent**: Wraps RetrievalEvaluator + GenerationEvaluator as tools
-- **ResearchAgent**: Composes sub-agents as tools for multi-hop reasoning
-
-#### Testing
-- **38 tests**: All passing in 0.03s — Tool, Memory, Prompts, Executor, Runtime
-- **Zero new mandatory dependencies**: Pure Python stdlib only
-
-#### Documentation
-- Comprehensive Agents Guide with mermaid diagrams, grid cards, examples
-- API Reference for all agent components
-- Example scripts: `examples/agent_rag_example.py`, `examples/agent_research_example.py`
-
-### Changed
-- **`src/quaerium/__init__.py`**: Added 20 agent exports to public API
-- **`mkdocs.yml`**: Added Agents section to nav
-
-### Technical Notes
-- Bug fix: `AgentRuntime` uses `memory is not None` instead of `memory or ...` (empty memory has `__len__=0` → falsy)
-- ReAct parser uses two `re.DOTALL` regexes, no external parsers
-- All agents pass `is not None` checks for optional parameters
-
----
-
-#### Phase 2 Priority 2
-- **Incremental Migration**: Checkpoint-based resume capability for large datasets
-- **Schema Mapping**: Field transformation and mapping between different vector stores
-
-#### Phase 3
-- **CLI Tool**: Command-line interface with YAML configuration support
-- **Parallel Migration**: Multi-threaded/multi-process batch processing
-- **Metrics & Observability**: Prometheus metrics and OpenTelemetry tracing
-
-#### Future Enhancements
-- Enhanced document parsing with better table extraction
-- Query expansion strategies
-- Caching layer for embeddings and LLM responses
-- Async support for all I/O operations
-- Examples for production deployments (Kubernetes, cloud platforms)
-- Zero-downtime migration with dual-write pattern
-- Data quality validation (embedding drift detection)
+- pytest and ruff (errors) are blocking; a `minimal` job installs with no extras
+  and checks the core imports.
+- Tests that need live services run with `--run-integration`; vector store unit
+  tests that drifted from the code are listed in `tests/known_failures.txt` as
+  strict xfail.
 
 ---
 

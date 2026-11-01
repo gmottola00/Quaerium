@@ -1,14 +1,14 @@
 [project]
 name = "quaerium"
-version = "0.3.0"
-description = "Quaerium: Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture"
+version = "0.4.0"
+description = "Quaerium: RAG framework (vector + graph stores) and a LangGraph agents kernel with a human approval gate"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = { text = "MIT" }
 authors = [
     { name = "Gianmarco Mottola", email = "gianmarcomottola00@gmail.com" }
 ]
-keywords = ["rag", "retrieval", "llm", "vector-search", "graph-rag", "neo4j", "milvus", "embeddings", "knowledge-graph"]
+keywords = ["rag", "retrieval", "llm", "vector-search", "graph-rag", "neo4j", "milvus", "embeddings", "knowledge-graph", "agents", "langgraph", "anthropic"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -60,6 +60,7 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.1.0",
     "pytest-benchmark>=4.0.0",
+    "httpx>=0.27.0",
     "mypy>=1.8.0",
     "ruff>=0.1.0",
     "black>=24.0.0",
@@ -158,6 +159,13 @@ module = [
     "langdetect.*",
     "fitz.*",
     "docx.*",
+    "sse_starlette.*",
+    "psycopg_pool.*",
+    "redis.*",
+    "pdfplumber.*",
+    "supabase.*",
+    "fasttext.*",
+    "lingua.*",
 ]
 ignore_missing_imports = true
 

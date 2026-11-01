@@ -1,98 +1,82 @@
-"""Core Protocols for the Quaerium Agents system.
+"""Structural interfaces.
 
-Defines the structural contracts (Protocol classes) that all agent components
-must satisfy. Uses runtime_checkable to enable isinstance() checks.
+PEP 544 protocols, in Quaerium's house style: nothing has to inherit from
+anything, a class just has to have the right shape. This is what lets the
+session store swap between Redis and a dict, and a capability swap between a
+live client and a fake, without a base class in sight.
 """
 
 from __future__ import annotations
 
 from typing import Any, Protocol, runtime_checkable
 
-from quaerium.agents.models import AgentStep, AgentTrace
+from quaerium.agents.types import RiskLevel, Turn
 
 
 @runtime_checkable
 class Tool(Protocol):
-    """Protocol for agent tools.
+    """Anything the registry can hold and the model can call.
 
-    Any object with these attributes and methods can be used as a tool
-    in the agent system (duck typing).
+    Example:
+        >>> class Clock:
+        ...     name = "time__now"
+        ...     description = "Current UTC time, ISO 8601."
+        ...     input_schema = {"type": "object", "properties": {}, "required": []}
+        ...     risk = RiskLevel.READ
+        ...     async def run(self, **kwargs: object) -> str:
+        ...         from datetime import datetime, timezone
+        ...         return datetime.now(timezone.utc).isoformat()
     """
 
     name: str
     description: str
-    parameters_schema: dict[str, Any]
+    input_schema: dict[str, Any]
+    risk: RiskLevel
 
-    def run(self, **kwargs: Any) -> str:
-        """Execute the tool synchronously."""
-        ...
-
-    async def arun(self, **kwargs: Any) -> str:
-        """Execute the tool asynchronously."""
+    async def run(self, **kwargs: Any) -> str:
+        """Execute and return text for the model. Must not raise for expected failures."""
         ...
 
 
 @runtime_checkable
-class AgentMemory(Protocol):
-    """Protocol for agent conversation memory."""
+class SessionStore(Protocol):
+    """Recent conversation turns, keyed by session."""
 
-    def add_message(self, role: str, content: str) -> None:
-        """Add a message to memory."""
+    async def append(self, session_id: str, turn: Turn) -> None: ...
+
+    async def history(self, session_id: str, *, limit: int = 20) -> list[Turn]: ...
+
+    async def clear(self, session_id: str) -> None: ...
+
+    async def sessions(self) -> list[dict[str, Any]]:
+        """Every live session: ``id``, ``turns``, ``last_at`` and ``title``."""
         ...
 
-    def get_history(self, max_turns: int | None = None) -> list[dict[str, str]]:
-        """Retrieve conversation history."""
-        ...
+    async def aclose(self) -> None: ...
 
-    def clear(self) -> None:
-        """Clear all stored messages."""
+
+@runtime_checkable
+class EventSink(Protocol):
+    """Where a run's events go while it is in flight."""
+
+    def emit(self, event: Any) -> None:
+        """Publish one ``RunEvent``. Never raises — a broken sink must not break a run."""
         ...
 
 
 @runtime_checkable
-class AgentObserver(Protocol):
-    """Protocol for observing agent execution events.
+class AuditLog(Protocol):
+    """Durable record of what the agent did and why."""
 
-    Observers implement the observer pattern to monitor agent steps
-    without modifying agent code.
-    """
+    async def start_run(self, run_id: str, session_id: str, prompt: str, model: str = "") -> None: ...
 
-    def on_step_start(self, step: AgentStep) -> None:
-        """Called when an agent step begins."""
-        ...
+    async def record_tool_call(self, run_id: str, call: Any, result: Any) -> None: ...
 
-    def on_step_end(self, step: AgentStep) -> None:
-        """Called when an agent step completes."""
-        ...
+    async def record_approval(self, run_id: str, approval: Any) -> None: ...
 
-    def on_tool_call(self, tool_name: str, kwargs: dict[str, Any], result: str) -> None:
-        """Called after a tool is invoked."""
-        ...
+    def suspend_run(self, run_id: str, tool: str, args: dict[str, Any], why: str) -> None: ...
 
-    def on_agent_finish(self, trace: AgentTrace) -> None:
-        """Called when the agent produces its final answer."""
-        ...
+    async def finish_run(self, run_id: str, answer: str, usage: Any, served_by: str = "") -> None: ...
 
 
-@runtime_checkable
-class ExecutionStrategy(Protocol):
-    """Protocol for agent execution strategies.
-
-    Swappable execution loop (ReAct, Plan-then-Execute, etc.).
-    """
-
-    def execute(
-        self,
-        *,
-        task: str,
-        tools: dict[str, Any],
-        memory: Any,
-        llm: Any,
-        observers: list[Any],
-        max_steps: int,
-    ) -> AgentTrace:
-        """Execute an agent task and return the full trace."""
-        ...
-
-
-__all__ = ["Tool", "AgentMemory", "AgentObserver", "ExecutionStrategy"]
+__all__ = ["AuditLog", "EventSink", "SessionStore", "Tool"]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import importlib.util
 import os
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Sequence
@@ -10,6 +11,11 @@ from typing import Any, Dict, Iterable, List, Sequence
 import pytest
 
 _TESTS_DIR = Path(__file__).parent
+
+# The agents kernel is an extra: without it its tests are not collected at all.
+collect_ignore: list[str] = []
+if any(importlib.util.find_spec(m) is None for m in ("anthropic", "langgraph", "structlog")):
+    collect_ignore.append("agents")
 
 # Tests that need live services (Docker: Milvus, Qdrant, Chroma, Neo4j, Ollama).
 _INTEGRATION_PATHS = (

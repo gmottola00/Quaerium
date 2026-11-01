@@ -1,94 +1,94 @@
-"""Example: RAGAgent with RagPipeline.
+"""An agent that answers from a knowledge base and asks before it deletes.
 
-Demonstrates using RAGAgent to answer questions over a document knowledge base
-with a custom extra tool.
+Runs offline: the model is scripted and the RAG pipeline is a stand-in, so there
+is no API key and no vector store to set up. Swap in ``AnthropicLLM`` and a real
+``RagPipeline`` and nothing else changes.
 
-Usage:
-    uv run python examples/agent_rag_example.py
+    pip install 'quaerium[agents]'
+    python examples/agent_rag_example.py
 """
 
 from __future__ import annotations
 
-from datetime import date
+import asyncio
 
-from quaerium.agents import RAGAgent, tool
-from quaerium.agents.memory import InMemoryConversationMemory
+from quaerium.agents import AgentRunner, AuditLog, PolicyGate, RiskLevel, ToolRegistry, build_graph, rag_tool, tool
+from quaerium.agents.testing import ScriptedLLM
+from quaerium.rag.models import RagResponse, RetrievedChunk
 
-# ---------------------------------------------------------------------------
-# 1. Define a custom extra tool using the @tool decorator
-# ---------------------------------------------------------------------------
-
-@tool(description="Returns today's ISO date (YYYY-MM-DD)")
-def get_date() -> str:
-    return date.today().isoformat()
+# --- the knowledge base ----------------------------------------------------
 
 
-# ---------------------------------------------------------------------------
-# 2. Set up LLM and RagPipeline (replace with real instances)
-# ---------------------------------------------------------------------------
+class HandbookPipeline:
+    """Stands in for a RagPipeline: same ``run(question, *, top_k)`` shape."""
 
-class StubLLM:
-    """Minimal stub LLM for demonstration — replace with OllamaLLMClient etc."""
-    model_name = "stub"
-
-    def generate(self, prompt: str, **kwargs) -> str:
-        # In a real scenario this calls your LLM provider
-        return "Thought: I have all the information needed.\nFinal Answer: This is a stub answer."
-
-
-class StubRagPipeline:
-    """Stub RagPipeline — replace with a real RagPipeline instance."""
-
-    def run(self, question: str, **kwargs):
-        from quaerium.rag.models import RagResponse, RetrievedChunk
+    def run(self, question: str, *, top_k: int = 5) -> RagResponse:
         chunk = RetrievedChunk(
-            id="doc-1",
-            text="Section 4 deadline: 30 days from contract signature.",
-            section_path="Section 4",
+            id="handbook-12",
+            text="Refunds are issued within 14 days of the request, to the original payment method.",
+            section_path="Handbook > Billing > Refunds",
             metadata={},
-            page_numbers=[4],
+            page_numbers=[12],
             source_chunk_id=None,
-            score=0.95,
         )
-        return RagResponse(
-            answer="The deadline in section 4 is 30 days from contract signature.",
-            citations=[chunk],
-        )
+        return RagResponse(answer="Refunds are issued within 14 days [1].", citations=[chunk])
 
 
-# ---------------------------------------------------------------------------
-# 3. Build and run the agent
-# ---------------------------------------------------------------------------
+# --- an app tool, with a risk level ----------------------------------------
 
-def main() -> None:
-    llm = StubLLM()
-    pipeline = StubRagPipeline()
+TICKETS = {"T-1": "Refund for order 881", "T-2": "Password reset"}
 
-    agent = RAGAgent(
-        llm=llm,
-        rag_pipeline=pipeline,
-        extra_tools=[get_date],
-        memory=InMemoryConversationMemory(max_turns=20),
-        max_steps=8,
+
+@tool(namespace="tickets", risk=RiskLevel.DESTRUCTIVE)
+async def close(ticket_id: str) -> str:
+    """Close a support ticket.
+
+    Args:
+        ticket_id: The ticket to close, e.g. ``T-1``.
+    """
+    title = TICKETS.pop(ticket_id)
+    return f"Closed {ticket_id}: {title}"
+
+
+# --- wiring ------------------------------------------------------------------
+
+
+async def main() -> None:
+    registry = ToolRegistry()
+    registry.register_many([rag_tool(HandbookPipeline(), namespace="kb", description="The support handbook."), close])
+
+    # What a model would do with "how long do refunds take? then close T-1".
+    llm = ScriptedLLM(
+        [
+            ScriptedLLM.call("kb__search", {"question": "How long do refunds take?"}),
+            ScriptedLLM.call("tickets__close", {"ticket_id": "T-1"}, risk=RiskLevel.DESTRUCTIVE),
+            ScriptedLLM.say("Refunds take 14 days (handbook p. 12). T-1 is closed."),
+        ]
     )
 
-    question = "What are the deadlines in section 4?"
-    print(f"Question: {question}\n")
+    audit = AuditLog()
+    graph = build_graph(
+        llm=llm,
+        registry=registry,
+        system=[{"type": "text", "text": "You are a support assistant. Cite the handbook."}],
+        policy=PolicyGate(),
+        **audit.hooks(),
+    )
+    runner = AgentRunner(graph=graph, audit=audit)
 
-    response = agent.run(question)
+    print("> how long do refunds take? then close T-1")
+    async for event in runner.start("demo", "how long do refunds take? then close T-1", run_id="run_demo"):
+        print(f"  {event['type']:<18} {event.get('name') or event.get('tool') or event.get('text') or ''}")
 
-    print(f"Answer: {response.answer}\n")
-    print("Trace:")
-    for step in response.trace.steps:
-        tool_info = ""
-        if step.tool_call:
-            tool_info = f" → [{step.tool_call.tool_name}]"
-        print(f"  [{step.step_number}] {step.thought[:80]}{tool_info}")
+    # The run is suspended at the gate. A UI would show event["why"] and two buttons.
+    print("\n> (user approves)")
+    async for event in runner.resume("demo", "run_demo", approved=True):
+        print(f"  {event['type']:<18} {event.get('name') or event.get('text') or ''}")
 
-    print(f"\nLatency: {response.trace.total_latency_ms:.1f}ms")
-    if response.sources:
-        print(f"Sources: {[s.section_path or s.id for s in response.sources]}")
+    run = audit.get("run_demo") or {}
+    print(f"\naudit: {len(run['tool_calls'])} tool calls, approvals: {[a['approved'] for a in run['approvals']]}")
+    print(f"tickets left: {sorted(TICKETS)}")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
