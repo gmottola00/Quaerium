@@ -1,117 +1,140 @@
-"""Memory implementations for Quaerium Agents.
+"""Session store.
 
-Provides:
-- InMemoryConversationMemory — sliding window, zero dependencies
-- VectorLongTermMemory — semantic recall using existing VectorStoreClient
+The checkpointer already holds the message history the *model* sees. This holds
+the much smaller thing the *browser* needs: the plain user/assistant text of a
+conversation, plus enough metadata to list sessions in a sidebar, cheap to read
+and easy to expire.
+
+Redis when configured, an in-process dict otherwise. Both satisfy
+:class:`~quaerium.agents.protocols.SessionStore`.
 """
 
 from __future__ import annotations
 
-from collections import deque
-from typing import Any
+import json
+from collections import defaultdict, deque
+from typing import Any, Deque
+
+from quaerium.agents.logging import get_logger
+from quaerium.agents.types import Turn
+
+logger = get_logger(__name__)
+
+MAX_TURNS = 200
 
 
-class InMemoryConversationMemory:
-    """Simple sliding-window conversation memory.
+class MemorySessionStore:
+    """In-process session history. Lost on restart, which is fine for dev."""
 
-    Satisfies the AgentMemory Protocol. Zero external dependencies.
+    def __init__(self, *, max_turns: int = MAX_TURNS) -> None:
+        self._turns: dict[str, Deque[Turn]] = defaultdict(lambda: deque(maxlen=max_turns))
+
+    async def append(self, session_id: str, turn: Turn) -> None:
+        self._turns[session_id].append(turn)
+
+    async def history(self, session_id: str, *, limit: int = 20) -> list[Turn]:
+        return list(self._turns[session_id])[-limit:]
+
+    async def clear(self, session_id: str) -> None:
+        self._turns.pop(session_id, None)
+
+    async def sessions(self) -> list[dict[str, Any]]:
+        return [
+            {
+                "id": sid,
+                "turns": len(turns),
+                "last_at": turns[-1].at.isoformat() if turns else None,
+                "title": next((t.content for t in turns if t.role == "user"), "")[:60],
+            }
+            for sid, turns in sorted(self._turns.items())
+            if turns
+        ]
+
+    async def aclose(self) -> None:
+        return None
+
+
+class RedisSessionStore:
+    """Redis-backed session history with a TTL.
+
+    Keys are ``{prefix}:session:{id}`` (a list of turns) and ``{prefix}:sessions``
+    (the set of ids). An app keeps its existing data by passing its old prefix.
 
     Args:
-        max_turns: Maximum number of (user, assistant) turn pairs to keep.
-            None means unlimited.
+        url: Redis URL.
+        prefix: Key namespace, e.g. the app name.
+        ttl: Seconds a session survives without activity.
+        max_turns: Trim length, so a long conversation cannot grow without bound.
     """
 
-    def __init__(self, max_turns: int | None = 50) -> None:
+    def __init__(self, url: str, *, prefix: str = "agent", ttl: int = 86_400, max_turns: int = MAX_TURNS) -> None:
+        import redis.asyncio as redis
+
+        self._redis = redis.from_url(url, decode_responses=True)
+        self._prefix = prefix
+        self._index = f"{prefix}:sessions"
+        self._ttl = ttl
         self._max_turns = max_turns
-        self._messages: deque[dict[str, str]] = deque()
 
-    def add_message(self, role: str, content: str) -> None:
-        """Append a message and enforce the sliding window."""
-        self._messages.append({"role": role, "content": content})
-        if self._max_turns is not None:
-            # Each turn = 2 messages (user + assistant), keep max_turns * 2
-            max_messages = self._max_turns * 2
-            while len(self._messages) > max_messages:
-                self._messages.popleft()
+    def _key(self, session_id: str) -> str:
+        return f"{self._prefix}:session:{session_id}"
 
-    def get_history(self, max_turns: int | None = None) -> list[dict[str, str]]:
-        """Return conversation history, optionally limited to last N turns."""
-        messages = list(self._messages)
-        if max_turns is not None:
-            messages = messages[-(max_turns * 2):]
-        return messages
+    async def append(self, session_id: str, turn: Turn) -> None:
+        key = self._key(session_id)
+        pipe = self._redis.pipeline()
+        pipe.rpush(key, turn.model_dump_json())
+        pipe.ltrim(key, -self._max_turns, -1)
+        pipe.expire(key, self._ttl)
+        pipe.sadd(self._index, session_id)
+        await pipe.execute()
 
-    def clear(self) -> None:
-        """Clear all stored messages."""
-        self._messages.clear()
+    async def history(self, session_id: str, *, limit: int = 20) -> list[Turn]:
+        raw = await self._redis.lrange(self._key(session_id), -limit, -1)
+        return [Turn(**json.loads(item)) for item in raw]
 
-    def __len__(self) -> int:
-        return len(self._messages)
+    async def clear(self, session_id: str) -> None:
+        await self._redis.delete(self._key(session_id))
+        await self._redis.srem(self._index, session_id)
+
+    async def sessions(self) -> list[dict[str, Any]]:
+        ids: list[str] = sorted(str(sid) for sid in await self._redis.smembers(self._index))
+        out: list[dict[str, Any]] = []
+        for sid in ids:
+            turns = await self.history(sid, limit=self._max_turns)
+            if not turns:
+                continue
+            out.append(
+                {
+                    "id": sid,
+                    "turns": len(turns),
+                    "last_at": turns[-1].at.isoformat(),
+                    "title": next((t.content for t in turns if t.role == "user"), "")[:60],
+                }
+            )
+        return out
+
+    async def aclose(self) -> None:
+        await self._redis.aclose()
 
 
-class VectorLongTermMemory:
-    """Long-term memory backed by a vector store.
-
-    Provides semantic recall on top of any VectorStoreClient +
-    EmbeddingClient. This class is NOT part of the AgentMemory Protocol
-    (it has extra methods); use composition, not polymorphism.
+def build_session_store(redis_url: str | None, *, prefix: str = "agent", ttl: int = 86_400) -> Any:
+    """Return a Redis store when ``redis_url`` is set, otherwise the in-process one.
 
     Args:
-        vector_store: VectorStoreClient instance
-        embedding_client: EmbeddingClient instance
-        collection_name: Collection/namespace for storing memories
-        top_k: Number of relevant memories to recall
+        redis_url: Redis URL, or None/empty for the in-process store.
+        prefix: Key namespace; see :class:`RedisSessionStore`.
+        ttl: Seconds a session survives without activity.
     """
-
-    def __init__(
-        self,
-        vector_store: Any,
-        embedding_client: Any,
-        collection_name: str = "agent_memory",
-        top_k: int = 5,
-    ) -> None:
-        self._store = vector_store
-        self._embedding = embedding_client
-        self._collection = collection_name
-        self._top_k = top_k
-        # Short-term buffer that satisfies AgentMemory Protocol
-        self._short_term = InMemoryConversationMemory()
-
-    # --- AgentMemory Protocol methods (short-term) ---
-
-    def add_message(self, role: str, content: str) -> None:
-        self._short_term.add_message(role, content)
-
-    def get_history(self, max_turns: int | None = None) -> list[dict[str, str]]:
-        return self._short_term.get_history(max_turns)
-
-    def clear(self) -> None:
-        self._short_term.clear()
-
-    # --- Extra long-term memory methods ---
-
-    def remember(self, text: str, metadata: dict[str, Any] | None = None) -> None:
-        """Store a piece of information in long-term vector memory."""
-        vector = self._embedding.embed(text)
-        self._store.upsert(
-            collection=self._collection,
-            vectors=[{"id": _hash_text(text), "vector": vector, "text": text, "metadata": metadata or {}}],
-        )
-
-    def recall(self, query: str) -> list[str]:
-        """Retrieve semantically relevant memories for a query."""
-        vector = self._embedding.embed(query)
-        results = self._store.search(
-            collection=self._collection,
-            vector=vector,
-            top_k=self._top_k,
-        )
-        return [r.get("text", "") for r in results]
+    if not redis_url:
+        logger.warning("sessions.in_memory", reason="no Redis URL configured")
+        return MemorySessionStore()
+    try:
+        store = RedisSessionStore(redis_url, prefix=prefix, ttl=ttl)
+    except ImportError:  # pragma: no cover - optional dependency
+        logger.error("sessions.redis_missing", hint="pip install 'quaerium[agents-redis]'")
+        return MemorySessionStore()
+    logger.info("sessions.redis", prefix=prefix)
+    return store
 
 
-def _hash_text(text: str) -> str:
-    import hashlib
-    return hashlib.sha256(text.encode()).hexdigest()[:16]
-
-
-__all__ = ["InMemoryConversationMemory", "VectorLongTermMemory"]
+__all__ = ["MAX_TURNS", "MemorySessionStore", "RedisSessionStore", "build_session_store"]

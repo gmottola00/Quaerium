@@ -21,7 +21,7 @@ test: ## Run tests
 	uv run pytest
 
 test-cov: ## Run tests with coverage
-	uv run pytest --cov=rag_toolkit --cov-report=html --cov-report=term
+	uv run pytest --cov=quaerium --cov-report=html --cov-report=term
 
 test-unified: ## Run unified vector store tests
 	uv run pytest tests/test_infra/test_vectorstores/test_unified.py -v
@@ -45,7 +45,7 @@ test-enrichment: ## Run metadata enrichment tests
 	uv run pytest tests/test_chunking/test_enrichment.py -v
 
 test-metadata-all: ## Run all metadata and enrichment tests with coverage
-	uv run pytest tests/test_core/metadata/ tests/test_chunking/test_enrichment.py -v --cov=rag_toolkit.core.metadata --cov=rag_toolkit.core.chunking.enrichment --cov-report=term --cov-report=html
+	uv run pytest tests/test_core/metadata/ tests/test_chunking/test_enrichment.py -v --cov=quaerium.core.metadata --cov=quaerium.core.chunking.enrichment --cov-report=term --cov-report=html
 
 test-metadata-quick: ## Quick test of metadata extraction and enrichment (no coverage)
 	uv run pytest tests/test_core/metadata/ tests/test_chunking/test_enrichment.py -v --tb=short
@@ -57,7 +57,7 @@ test-graph-integration: ## Run graph store integration tests (requires Neo4j)
 	uv run pytest tests/integration/test_neo4j_service.py -v
 
 test-graph-all: ## Run all graph store tests with coverage
-	uv run pytest tests/test_core/test_graphstore_protocol.py tests/integration/test_neo4j_service.py -v --cov=rag_toolkit.core.graphstore --cov=rag_toolkit.infra.graphstores --cov-report=term --cov-report=html
+	uv run pytest tests/test_core/test_graphstore_protocol.py tests/integration/test_neo4j_service.py -v --cov=quaerium.core.graphstore --cov=quaerium.infra.graphstores --cov-report=term --cov-report=html
 
 test-evaluation: ## Run all evaluation tests
 	uv run pytest tests/test_evaluation/ -v
@@ -102,18 +102,18 @@ benchmark-clean: ## Remove benchmark results
 	rm -rf .benchmarks/ benchmark_report.html
 
 lint: ## Run linting (ruff)
-	uv run ruff check src/rag_toolkit tests
+	uv run ruff check src/quaerium tests
 
 format: ## Format code (black + isort)
-	uv run black src/rag_toolkit tests examples scripts
-	uv run isort src/rag_toolkit tests examples scripts
+	uv run black src/quaerium tests examples scripts
+	uv run isort src/quaerium tests examples scripts
 
 format-check: ## Check code formatting without changes
-	uv run black --check src/rag_toolkit tests examples scripts
-	uv run isort --check-only src/rag_toolkit tests examples scripts
+	uv run black --check src/quaerium tests examples scripts
+	uv run isort --check-only src/quaerium tests examples scripts
 
 typecheck: ## Run type checking (mypy)
-	uv run mypy src/rag_toolkit
+	uv run mypy src/quaerium
 
 check: format-check lint typecheck test ## Run all checks
 
@@ -138,8 +138,8 @@ publish-test: build ## Publish to TestPyPI
 publish: build ## Publish to PyPI
 	twine upload dist/*
 
-fix-imports: ## Fix src. imports to rag_toolkit.
-	python scripts/fix_imports.py --root=src/rag-toolkit
+fix-imports: ## Fix src. imports to quaerium.
+	python scripts/fix_imports.py --root=src/quaerium
 
 # Docker targets
 docker-up: ## Start all services (Milvus, Qdrant, ChromaDB, Ollama)

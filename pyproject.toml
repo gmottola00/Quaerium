@@ -1,14 +1,14 @@
 [project]
 name = "quaerium"
-version = "0.3.0"
-description = "Quaerium: Advanced RAG framework with multi-store support (vector + graph) and protocol-based architecture"
+version = "0.4.0"
+description = "Quaerium: RAG framework (vector + graph stores) and a LangGraph agents kernel with a human approval gate"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 license = { text = "MIT" }
 authors = [
     { name = "Gianmarco Mottola", email = "gianmarcomottola00@gmail.com" }
 ]
-keywords = ["rag", "retrieval", "llm", "vector-search", "graph-rag", "neo4j", "milvus", "embeddings", "knowledge-graph"]
+keywords = ["rag", "retrieval", "llm", "vector-search", "graph-rag", "neo4j", "milvus", "embeddings", "knowledge-graph", "agents", "langgraph", "anthropic"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -23,30 +23,36 @@ classifiers = [
 dependencies = [
     "pydantic>=2.0.0,<3.0.0",
     "pydantic-settings>=2.0.0,<3.0.0",
-    "pymilvus>=2.3.0,<3.0.0",
-    "requests>=2.31.0",
-    "aiohttp>=3.9.0",
 ]
 
 [project.optional-dependencies]
 # Vector databases
+milvus = ["pymilvus>=2.3.0,<3.0.0"]
 qdrant = ["qdrant-client>=1.7.0"]
 chroma = ["chromadb>=0.4.0"]
 
 # Graph databases
 neo4j = ["neo4j>=5.0.0"]
 
-# LLM providers
-ollama = ["ollama>=0.1.0"]
+# Object storage
+supabase = ["supabase>=2.0.0"]
+
+# LLM / embedding providers
+ollama = ["requests>=2.31.0"]
 openai = ["openai>=1.0.0,<2.0.0"]
 
 # Document parsing
-pdf = ["pymupdf>=1.23.0"]
-docx = ["python-docx>=1.1.0", "ftfy>=6.1.0"]
-ocr = ["easyocr>=1.7.0"]
+pdf = ["pymupdf>=1.23.0", "pdfplumber>=0.10.0", "ftfy>=6.1.0", "charset-normalizer>=3.0.0"]
+docx = ["python-docx>=1.1.0", "ftfy>=6.1.0", "charset-normalizer>=3.0.0"]
 
-# Language detection
-lang = ["langdetect>=1.0.9"]
+# Language detection (lingua; fastText is also supported if installed separately)
+lang = ["lingua-language-detector>=2.0.0"]
+
+# Agents kernel (LangGraph + Anthropic)
+agents = ["anthropic>=0.75.0", "langgraph>=0.2.60", "structlog>=24.4.0"]
+agents-postgres = ["quaerium[agents]", "langgraph-checkpoint-postgres>=2.0.0", "psycopg[binary,pool]>=3.2.0"]
+agents-redis = ["quaerium[agents]", "redis>=5.2.0"]
+server = ["quaerium[agents]", "fastapi>=0.115.0", "sse-starlette>=2.1.0"]
 
 # Development tools
 dev = [
@@ -54,6 +60,7 @@ dev = [
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=4.1.0",
     "pytest-benchmark>=4.0.0",
+    "httpx>=0.27.0",
     "mypy>=1.8.0",
     "ruff>=0.1.0",
     "black>=24.0.0",
@@ -72,7 +79,7 @@ docs = [
 
 # All optional dependencies
 all = [
-    "quaerium[qdrant,chroma,neo4j,ollama,openai,pdf,docx,ocr,lang]",
+    "quaerium[milvus,qdrant,chroma,neo4j,supabase,ollama,openai,pdf,docx,lang,agents-postgres,agents-redis,server]",
 ]
 
 [project.urls]
@@ -87,6 +94,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools.package-data]
+quaerium = ["py.typed"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -152,6 +162,13 @@ module = [
     "langdetect.*",
     "fitz.*",
     "docx.*",
+    "sse_starlette.*",
+    "psycopg_pool.*",
+    "redis.*",
+    "pdfplumber.*",
+    "supabase.*",
+    "fasttext.*",
+    "lingua.*",
 ]
 ignore_missing_imports = true
 

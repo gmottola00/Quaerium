@@ -49,7 +49,7 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
 ## :material-puzzle: Optional Dependencies
 
 !!! tip "Modular Installation"
-    RAG Toolkit uses optional dependencies to keep the core library lightweight. Install only what you need!
+    Quaerium uses optional dependencies to keep the core library lightweight. Install only what you need!
 
 ### :material-robot: LLM Providers
 
@@ -101,17 +101,28 @@ Get RAG Toolkit up and running in minutes with flexible installation options tai
 
     Extract content from Microsoft Word documents.
 
-- :material-scanner: **OCR Support**
-
-    ---
-
-    ```bash
-    pip install quaerium[ocr]
-    ```
-
-    Extract text from scanned documents and images.
-
 </div>
+
+### :material-database: Vector, Graph and Object Stores
+
+```bash
+pip install quaerium[milvus]     # or [qdrant], [chroma]
+pip install quaerium[neo4j]      # graph RAG
+pip install quaerium[supabase]   # document storage
+```
+
+The core install has no vector store client: pick the one you use.
+
+### :material-robot-outline: Agents
+
+```bash
+pip install quaerium[agents]                    # LangGraph + Anthropic kernel
+pip install quaerium[agents-postgres]           # durable approvals and audit
+pip install quaerium[agents-redis]              # Redis session store
+pip install quaerium[server]                    # FastAPI SSE + shared routers
+```
+
+See the [Agents guide](../guides/agents.md).
 
 ### :material-translate: Language Detection
 
@@ -136,17 +147,17 @@ Automatic language detection for multilingual document processing.
     
     === "All Document Parsers"
         ```bash
-        pip install quaerium[pdf,docx,ocr]
+        pip install quaerium[pdf,docx]
         ```
         
-        Handle any document format: PDFs, Word docs, and scanned images.
+        Handle PDFs and Word documents. OCR of scanned pages uses the `tesseract` binary, installed from your OS package manager.
     
     === "Everything"
         ```bash
         pip install quaerium[all]
         ```
         
-        Get the full RAG Toolkit experience with all optional features.
+        Get the full Quaerium experience with all optional features.
 
 ---
 

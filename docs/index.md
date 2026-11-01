@@ -121,16 +121,17 @@ hide:
     )
     ```
 
--   :material-robot-excited: **Agentic Reasoning**
+-   :material-robot-excited: **Agents with a human gate**
 
     ---
 
-    Multi-step ReAct loop con tool-use, memory e observer. Quattro agenti built-in per RAG, ingestion, evaluation e ricerca multi-hop.
+    LangGraph loop around the Anthropic SDK: typed tools with a risk level, a policy gate that waits for your approval across restarts, and RAG pipelines as tools.
 
     ```python
-    agent = RAGAgent(llm=llm, rag_pipeline=pipeline)
-    response = agent.run("Quali sono le scadenze?")
-    print(response.answer)
+    registry.register_many([rag_tool(pipeline, namespace="kb"), close_ticket])
+    graph = build_graph(llm=llm, registry=registry, system=SYSTEM)
+    async for event in AgentRunner(graph=graph).start("s1", "close T-1"):
+        ...
     ```
 
 </div>
@@ -236,10 +237,10 @@ graph LR
     I --> J[LLM]
     J --> K[Response]
 
-    L[Task] --> M[AgentRuntime]
-    M --> N[ReActExecutor]
+    L[Message] --> M[build_graph]
+    M --> N[PolicyGate]
     N --> O[Tools]
-    O --> P[RagPipeline / IngestionService / Evaluators]
+    O --> P[rag_tool / graph_query_tool]
     N --> J
 
     style A fill:#e1f5ff
@@ -305,7 +306,7 @@ graph LR
 
 -   :material-robot-excited: **[Agents Guide](guides/agents.md)**
 
-    Build intelligent multi-step agents with tool-use, memory, and built-in RAG integration.
+    Tools, the approval gate, durable runs and RAG as tools.
 
 </div>
 

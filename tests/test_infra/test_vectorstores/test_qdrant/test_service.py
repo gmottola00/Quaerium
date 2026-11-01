@@ -12,7 +12,7 @@ from quaerium.infra.vectorstores.qdrant.service import QdrantService
 
 def test_service_initialization(qdrant_config: QdrantConfig) -> None:
     """Test service initialization."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"):
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"):
         service = QdrantService(qdrant_config)
         
         assert service.connection is not None
@@ -22,8 +22,8 @@ def test_service_initialization(qdrant_config: QdrantConfig) -> None:
 
 def test_ensure_collection(qdrant_config: QdrantConfig) -> None:
     """Test ensure collection through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
         
         service = QdrantService(qdrant_config)
         mock_collections = Mock()
@@ -47,8 +47,8 @@ def test_ensure_collection_with_config(
     qdrant_index_config: QdrantIndexConfig,
 ) -> None:
     """Test ensure collection with index config."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
         
         service = QdrantService(qdrant_config)
         mock_collections = Mock()
@@ -70,8 +70,8 @@ def test_ensure_collection_with_config(
 
 def test_drop_collection(qdrant_config: QdrantConfig) -> None:
     """Test drop collection through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class:
         
         service = QdrantService(qdrant_config)
         mock_collections = Mock()
@@ -88,8 +88,8 @@ def test_upsert(
     sample_points: list[dict],
 ) -> None:
     """Test upsert through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -111,8 +111,8 @@ def test_search(
     sample_vectors: list[list[float]],
 ) -> None:
     """Test search through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -142,8 +142,8 @@ def test_search_with_filter(
     sample_vectors: list[list[float]],
 ) -> None:
     """Test search with filter through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -175,8 +175,8 @@ def test_batch_search(
     sample_vectors: list[list[float]],
 ) -> None:
     """Test batch search through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -202,8 +202,8 @@ def test_batch_search(
 
 def test_retrieve(qdrant_config: QdrantConfig) -> None:
     """Test retrieve through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -223,8 +223,8 @@ def test_retrieve(qdrant_config: QdrantConfig) -> None:
 
 def test_delete_by_ids(qdrant_config: QdrantConfig) -> None:
     """Test delete by IDs through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -241,8 +241,8 @@ def test_delete_by_ids(qdrant_config: QdrantConfig) -> None:
 
 def test_delete_by_filter(qdrant_config: QdrantConfig) -> None:
     """Test delete by filter through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -261,8 +261,8 @@ def test_delete_by_filter(qdrant_config: QdrantConfig) -> None:
 
 def test_scroll(qdrant_config: QdrantConfig) -> None:
     """Test scroll through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()
@@ -289,7 +289,7 @@ def test_scroll(qdrant_config: QdrantConfig) -> None:
 
 def test_health_check(qdrant_config: QdrantConfig) -> None:
     """Test health check through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager") as mock_conn_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager") as mock_conn_class:
         mock_connection = Mock()
         mock_connection.health_check.return_value = True
         mock_conn_class.return_value = mock_connection
@@ -302,7 +302,7 @@ def test_health_check(qdrant_config: QdrantConfig) -> None:
 
 def test_close(qdrant_config: QdrantConfig) -> None:
     """Test close connection through service."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager") as mock_conn_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager") as mock_conn_class:
         mock_connection = Mock()
         mock_conn_class.return_value = mock_connection
         
@@ -318,9 +318,9 @@ def test_service_integration_flow(
     sample_vectors: list[list[float]],
 ) -> None:
     """Test complete service flow: create, insert, search, delete."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class, \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantCollectionManager") as mock_collections_class, \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         
@@ -339,7 +339,7 @@ def test_service_integration_flow(
         # Complete flow
         service.ensure_collection("test_collection", 384)
         ids = service.upsert("test_collection", sample_points)
-        results = service.search("test_collection", sample_vectors[0], limit=5)
+        service.search("test_collection", sample_vectors[0], limit=5)
         service.delete("test_collection", ids=ids)
         service.drop_collection("test_collection")
         
@@ -356,8 +356,8 @@ def test_service_with_custom_search_params(
     sample_vectors: list[list[float]],
 ) -> None:
     """Test service search with custom parameters."""
-    with patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
-         patch("rag_toolkit.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
+    with patch("quaerium.infra.vectorstores.qdrant.service.QdrantConnectionManager"), \
+         patch("quaerium.infra.vectorstores.qdrant.service.QdrantDataManager") as mock_data_class:
         
         service = QdrantService(qdrant_config)
         mock_data = Mock()

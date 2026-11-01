@@ -1,1 +1,1 @@
-"""Test suite for rag-toolkit."""
+"""Test suite for Quaerium."""

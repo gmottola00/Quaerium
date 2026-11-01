@@ -75,8 +75,8 @@ class TestMigrationExceptions:
         schema_err = SchemaCompatibilityError("schema")
         collection_err = CollectionNotFoundError("not found")
         
-        assert type(validation_err) != type(schema_err)
-        assert type(schema_err) != type(collection_err)
+        assert type(validation_err) is not type(schema_err)
+        assert type(schema_err) is not type(collection_err)
         
         # But all inherit from MigrationError
         assert isinstance(validation_err, MigrationError)

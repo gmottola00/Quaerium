@@ -23,7 +23,7 @@ def test_connection_manager_creates_client(qdrant_config: QdrantConfig) -> None:
     """Test that connection manager creates client on first access."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_client_class.return_value = mock_instance
         
@@ -45,7 +45,7 @@ def test_connection_manager_reuses_client(qdrant_config: QdrantConfig) -> None:
     """Test that connection manager reuses existing client."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_client_class.return_value = mock_instance
         
@@ -60,7 +60,7 @@ def test_connection_manager_missing_dependency(qdrant_config: QdrantConfig) -> N
     """Test error when qdrant-client is not installed."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient", side_effect=ImportError):
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient", side_effect=ImportError):
         with pytest.raises(ConnectionError, match="qdrant-client is not installed"):
             _ = manager.client
 
@@ -69,7 +69,7 @@ def test_connection_manager_creation_failure(qdrant_config: QdrantConfig) -> Non
     """Test error handling when client creation fails."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient", side_effect=RuntimeError("Connection failed")):
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient", side_effect=RuntimeError("Connection failed")):
         with pytest.raises(ConnectionError, match="Failed to create Qdrant client"):
             _ = manager.client
 
@@ -92,7 +92,7 @@ def test_connection_close(qdrant_config: QdrantConfig) -> None:
     """Test connection cleanup."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_client_class.return_value = mock_instance
         
@@ -119,7 +119,7 @@ def test_connection_close_with_error(qdrant_config: QdrantConfig) -> None:
     """Test connection close handles errors gracefully."""
     manager = QdrantConnectionManager(qdrant_config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_instance.close.side_effect = RuntimeError("Close failed")
         mock_client_class.return_value = mock_instance
@@ -142,7 +142,7 @@ def test_connection_with_api_key() -> None:
     
     manager = QdrantConnectionManager(config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_client_class.return_value = mock_instance
         
@@ -168,7 +168,7 @@ def test_connection_with_grpc() -> None:
     
     manager = QdrantConnectionManager(config)
     
-    with patch("rag_toolkit.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
+    with patch("quaerium.infra.vectorstores.qdrant.connection.QdrantClient") as mock_client_class:
         mock_instance = Mock()
         mock_client_class.return_value = mock_instance
         

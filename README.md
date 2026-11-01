@@ -51,7 +51,13 @@ pip install quaerium
 | Ollama | `pip install quaerium[ollama]` |
 | OpenAI | `pip install quaerium[openai]` |
 | PDF / DOCX | `pip install quaerium[pdf,docx]` |
+| Milvus / Qdrant / Chroma | `pip install quaerium[milvus]` (or `qdrant`, `chroma`) |
+| Neo4j (graph RAG) | `pip install quaerium[neo4j]` |
+| Agents kernel | `pip install quaerium[agents]` |
+| Durable approvals + HTTP layer | `pip install quaerium[agents-postgres,server]` |
 | All | `pip install quaerium[all]` |
+
+The core install depends on Pydantic only; every backend is an extra.
 
 ---
 

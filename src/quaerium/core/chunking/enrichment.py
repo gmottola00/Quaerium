@@ -12,7 +12,7 @@ from quaerium.core.chunking.types import TokenChunkLike
 
 
 class MetadataEnricher:
-    """Enrich chunk text with inline metadata for better retrieval.
+    r"""Enrich chunk text with inline metadata for better retrieval.
 
     Adds metadata as inline annotations to chunk text, making metadata fields
     searchable in both vector and keyword retrieval. This is particularly useful
@@ -79,7 +79,7 @@ class MetadataEnricher:
         self.separator = separator
 
     def enrich_text(self, text: str, metadata: Dict[str, Any]) -> str:
-        """Add metadata inline to text.
+        r"""Add metadata inline to text.
 
         Args:
             text: Original chunk text

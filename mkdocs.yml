@@ -247,7 +247,6 @@ nav:
     - Hybrid Search: examples/hybrid_search.md
     - Production Setup: examples/production_setup.md
     - Evaluation & Metrics: examples/evaluation.md
-    - Agents: examples/agents.md
   
   - Tools:
     - tools/index.md
@@ -265,7 +264,13 @@ nav:
     - RAG Pipeline: api/rag/pipeline.md
     - Migration: api/migration/migrator.md
     - Evaluation: api/evaluation/index.md
-    - Agents: api/agents/index.md
+    - Agents:
+      - api/agents/index.md
+      - Tools: api/agents/tools.md
+      - Model: api/agents/llm.md
+      - Persistence: api/agents/persistence.md
+      - Types and events: api/agents/types.md
+      - Server: api/agents/server.md
   
   - Development:
     - Contributing: development/contributing.md
