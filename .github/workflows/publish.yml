@@ -1,8 +1,8 @@
 name: Publish
 
+# Publishing a GitHub release uploads that version to PyPI. Nothing else does:
+# pushes to main only run CI.
 on:
-  push:
-    branches: [main]
   release:
     types: [published]
 
@@ -16,40 +16,31 @@ jobs:
         with:
           python-version: "3.11"
 
+      # A release tagged v0.4.1 must ship 0.4.1: catch a forgotten version bump
+      # before anything reaches PyPI, where a version can be uploaded only once.
+      - name: Tag matches pyproject version
+        run: |
+          version=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          tag="${GITHUB_REF_NAME#v}"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::release tag $GITHUB_REF_NAME does not match pyproject version $version"
+            exit 1
+          fi
+
       - name: Build package
         run: |
-          pip install build
+          pip install build twine
           python -m build
+          twine check dist/*
 
       - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
 
-  publish-testpypi:
-    name: Publish to TestPyPI
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: testpypi
-    permissions:
-      id-token: write
-
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-
   publish-pypi:
     name: Publish to PyPI
     needs: build
-    if: github.event_name == 'release' && github.event.action == 'published'
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
