@@ -45,6 +45,9 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          # Every push to main rebuilds the same version until the next bump,
+          # and a version can be uploaded once: don't fail on what is already there.
+          skip-existing: true
 
   publish-pypi:
     name: Publish to PyPI
