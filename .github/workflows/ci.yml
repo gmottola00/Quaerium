@@ -33,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -e ".[dev,milvus,qdrant,chroma,neo4j,supabase,ollama,openai,pdf,docx,agents,server]" httpx
+        pip install -e ".[dev,milvus,qdrant,chroma,neo4j,supabase,ollama,openai,pdf,docx,agents,agents-postgres,agents-redis,server]" httpx
     
     # Blocking on real errors (pyflakes/pycodestyle E). Whitespace (W) and
     # import order (I) are still reported by black/isort below, non-blocking.

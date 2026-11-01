@@ -29,7 +29,9 @@ class TestLatencyTracker:
 
         latency = tracker.get_latency("test_stage")
         assert latency >= 10  # At least 10ms
-        assert latency < 50  # Should be less than 50ms
+        # Wall-clock on a shared CI runner can be far slower than the sleep; the
+        # upper bound only guards the unit (ms, not µs or ns).
+        assert latency < 1000
 
     def test_track_multiple_stages(self):
         """Test tracking multiple stages."""

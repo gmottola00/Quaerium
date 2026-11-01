@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
 from quaerium.agents.memory import MemorySessionStore, RedisSessionStore, build_session_store
 from quaerium.agents.protocols import SessionStore
 from quaerium.agents.types import Turn
@@ -119,6 +121,7 @@ class TestFactory:
         assert isinstance(build_session_store(""), MemorySessionStore)
 
     def test_a_url_means_redis(self) -> None:
+        pytest.importorskip("redis", reason="needs the agents-redis extra")
         store = build_session_store("redis://localhost:6379/0", prefix="jarvis")
         assert isinstance(store, RedisSessionStore)
         assert store._key("s") == "jarvis:session:s"

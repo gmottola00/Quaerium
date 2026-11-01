@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from time import time
 
 from quaerium.migration import VectorStoreMigrator, MigrationError
 from quaerium.migration.migrator import (
@@ -314,7 +313,11 @@ class TestRetryLogic:
     def test_insert_batch_with_retry_exponential_backoff(
         self, mock_source_store, mock_target_store
     ):
-        """Test that exponential backoff is applied correctly."""
+        """Test that exponential backoff is applied correctly.
+
+        The delays are read from the sleep calls rather than timed: wall-clock
+        measurements on a shared CI runner are too noisy to bound tightly.
+        """
         migrator = VectorStoreMigrator(
             source=mock_source_store,
             target=mock_target_store,
@@ -322,29 +325,23 @@ class TestRetryLogic:
             retry_delay=0.1,
             retry_backoff=2.0,
         )
-        
-        call_times = []
-        
-        def mock_insert_with_timing(*args, **kwargs):
-            call_times.append(time())
-            if len(call_times) < 3:
+
+        attempts = []
+
+        def mock_insert(*args, **kwargs):
+            attempts.append(1)
+            if len(attempts) < 3:
                 raise Exception("Temporary failure")
-        
-        migrator._insert_batch = Mock(side_effect=mock_insert_with_timing)
-        
+
+        migrator._insert_batch = Mock(side_effect=mock_insert)
+
         batch_data = [{"id": "1", "vector": [0.1], "text": "test"}]
-        migrator._insert_batch_with_retry("test_col", batch_data)
-        
-        # Check that delays increased (with some tolerance)
-        assert len(call_times) == 3
-        
-        # First retry after ~0.1s
-        delay1 = call_times[1] - call_times[0]
-        assert 0.08 < delay1 < 0.15
-        
-        # Second retry after ~0.2s (0.1 * 2.0 backoff)
-        delay2 = call_times[2] - call_times[1]
-        assert 0.15 < delay2 < 0.3
+        with patch("quaerium.migration.migrator.time.sleep") as sleep:
+            migrator._insert_batch_with_retry("test_col", batch_data)
+
+        assert len(attempts) == 3
+        # First retry after 0.1s, second after 0.1 * 2.0
+        assert [c.args[0] for c in sleep.call_args_list] == pytest.approx([0.1, 0.2])
 
     def test_retry_logging(self, mock_source_store, mock_target_store, caplog):
         """Test that retry attempts are logged."""
