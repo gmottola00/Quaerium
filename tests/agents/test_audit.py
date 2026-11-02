@@ -138,3 +138,91 @@ class TestPostgres:
         audit, pool = await build_audit_log(None, table_prefix="jarvis")
         assert pool is None
         assert isinstance(audit, AuditLog)
+
+
+class CannedPool(FakePool):
+    """Answers each SELECT with the rows given for its table."""
+
+    def __init__(self, rows: dict[str, list[tuple[Any, ...]]]) -> None:
+        super().__init__()
+        self.rows = rows
+
+    async def execute(self, sql: str, params: tuple[Any, ...] = ()) -> Any:
+        self.statements.append((sql, params))
+        table = re.search(r"FROM (\w+)", sql).group(1)  # type: ignore[union-attr]
+        rows = self.rows.get(table, [])
+
+        class Cursor:
+            async def fetchall(self) -> list[tuple[Any, ...]]:
+                return rows
+
+        return Cursor()
+
+
+T0 = datetime(2026, 11, 1, 12, 0, tzinfo=timezone.utc)
+
+
+def stored_rows() -> dict[str, list[tuple[Any, ...]]]:
+    """Two runs as Postgres returns them: newest first, one finished, one waiting."""
+    return {
+        "jarvis_runs": [
+            ("r2", "s2", "merge 12", "claude-opus-5", None, None, None, T0 + timedelta(minutes=5), None),
+            ("r1", "s1", "look", "claude-opus-5", "claude-opus-5", "fine", {"output_tokens": 3}, T0, T0),
+        ],
+        "jarvis_tool_calls": [
+            ("r1", "toy__peek", "read", {"a": 1}, True, "line one", "line one\nline two", 12.34, T0),
+            ("r1", "toy__peek", "read", {}, False, None, "old row\nno summary column", 1.0, T0),
+        ],
+        "jarvis_approvals": [],
+    }
+
+
+class TestLoad:
+    async def test_a_restart_keeps_the_run_list(self) -> None:
+        audit = AuditLog(table_prefix="jarvis", pool=CannedPool(stored_rows()))
+
+        assert await audit.load() == 2
+
+        assert [r["run_id"] for r in audit.recent()] == ["r2", "r1"]
+        run = audit.get("r1")
+        assert run is not None
+        assert run["answer"] == "fine" and run["usage"] == {"output_tokens": 3}
+        assert run["finished_at"] == T0.isoformat()
+        assert [c["summary"] for c in run["tool_calls"]] == ["line one", "old row"]
+        assert audit.recent()[1]["calls_by_risk"]["read"] == 2
+
+    async def test_unfinished_runs_are_the_restore_candidates(self) -> None:
+        audit = AuditLog(table_prefix="jarvis", pool=CannedPool(stored_rows()))
+        await audit.load()
+
+        assert [r["run_id"] for r in audit.unfinished()] == ["r2"]
+        audit.suspend_run("r2", "toy__demolish", {}, "why", since="then")
+        assert audit.unfinished() == []
+        assert audit.pending()[0]["since"] == "then"
+
+    async def test_loading_asks_for_at_most_capacity_runs(self) -> None:
+        pool = CannedPool(stored_rows())
+        await AuditLog(table_prefix="jarvis", capacity=7, pool=pool).load()
+
+        sql, params = pool.statements[0]
+        assert "FROM jarvis_runs" in sql and params == (7,)
+
+    async def test_runs_recorded_before_the_load_are_kept_and_newest(self) -> None:
+        audit = AuditLog(table_prefix="jarvis", pool=CannedPool(stored_rows()))
+        await audit.start_run("r3", "s3", "new")
+
+        await audit.load()
+
+        assert [r["run_id"] for r in audit.recent()] == ["r3", "r2", "r1"]
+
+    async def test_a_failing_load_starts_empty(self) -> None:
+        class Broken(FakePool):
+            async def execute(self, sql: str, params: tuple[Any, ...] = ()) -> None:
+                raise RuntimeError("db down")
+
+        audit = AuditLog(pool=Broken())
+        assert await audit.load() == 0
+        assert audit.recent() == []
+
+    async def test_without_a_pool_there_is_nothing_to_load(self) -> None:
+        assert await AuditLog().load() == 0
