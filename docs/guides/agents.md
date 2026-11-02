@@ -179,6 +179,38 @@ The session id is the checkpointer thread, so history accumulates by itself.
 `runner.pending_approval(session_id)` lets a UI restore a pending dialog after a
 reload.
 
+### When a run waits for someone
+
+`on_suspend` is called whenever a run stops at the gate, with the same
+`ApprovalRequiredEvent` the browser gets. Use it to tell someone who is not
+looking at the page, e.g. with a push notification:
+
+```python
+async def notify_phone(event: ApprovalRequiredEvent) -> None:
+    await notifier.notify("Approval needed", f"{event.tool}: {event.why}", tag=f"approval:{event.run_id}")
+
+runner = AgentRunner(graph=graph, sessions=sessions, audit=audit, on_suspend=notify_phone)
+...
+await runner.aclose()   # on shutdown: lets callbacks still in flight finish
+```
+
+It runs as a background task, so the stream never waits for it, and an exception
+is logged rather than raised into the run.
+
+### After a restart
+
+```python
+audit, pool = await build_audit_log(dsn, table_prefix="myapp")   # loads recent runs
+runner = AgentRunner(graph=graph, sessions=sessions, audit=audit)
+await runner.restore_pending()                                    # finds the waiting ones
+```
+
+With Postgres, `build_audit_log` loads the most recent `capacity` runs into
+memory, so `/api/runs` survives a deploy. Which of them are waiting at the gate is
+the checkpointer's knowledge, not the audit tables': `restore_pending()` asks each
+unfinished run's session for its interrupt, so `/api/approvals` lists them again —
+including runs suspended before the app upgraded.
+
 ## Persistence
 
 | Piece | Without config | With config | Extra |

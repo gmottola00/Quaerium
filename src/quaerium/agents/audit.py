@@ -7,16 +7,21 @@ and the final answer.
 Always kept in memory so ``/api/runs`` works with no database at all; also
 written to Postgres when one is configured, because the interesting question is
 usually about a run from last week.
+
+Reads are served from memory. With Postgres, :func:`build_audit_log` fills that
+memory from the tables at startup (:meth:`AuditLog.load`), so a restart does not
+empty the run list. Which runs are still waiting at the gate is not in the tables:
+the checkpointer knows, and :meth:`~quaerium.agents.runner.AgentRunner.restore_pending`
+asks it.
 """
 
 from __future__ import annotations
 
+import re
 from collections import deque
 from datetime import datetime, timezone
 from statistics import median
 from typing import Any, Deque
-
-import re
 
 from quaerium.agents.logging import current_run, get_logger
 from quaerium.agents.types import Approval, ToolCall, ToolResult, Usage
@@ -56,6 +61,7 @@ CREATE TABLE IF NOT EXISTS {p}_approvals (
 CREATE INDEX IF NOT EXISTS {p}_runs_session_idx ON {p}_runs(session_id, started_at DESC);
 ALTER TABLE {p}_runs ADD COLUMN IF NOT EXISTS model TEXT;
 ALTER TABLE {p}_runs ADD COLUMN IF NOT EXISTS served_by TEXT;
+ALTER TABLE {p}_tool_calls ADD COLUMN IF NOT EXISTS summary TEXT;
 """
 
 _PREFIX = re.compile(r"^[a-z][a-z0-9_]{0,40}$")
@@ -66,6 +72,7 @@ def schema(table_prefix: str) -> str:
     if not _PREFIX.match(table_prefix):
         raise ValueError(f"invalid table prefix {table_prefix!r}: lowercase letters, digits and _ only")
     return _SCHEMA.format(p=table_prefix)
+
 
 RISKS = ("read", "write", "destructive")
 
@@ -128,8 +135,8 @@ class AuditLog:
         if run_id in self._index:
             self._index[run_id]["tool_calls"].append(entry)
         await self._write(
-            f"INSERT INTO {self._p}_tool_calls (run_id, tool, risk, args, ok, output, duration_ms)"
-            " VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            f"INSERT INTO {self._p}_tool_calls (run_id, tool, risk, args, ok, output, summary, duration_ms)"
+            " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
             (
                 run_id,
                 call.name,
@@ -137,6 +144,7 @@ class AuditLog:
                 self._json(call.args),
                 result.ok,
                 result.content[:8000],
+                result.summary,
                 result.duration_ms,
             ),
         )
@@ -164,7 +172,7 @@ class AuditLog:
             ),
         )
 
-    def suspend_run(self, run_id: str, tool: str, args: dict[str, Any], why: str) -> None:
+    def suspend_run(self, run_id: str, tool: str, args: dict[str, Any], why: str, *, since: str | None = None) -> None:
         """Mark a run as waiting at the gate. The next :meth:`record_approval` clears it.
 
         In memory only: the checkpointer is what keeps the run itself, this is
@@ -175,7 +183,7 @@ class AuditLog:
                 "tool": tool,
                 "args": args,
                 "why": why,
-                "since": datetime.now(timezone.utc).isoformat(),
+                "since": since or datetime.now(timezone.utc).isoformat(),
             }
 
     async def finish_run(self, run_id: str, answer: str, usage: Usage, served_by: str = "") -> None:
@@ -263,6 +271,107 @@ class AuditLog:
         """Return one run in full, tool calls and approvals included."""
         return self._index.get(run_id)
 
+    def unfinished(self) -> list[dict[str, Any]]:
+        """Runs that never finished and are not known to be waiting, oldest first.
+
+        After a restart these are the candidates for
+        :meth:`~quaerium.agents.runner.AgentRunner.restore_pending`: a run that
+        stopped at the gate has no answer yet, and neither does one that crashed.
+        """
+        return [
+            {"run_id": r["run_id"], "session_id": r["session_id"], "started_at": r["started_at"]}
+            for r in self._runs
+            if r["finished_at"] is None and not r["pending"]
+        ]
+
+    # --- loading ------------------------------------------------------------
+
+    async def load(self) -> int:
+        """Fill memory with the most recent runs from Postgres. Returns how many.
+
+        Best-effort like every other database call here: a failure is logged and
+        the log starts empty, it never stops the app. Runs already in memory are
+        kept; loaded runs go before them, oldest first.
+        """
+        if self._pool is None:
+            return 0
+        try:
+            async with self._pool.connection() as conn:
+                runs = await self._fetch(
+                    conn,
+                    f"SELECT run_id, session_id, prompt, model, served_by, answer, usage, started_at, finished_at"
+                    f" FROM {self._p}_runs ORDER BY started_at DESC LIMIT %s",
+                    (self._runs.maxlen,),
+                )
+                ids = [row[0] for row in runs]
+                calls = await self._fetch(
+                    conn,
+                    f"SELECT run_id, tool, risk, args, ok, summary, output, duration_ms, at"
+                    f" FROM {self._p}_tool_calls WHERE run_id = ANY(%s) ORDER BY id",
+                    (ids,),
+                )
+                approvals = await self._fetch(
+                    conn,
+                    f"SELECT run_id, tool, args, why, approved, decided_at"
+                    f" FROM {self._p}_approvals WHERE run_id = ANY(%s) ORDER BY id",
+                    (ids,),
+                )
+        except Exception as exc:  # noqa: BLE001 - audit is not on the critical path
+            logger.warning("audit.load_failed", error=str(exc))
+            return 0
+
+        loaded: dict[str, dict[str, Any]] = {}
+        for run_id, session_id, prompt, model, served_by, answer, usage, started_at, finished_at in reversed(runs):
+            if run_id in self._index:
+                continue
+            loaded[run_id] = {
+                "run_id": run_id,
+                "session_id": session_id,
+                "prompt": prompt,
+                "model": model or "",
+                "served_by": served_by or "",
+                "pending": None,
+                "answer": answer or "",
+                "usage": usage or Usage().model_dump(),
+                "tool_calls": [],
+                "approvals": [],
+                "started_at": _iso(started_at),
+                "finished_at": _iso(finished_at) if finished_at else None,
+            }
+        for run_id, tool, risk, args, ok, summary, output, duration_ms, at in calls:
+            if run_id in loaded:
+                loaded[run_id]["tool_calls"].append(
+                    {
+                        "tool": tool,
+                        "risk": risk,
+                        "args": args or {},
+                        "ok": ok,
+                        # Rows written before 0.4.1 have no summary: derive it the way ToolResult does.
+                        "summary": summary if summary is not None else _first_line(output or ""),
+                        "duration_ms": round(duration_ms or 0.0, 1),
+                        "at": _iso(at),
+                    }
+                )
+        for run_id, tool, args, why, approved, decided_at in approvals:
+            if run_id in loaded:
+                loaded[run_id]["approvals"].append(
+                    {"tool": tool, "args": args or {}, "why": why, "approved": approved, "decided_at": _iso(decided_at)}
+                )
+
+        current = list(self._runs)
+        self._runs.clear()
+        self._index.clear()
+        for record in [*loaded.values(), *current][-(self._runs.maxlen or 0) :]:
+            self._runs.append(record)
+            self._index[record["run_id"]] = record
+        logger.info("audit.loaded", runs=len(loaded))
+        return len(loaded)
+
+    @staticmethod
+    async def _fetch(conn: Any, sql: str, params: tuple[Any, ...]) -> list[tuple[Any, ...]]:
+        cursor = await conn.execute(sql, params)
+        return list(await cursor.fetchall())
+
     # --- persistence --------------------------------------------------------
 
     @staticmethod
@@ -286,10 +395,21 @@ class AuditLog:
             logger.warning("audit.write_failed", error=str(exc))
 
 
+def _iso(value: Any) -> str:
+    """A timestamp from Postgres (``datetime``) or memory (already a string) as ISO 8601."""
+    return value.isoformat() if isinstance(value, datetime) else str(value)
+
+
+def _first_line(text: str) -> str:
+    """Same as :attr:`ToolResult.summary`, for rows that predate the summary column."""
+    return ToolResult(id="", name="", ok=True, content=text).summary
+
+
 async def build_audit_log(dsn: str | None, *, table_prefix: str = "agent", capacity: int = 200) -> tuple[AuditLog, Any]:
     """Build the audit log and, when ``dsn`` is set, the pool backing it.
 
-    Creates the tables if they do not exist.
+    Creates the tables if they do not exist, then loads the most recent
+    ``capacity`` runs into memory, so a restart keeps the run list.
 
     Args:
         dsn: A libpq connection string, or None/empty for memory only.
@@ -314,7 +434,9 @@ async def build_audit_log(dsn: str | None, *, table_prefix: str = "agent", capac
     async with pool.connection() as conn:
         await conn.execute(schema(table_prefix))
     logger.info("audit.postgres", table_prefix=table_prefix)
-    return AuditLog(table_prefix=table_prefix, capacity=capacity, pool=pool), pool
+    audit = AuditLog(table_prefix=table_prefix, capacity=capacity, pool=pool)
+    await audit.load()
+    return audit, pool
 
 
 __all__ = ["AuditLog", "build_audit_log", "schema"]

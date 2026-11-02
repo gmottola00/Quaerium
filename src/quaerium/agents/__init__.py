@@ -63,7 +63,7 @@ from quaerium.agents.memory import MemorySessionStore, RedisSessionStore, build_
 from quaerium.agents.nodes.model import ContextFn
 from quaerium.agents.nodes.router import Classifier
 from quaerium.agents.policy import PolicyGate, Ruling
-from quaerium.agents.runner import AgentRunner
+from quaerium.agents.runner import AgentRunner, OnSuspend
 from quaerium.agents.state import AgentState
 from quaerium.agents.tools import ClientProvider, ToolRegistry, ToolSpec, graph_query_tool, rag_tool, tool
 from quaerium.agents.types import (
@@ -128,6 +128,7 @@ __all__ = [
     "ModelTurn",
     # Graph and runner
     "AgentRunner",
+    "OnSuspend",
     "AgentState",
     "Classifier",
     "ContextFn",

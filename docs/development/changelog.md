@@ -11,7 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [0.4.0] - Unreleased
+## [0.4.1] - 2026-11-02
+
+### Added
+
+- `AgentRunner(on_suspend=...)`: an async callback for a run that stops at the
+  gate, e.g. a push notification. It runs in the background, so the stream does
+  not wait for it, and its failures are logged. `AgentRunner.aclose()` waits for
+  callbacks still in flight.
+- `AgentRunner.restore_pending()`: after a restart, marks every run still waiting
+  at the gate in the audit log, by asking the checkpointer. Covers runs suspended
+  before the upgrade too.
+- `AuditLog.load()`, called by `build_audit_log` with Postgres: the most recent
+  `capacity` runs, with their tool calls and approvals, are loaded into memory at
+  startup. `AuditLog.unfinished()` lists runs with no answer that are not marked
+  waiting.
+- `AuditLog.suspend_run(..., since=...)`: when the wait began, for restored runs.
+
+### Fixed
+
+- `/api/runs` and `/api/approvals` were empty after every restart: the audit log
+  wrote to Postgres but read only from memory.
+
+### Changed
+
+- `{prefix}_tool_calls` has a `summary` column (added with `ALTER TABLE ... IF NOT
+  EXISTS` at startup), so a loaded run shows the same one-line summaries.
+  Rows written before it get theirs from `output`.
+
+## [0.4.0] - 2026-11-01
 
 ### 🤖 Agents kernel, and a lean core install
 

@@ -10,11 +10,16 @@ A run ends in exactly one of three ways, and the runner is what tells them apart
 - the gate suspended — an ``approval_required`` event closes it, and the state is
   on disk waiting for :meth:`AgentRunner.resume`;
 - something broke — an ``error`` event closes it.
+
+A suspension is also the moment someone outside the browser may want to know
+("a run is waiting for you"): ``on_suspend`` is called then, in the background,
+so a slow notification never holds up the stream.
 """
 
 from __future__ import annotations
 
-from typing import Any, AsyncIterator
+import asyncio
+from typing import Any, AsyncIterator, Awaitable, Callable
 
 from langgraph.types import Command
 
@@ -31,6 +36,9 @@ from quaerium.agents.logging import bind_run, clear_run, get_logger
 
 logger = get_logger(__name__)
 
+OnSuspend = Callable[[ApprovalRequiredEvent], Awaitable[None]]
+"""Called when a run stops at the gate, with the event the browser receives."""
+
 
 class AgentRunner:
     """Drives the graph for one session at a time.
@@ -39,12 +47,20 @@ class AgentRunner:
         graph: The compiled graph.
         sessions: Session store, for the history the UI renders.
         audit: Optional audit log.
+        on_suspend: Optional callback for a run that stopped at the gate, e.g. a
+            push notification. It runs as a background task: the stream does not
+            wait for it, and an exception is logged, never raised into the run.
+            Call :meth:`aclose` on shutdown to let pending callbacks finish.
     """
 
-    def __init__(self, *, graph: Any, sessions: Any = None, audit: Any = None) -> None:
+    def __init__(
+        self, *, graph: Any, sessions: Any = None, audit: Any = None, on_suspend: OnSuspend | None = None
+    ) -> None:
         self._graph = graph
         self._sessions = sessions
         self._audit = audit
+        self._on_suspend = on_suspend
+        self._tasks: set[asyncio.Task[None]] = set()
 
     @staticmethod
     def _config(session_id: str) -> dict[str, Any]:
@@ -90,6 +106,7 @@ class AgentRunner:
             )
             if self._audit is not None:
                 self._audit.suspend_run(run_id, event.tool, event.args, event.why)
+            self._notify_suspended(event)
             yield event.model_dump(mode="json")
             return
 
@@ -105,6 +122,59 @@ class AgentRunner:
 
         logger.info("run.done", output_tokens=usage.output_tokens)
         yield DoneEvent(run_id=run_id, usage=usage, model=served_by, requested_model=requested).model_dump(mode="json")
+
+    def _notify_suspended(self, event: ApprovalRequiredEvent) -> None:
+        """Run ``on_suspend`` in the background, holding a reference until it is done."""
+        if self._on_suspend is None:
+            return
+        task = asyncio.create_task(self._call_on_suspend(event))
+        self._tasks.add(task)
+        task.add_done_callback(self._tasks.discard)
+
+    async def _call_on_suspend(self, event: ApprovalRequiredEvent) -> None:
+        assert self._on_suspend is not None
+        try:
+            await self._on_suspend(event)
+        except Exception as exc:  # noqa: BLE001 - a notification must never break a run
+            logger.warning("run.on_suspend_failed", run_id=event.run_id, error=str(exc))
+
+    async def restore_pending(self) -> int:
+        """After a restart, mark in the audit log every run still waiting at the gate.
+
+        The audit tables know which runs never finished; the checkpointer knows
+        which of those stopped at the gate. Each unfinished run's session is asked
+        for its interrupt, and the run is marked pending when the interrupt is
+        that run's. This also covers runs suspended before the audit was loaded
+        from Postgres at all. ``on_suspend`` is not called: nobody new is waiting.
+
+        Returns:
+            How many runs were marked.
+        """
+        if self._audit is None:
+            return 0
+        restored = 0
+        for run in self._audit.unfinished():
+            try:
+                waiting = await self.pending_approval(run["session_id"])
+            except Exception as exc:  # noqa: BLE001 - one unreadable checkpoint must not stop startup
+                logger.warning("run.restore_failed", run_id=run["run_id"], error=str(exc))
+                continue
+            if waiting and waiting.get("run_id") == run["run_id"]:
+                self._audit.suspend_run(
+                    run["run_id"],
+                    str(waiting.get("tool", "")),
+                    dict(waiting.get("args") or {}),
+                    str(waiting.get("why", "")),
+                    since=run.get("started_at"),
+                )
+                restored += 1
+        logger.info("run.restored_pending", runs=restored)
+        return restored
+
+    async def aclose(self) -> None:
+        """Wait for ``on_suspend`` callbacks still running. Call on shutdown."""
+        if self._tasks:
+            await asyncio.gather(*self._tasks, return_exceptions=True)
 
     async def start(
         self, session_id: str, message: str, *, run_id: str | None = None, model: str = "", picked: str = ""
