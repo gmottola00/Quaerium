@@ -40,7 +40,7 @@ Welcome to the quaerium user guide! This section covers everything you need to k
 
 -   :material-robot-excited: **[Agents](agents.md)**
 
-    Multi-step reasoning with ReAct, tool-use, memory, and built-in agents for RAG, ingestion, and evaluation.
+    A LangGraph loop around Claude: typed async tools, a policy gate that waits for a human before anything destructive, durable approvals. [How it works inside](agents_internals.md).
 
 </div>
 

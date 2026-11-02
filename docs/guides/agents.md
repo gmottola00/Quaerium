@@ -25,6 +25,11 @@ The loop is deliberately small. LangGraph is there for two things: the
 **checkpointer**, which writes every step to Postgres, and **`interrupt`**, which
 lets the gate stop a run and resume it minutes later — from a different process.
 
+!!! info "Under the hood"
+    This page is about using the kernel. For what each node does with the state,
+    how `interrupt` and resume really work, and which store knows what, see
+    [How agents work](agents_internals.md).
+
 ## Tools
 
 A tool is an async function with a namespace and a risk level. The JSON Schema

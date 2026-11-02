@@ -234,7 +234,9 @@ nav:
       - Graph Stores: guides/graph_rag.md
       - Reranking: guides/reranking.md
       - Evaluation & Metrics: guides/evaluation.md
-      - Agents: guides/agents.md
+      - Agents:
+        - Using agents: guides/agents.md
+        - How agents work: guides/agents_internals.md
     - RAG Pipeline: guides/rag_pipeline.md
   
   - Examples:
