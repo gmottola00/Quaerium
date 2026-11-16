@@ -54,8 +54,17 @@ def toy_registry() -> ToolRegistry:
         """Always fails."""
         raise RuntimeError("boom")
 
+    @tool(namespace="toy", risk=RiskLevel.ASK)
+    async def ask_which(options: list[str]) -> str:
+        """Ask the user to pick one.
+
+        Args:
+            options: The choices to offer.
+        """
+        raise AssertionError("an ASK tool never runs")
+
     built = ToolRegistry()
-    built.register_many([peek, draft, demolish, explode])
+    built.register_many([peek, draft, demolish, explode, ask_which])
     return built
 
 

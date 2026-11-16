@@ -49,6 +49,12 @@ class RiskLevel(StrEnum):
     READ = "read"
     WRITE = "write"
     DESTRUCTIVE = "destructive"
+    ASK = "ask"
+    """Not an action: a question for the user (pick a customer, choose a unit).
+
+    The tool never runs. The run suspends until the user answers, and the answer
+    is the tool's result.
+    """
 
 
 class Decision(StrEnum):
@@ -56,6 +62,7 @@ class Decision(StrEnum):
 
     ALLOW = "allow"
     CONFIRM = "confirm"
+    ASK = "ask"
     DENY = "deny"
 
 
@@ -178,6 +185,19 @@ class ApprovalRequiredEvent(BaseModel):
     why: str
 
 
+class QuestionRequiredEvent(BaseModel):
+    """The run stopped to ask the user something an ``ASK`` tool describes.
+
+    Answer it with ``resume(..., answer=...)``; the answer becomes the tool's result.
+    """
+
+    type: Literal["question_required"] = "question_required"
+    run_id: str
+    tool: str
+    args: dict[str, Any]
+    why: str
+
+
 class DoneEvent(BaseModel):
     type: Literal["done"] = "done"
     run_id: str
@@ -210,6 +230,7 @@ RunEvent = Annotated[
     | ToolCallEvent
     | ToolResultEvent
     | ApprovalRequiredEvent
+    | QuestionRequiredEvent
     | DoneEvent
     | ErrorEvent
     | ModelUnavailableEvent,
@@ -224,6 +245,7 @@ __all__ = [
     "DoneEvent",
     "ErrorEvent",
     "ModelUnavailableEvent",
+    "QuestionRequiredEvent",
     "RiskLevel",
     "RunEvent",
     "ThinkingEvent",

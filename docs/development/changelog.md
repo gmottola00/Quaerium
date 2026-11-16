@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.2] - 2026-11-15
+
+### Added
+
+- `RiskLevel.ASK` and `Decision.ASK`: a tool that is a question for the user, not
+  an action. It never runs: the run suspends and the user's answer becomes the
+  tool's result. The policy always asks, whatever `confirm_writes` or
+  `block_destructive` say.
+- `QuestionRequiredEvent` (`question_required`) in the `RunEvent` protocol.
+  `on_suspend` is not called for it: it stays an approvals hook.
+- `AgentRunner.resume(..., answer=...)` and `{"answer": ...}` in the body of
+  `POST /api/approvals/{run_id}`. Any JSON value; a string is passed as is.
+  `approved` is now optional: a run waiting for an answer rejects an approval and
+  the other way round. The interrupt payload gains `kind` (`approval` | `question`).
+
 ## [0.4.1] - 2026-11-02
 
 ### Added

@@ -12,6 +12,7 @@ gate.
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from typing import Any
 
@@ -50,6 +51,7 @@ def make_gate(*, policy: PolicyGate, on_approval: Any = None) -> Node:
         run_id = state.get("run_id", "")
         approved: list[ToolCall] = []
         denied: list[ToolResult] = []
+        answers: dict[str, str] = {}
 
         for call in state.get("pending", []):
             ruling = policy.decide(call.risk)
@@ -63,6 +65,37 @@ def make_gate(*, policy: PolicyGate, on_approval: Any = None) -> Node:
                 denied.append(_refused(call, ruling.why))
                 continue
 
+            if ruling.decision is Decision.ASK:
+                # A question, not an action: suspend until the user answers; the answer is the result.
+                logger.info("gate.asking", tool=call.name, run_id=run_id)
+
+                from langgraph.types import interrupt
+
+                reply = interrupt(
+                    {
+                        "kind": "question",
+                        "run_id": run_id,
+                        "tool": call.name,
+                        "args": call.args,
+                        "risk": call.risk.value,
+                        "why": ruling.why,
+                    }
+                )
+                value = reply.get("answer") if isinstance(reply, dict) else reply
+                answers[call.id] = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False)
+                approved.append(call)
+                if on_approval is not None:
+                    await on_approval(
+                        Approval(
+                            run_id=run_id,
+                            tool_call=call,
+                            why=ruling.why,
+                            approved=True,
+                            decided_at=datetime.now(timezone.utc),
+                        )
+                    )
+                continue
+
             # CONFIRM: suspend. On resume the node re-runs from the top and
             # interrupt() returns whatever the API passed in Command(resume=...).
             # The approval_required event is emitted by the runner, from the
@@ -73,6 +106,7 @@ def make_gate(*, policy: PolicyGate, on_approval: Any = None) -> Node:
 
             answer = interrupt(
                 {
+                    "kind": "approval",
                     "run_id": run_id,
                     "tool": call.name,
                     "args": call.args,
@@ -99,7 +133,7 @@ def make_gate(*, policy: PolicyGate, on_approval: Any = None) -> Node:
                 logger.info("gate.declined", tool=call.name)
                 denied.append(_refused(call, "The user declined this action."))
 
-        return {"approved": approved, "denied": denied, "pending": []}
+        return {"approved": approved, "denied": denied, "answers": answers, "pending": []}
 
     return gate
 

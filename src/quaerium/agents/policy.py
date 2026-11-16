@@ -36,6 +36,7 @@ DEFAULT_WHY: Mapping[RiskLevel, str] = MappingProxyType(
         RiskLevel.READ: "Read-only: no side effects.",
         RiskLevel.WRITE: "Has a side effect that is easy to see and undo.",
         RiskLevel.DESTRUCTIVE: "Hard to reverse. This one is yours to approve.",
+        RiskLevel.ASK: "The agent needs an answer from you to go on.",
     }
 )
 
@@ -52,7 +53,7 @@ class Ruling:
 
     @property
     def needs_human(self) -> bool:
-        return self.decision is Decision.CONFIRM
+        return self.decision in (Decision.CONFIRM, Decision.ASK)
 
     @property
     def allowed(self) -> bool:
@@ -89,6 +90,9 @@ class PolicyGate:
         """Rule on a single risk level."""
         if risk is RiskLevel.READ:
             return Ruling(Decision.ALLOW, self._why(RiskLevel.READ))
+
+        if risk is RiskLevel.ASK:
+            return Ruling(Decision.ASK, self._why(RiskLevel.ASK))
 
         if risk is RiskLevel.WRITE:
             if self.confirm_writes:

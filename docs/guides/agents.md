@@ -184,6 +184,14 @@ The session id is the checkpointer thread, so history accumulates by itself.
 `runner.pending_approval(session_id)` lets a UI restore a pending dialog after a
 reload.
 
+### Asking the user a question
+
+A tool with `risk=RiskLevel.ASK` is a question, not an action. Its schema tells
+the model what it can ask (a list of options, a search hint); the function is
+never called. The run suspends with `question_required`, and
+`runner.resume(session_id, run_id, answer=...)` continues it: the answer, a string
+or any JSON value, is what the model reads as the tool's result.
+
 ### When a run waits for someone
 
 `on_suspend` is called whenever a run stops at the gate, with the same

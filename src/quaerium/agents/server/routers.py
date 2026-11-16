@@ -42,8 +42,11 @@ class AgentServices(Protocol):
 
 
 class ApprovalRequest(BaseModel):
+    """Answer to a suspended run: ``approved`` for an approval, ``answer`` for a question."""
+
     session_id: str
-    approved: bool
+    approved: bool | None = None
+    answer: Any = None
 
 
 def make_approvals_router(services: Callable[..., Any], *, prefix: str = "/api") -> APIRouter:
@@ -75,7 +78,7 @@ def make_approvals_router(services: Callable[..., Any], *, prefix: str = "/api")
         The run resumes from its checkpoint, so this works after a page reload or a
         backend restart — as long as a database is configured.
         """
-        return stream(svc.runner.resume(request.session_id, run_id, approved=request.approved))
+        return stream(svc.runner.resume(request.session_id, run_id, approved=request.approved, answer=request.answer))
 
     return router
 

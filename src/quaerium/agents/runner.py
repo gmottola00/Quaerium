@@ -28,6 +28,7 @@ from quaerium.agents.types import (
     ApprovalRequiredEvent,
     DoneEvent,
     ErrorEvent,
+    QuestionRequiredEvent,
     Turn,
     Usage,
     new_id,
@@ -97,8 +98,10 @@ class AgentRunner:
 
         if snapshot.interrupts:
             payload_value = snapshot.interrupts[0].value or {}
-            logger.info("run.suspended", tool=payload_value.get("tool"))
-            event = ApprovalRequiredEvent(
+            asking = payload_value.get("kind") == "question"
+            logger.info("run.suspended", tool=payload_value.get("tool"), question=asking)
+            event_type = QuestionRequiredEvent if asking else ApprovalRequiredEvent
+            event: ApprovalRequiredEvent | QuestionRequiredEvent = event_type(
                 run_id=run_id,
                 tool=str(payload_value.get("tool", "")),
                 args=dict(payload_value.get("args") or {}),
@@ -106,7 +109,8 @@ class AgentRunner:
             )
             if self._audit is not None:
                 self._audit.suspend_run(run_id, event.tool, event.args, event.why)
-            self._notify_suspended(event)
+            if isinstance(event, ApprovalRequiredEvent):
+                self._notify_suspended(event)
             yield event.model_dump(mode="json")
             return
 
@@ -204,13 +208,17 @@ class AgentRunner:
         finally:
             clear_run()
 
-    async def resume(self, session_id: str, run_id: str, *, approved: bool) -> AsyncIterator[Any]:
-        """Answer a pending approval and continue the run.
+    async def resume(
+        self, session_id: str, run_id: str, *, approved: bool | None = None, answer: Any = None
+    ) -> AsyncIterator[Any]:
+        """Answer a pending approval or question and continue the run.
 
         Args:
             session_id: The suspended run's session.
-            run_id: The run id the approval belongs to.
-            approved: The user's decision.
+            run_id: The run id the suspension belongs to.
+            approved: The user's decision on an approval.
+            answer: The user's answer to a question (an ``ASK`` tool). Any JSON
+                value; it becomes the tool's result.
         """
         bind_run(run_id, session=session_id)
         try:
@@ -219,9 +227,19 @@ class AgentRunner:
                 yield ErrorEvent(message="Nothing is waiting for approval in this session.").model_dump(mode="json")
                 return
 
+            waiting = dict(snapshot.interrupts[0].value or {})
+            asking = waiting.get("kind") == "question"
+            if asking and answer is None:
+                yield ErrorEvent(message="This run is waiting for an answer, not an approval.").model_dump(mode="json")
+                return
+            if not asking and approved is None:
+                yield ErrorEvent(message="This run is waiting for an approval, not an answer.").model_dump(mode="json")
+                return
+
             before = self._delta(Usage(), (snapshot.values or {}).get("usage") or Usage())
-            logger.info("run.resuming", approved=approved)
-            async for event in self._drain(Command(resume={"approved": approved}), session_id, run_id, before):
+            logger.info("run.resuming", approved=approved, question=asking)
+            resume_value = {"answer": answer} if asking else {"approved": approved}
+            async for event in self._drain(Command(resume=resume_value), session_id, run_id, before):
                 yield event
         finally:
             clear_run()

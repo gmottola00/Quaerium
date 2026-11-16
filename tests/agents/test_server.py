@@ -64,6 +64,17 @@ class TestApprovals:
         assert response.headers["content-type"].startswith("text/event-stream")
         assert sse_events(response.text) == ["tool_call", "tool_result", "token", "done"]
 
+    async def test_a_question_is_answered_through_the_same_endpoint(self, toy_registry) -> None:
+        ask = ScriptedLLM.call("toy__ask_which", {"options": ["a"]}, risk=RiskLevel.ASK)
+        llm = ScriptedLLM([ask, ScriptedLLM.say("ok")])
+        app, svc = app_for(llm, toy_registry)
+        [e async for e in svc.runner.start("s1", "which", run_id="run_1")]
+
+        async with client(app) as http:
+            response = await http.post("/api/approvals/run_1", json={"session_id": "s1", "answer": {"choice": "a"}})
+
+        assert sse_events(response.text) == ["tool_call", "tool_result", "token", "done"]
+
     async def test_a_custom_prefix(self, toy_registry) -> None:
         audit = AuditLog()
         svc = Services(runner=AgentRunner(graph=build_graph(llm=ScriptedLLM([]), registry=toy_registry, system=[])), audit=audit)
