@@ -30,6 +30,11 @@ def _to_block(result: ToolResult) -> dict[str, Any]:
     return block
 
 
+async def _answer(call: ToolCall, answer: str) -> ToolResult:
+    """The result of an ``ASK`` call: what the user answered."""
+    return ToolResult(id=call.id, name=call.name, ok=True, content=answer or "(no answer)")
+
+
 def make_act(*, registry: ToolRegistry, on_result: Any = None) -> Node:
     """Build the act node.
 
@@ -41,6 +46,7 @@ def make_act(*, registry: ToolRegistry, on_result: Any = None) -> Node:
     async def act(state: AgentState) -> dict[str, Any]:
         approved: list[ToolCall] = state.get("approved", [])
         denied: list[ToolResult] = state.get("denied", [])
+        answers: dict[str, str] = state.get("answers", {})
 
         for call in approved:
             emit_tool_call(call)
@@ -48,7 +54,10 @@ def make_act(*, registry: ToolRegistry, on_result: Any = None) -> Node:
         results: list[ToolResult] = []
         if approved:
             async with asyncio.TaskGroup() as group:
-                tasks = [group.create_task(registry.invoke(call)) for call in approved]
+                tasks = [
+                    group.create_task(_answer(call, answers[call.id]) if call.id in answers else registry.invoke(call))
+                    for call in approved
+                ]
             results = [task.result() for task in tasks]
 
         for result in results:
@@ -68,6 +77,7 @@ def make_act(*, registry: ToolRegistry, on_result: Any = None) -> Node:
             "messages": [{"role": "user", "content": blocks}] if blocks else [],
             "approved": [],
             "denied": [],
+            "answers": {},
         }
 
     return act

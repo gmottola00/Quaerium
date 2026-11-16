@@ -150,6 +150,7 @@ def initial_state(
         pending=[],
         approved=[],
         denied=[],
+        answers={},
         steps=0,
         usage=Usage(),
         answer="",

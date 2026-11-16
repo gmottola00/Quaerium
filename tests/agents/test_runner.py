@@ -106,6 +106,67 @@ class TestApprovals:
         assert audit.pending() == []
         assert audit.decisions()[0]["approved"] is True
 
+    async def test_a_question_suspends_and_the_answer_is_the_tools_result(self, toy_registry) -> None:
+        llm = ScriptedLLM(
+            [
+                ScriptedLLM.call("toy__ask_which", {"options": ["a", "b"]}, risk=RiskLevel.ASK),
+                ScriptedLLM.say("you chose b"),
+            ]
+        )
+        runner, _, audit = make(llm, toy_registry)
+
+        events = await collect(runner.start("s1", "which one", run_id="run_1"))
+        assert events[-1]["type"] == "question_required"
+        assert events[-1]["args"] == {"options": ["a", "b"]}
+        assert (await runner.pending_approval("s1"))["kind"] == "question"
+
+        events = await collect(runner.resume("s1", "run_1", answer={"choice": "b"}))
+
+        assert [e["type"] for e in events] == ["tool_call", "tool_result", "token", "done"]
+        assert events[1]["ok"] is True
+        assert events[1]["summary"] == '{"choice": "b"}'
+        assert await runner.pending_approval("s1") is None
+        assert audit.pending() == []
+        # The model saw the answer as the tool result.
+        results = [b for m in await runner.history("s1") if isinstance(m["content"], list) for b in m["content"]]
+        assert any(b.get("type") == "tool_result" and b["content"] == '{"choice": "b"}' for b in results)
+
+    async def test_a_string_answer_is_passed_through_as_is(self, toy_registry) -> None:
+        ask = ScriptedLLM.call("toy__ask_which", {"options": []}, risk=RiskLevel.ASK)
+        llm = ScriptedLLM([ask, ScriptedLLM.say("ok")])
+        runner, _, _ = make(llm, toy_registry)
+        await collect(runner.start("s1", "which one", run_id="run_1"))
+
+        events = await collect(runner.resume("s1", "run_1", answer="Rossi"))
+
+        assert events[1]["summary"] == "Rossi"
+
+    async def test_a_question_cannot_be_approved_nor_an_approval_answered(self, toy_registry) -> None:
+        llm = ScriptedLLM([ScriptedLLM.call("toy__ask_which", {"options": []}, risk=RiskLevel.ASK)])
+        runner, _, _ = make(llm, toy_registry)
+        await collect(runner.start("s1", "which one", run_id="run_1"))
+        events = await collect(runner.resume("s1", "run_1", approved=True))
+        assert events[-1]["type"] == "error"
+        assert (await runner.pending_approval("s1")) is not None  # still waiting
+
+        llm = ScriptedLLM([ScriptedLLM.call("toy__demolish", {"target": "x"}, risk=RiskLevel.DESTRUCTIVE)])
+        runner, _, _ = make(llm, toy_registry)
+        await collect(runner.start("s2", "demolish x", run_id="run_2"))
+        events = await collect(runner.resume("s2", "run_2", answer="yes"))
+        assert events[-1]["type"] == "error"
+
+    async def test_a_question_does_not_call_on_suspend(self, toy_registry) -> None:
+        seen: list[Any] = []
+
+        async def on_suspend(event: Any) -> None:
+            seen.append(event)
+
+        llm = ScriptedLLM([ScriptedLLM.call("toy__ask_which", {"options": []}, risk=RiskLevel.ASK)])
+        runner, _, _ = make(llm, toy_registry, on_suspend=on_suspend)
+        await collect(runner.start("s1", "which one", run_id="run_1"))
+        await runner.aclose()
+        assert seen == []
+
     async def test_resume_with_nothing_pending_is_an_error(self, toy_registry) -> None:
         runner, _, _ = make(ScriptedLLM([]), toy_registry)
 

@@ -52,6 +52,9 @@ class AgentState(TypedDict, total=False):
     approved: list[ToolCall]
     """Calls cleared to run."""
 
+    answers: dict[str, str]
+    """Call id -> the user's answer, for ``ASK`` calls. The act node returns it as the result without running the tool."""
+
     denied: list[ToolResult]
     """Synthetic results for calls the gate refused."""
 

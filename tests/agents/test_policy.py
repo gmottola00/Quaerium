@@ -12,6 +12,12 @@ class TestPolicyGate:
         assert policy.decide(RiskLevel.WRITE).decision is Decision.ALLOW
         assert policy.decide(RiskLevel.DESTRUCTIVE).decision is Decision.CONFIRM
 
+    def test_a_question_is_asked_even_when_destructive_is_blocked(self) -> None:
+        for gate in (PolicyGate(), PolicyGate(block_destructive=True), PolicyGate(confirm_writes=True)):
+            ruling = gate.decide(RiskLevel.ASK)
+            assert ruling.decision is Decision.ASK
+            assert ruling.needs_human
+
     def test_confirm_writes_escalates(self) -> None:
         gate = PolicyGate(confirm_writes=True)
         assert gate.decide(RiskLevel.WRITE).needs_human
